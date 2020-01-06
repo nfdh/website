@@ -1,0 +1,14 @@
+
+
+type Query {
+    hero: Hero
+}
+
+type Hero {
+    id: ID
+    name: String
+}
+
+schema {
+    query: Query
+}

@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+        "target": "esnext",
+        "module": "esnext",
+        "moduleResolution": "node",
+        "types": ["react-dom/experimental", "node"],
+        "jsx": "preserve"
+    }
+}

@@ -1,0 +1,140 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+}
+
+:global(#root) {
+    height: 100%;
+}
+
+.header {
+    border-bottom: 1px solid darkgray;
+    background: url("./schapen.jpeg");
+    background-size: cover;
+    height: 720px;
+}
+
+.title {
+    margin-left: 10%;
+    padding-top: 440px;
+    width: 80%;
+    color: white;
+    text-shadow: 0 0 40px rgba(0, 0, 0, 0.8),
+        1px 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+.title > h1 {
+    font-size: 60px;
+    margin: 0;
+}
+
+.title > h2 {
+    font-size: 30px;
+    margin-top: 10px;
+}
+
+.headerMenu {
+    padding-top: 10px;
+    margin-left: 10%;
+    width: 80%;
+}
+
+.headerMenuSegment {
+    overflow: hidden;
+    background: rgba(30, 30, 30, 0.8);
+    text-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+    margin-right: 20px;
+    float: left;
+}
+
+.headerMenuSegment:last-child {
+    margin-right: 0;
+}
+
+.headerMenuLink {
+    display: inline-block;
+    padding: 10px 20px;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 20px;
+    border-right: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.headerMenuLink:hover {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.headerMenuLink.active {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.headerMenuLink.active:hover {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.headerMenuLink:last-child {
+    border-right: none;
+}
+
+.footer {
+    background: rgba(0, 0, 0, 0.1);
+    margin-top: 25px;
+}
+
+.footerCenter {
+    width: 80%;
+    margin: 0 auto;
+    padding: 25px;
+    display: flex;
+    flex-direction: row;
+}
+
+.footerColumn {
+    width: 400px;
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+
+.footerColumn > h4 {
+    margin: 0;
+    padding: 0;
+    margin-bottom: 5px;
+    color: #000;
+}
+
+.footerColumn > p {
+    margin: 0;
+}
+
+.footerColumn > table > tbody > tr > td:first-child {
+    padding-right: 10px;
+    text-align: right;
+    vertical-align: top;
+}
+
+.footerColumn a {
+    color: rgba(0, 0, 255, 0.8);
+    text-decoration: none;
+    line-height: 24px;
+}
+
+.footerColumn a:hover {
+    text-decoration: underline;
+}
+
+.footerColumn:last-child {
+    flex-grow: 1;
+    width: auto;
+}
+
+.copyRightNotice {
+    font-size: 80%;
+}
