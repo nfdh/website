@@ -31,7 +31,7 @@ function config(isClient, isDev) {
         output: {
             path: isClient
                 ? path.resolve(__dirname, "dist-client", "static")
-                : path.resolve(__dirname, "dist-server"),
+                : path.resolve(__dirname, "dist-ssr"),
             publicPath: "/static",
             filename: (isDev || !isClient) ? "[name].js" : "[chunkhash].js"
         },
