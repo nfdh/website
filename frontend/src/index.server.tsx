@@ -1,5 +1,5 @@
 import * as path from "path";
-import { unlinkSync } from "fs";
+import * as fs from "fs";
 
 import express from "express"
 import * as React from "react"
@@ -31,9 +31,13 @@ app.use(
 
 app.use(/^.*/i, serverRenderer);
 
-
-unlinkSync("/tmp/ssr-server.sock");
+fs.unlinkSync("/tmp/ssr-server.sock");
 
 app.listen("/tmp/ssr-server.sock", () => {
-  console.log(`SSR running on '/tmp/ssr-server'`)
+  console.log(`SSR running on '/tmp/ssr-server.sock'`)
+});
+
+fs.watch(__filename, {}, function() {
+  console.log(`${__filename} has changed, shutting down...`);
+  app.close();
 });
