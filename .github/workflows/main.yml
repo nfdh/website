@@ -65,4 +65,4 @@ jobs:
         DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
         DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
       run: |
-        wget https://nieuw.drentsheideschaap.nl/?ssr=restart
+        wget -O - https://nieuw.drentsheideschaap.nl/?ssr=restart
