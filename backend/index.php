@@ -8,7 +8,7 @@
         fwrite($sock, $_GET['ssr']);
         fclose($sock);
 
-        echo "Command '" . $_GET['ssr'] . "' send to SSR server."
+        echo "Command '" . $_GET['ssr'] . "' send to SSR server.";
         exit();
     }
 
