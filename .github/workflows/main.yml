@@ -50,6 +50,6 @@ jobs:
         path: artifact/backend
     - name: Upload artifacts to target server
       run: |
-        cat ${{ secrets.DEPLOY_KEY }} > tmp/id_rsa
+        echo ${{ secrets.DEPLOY_KEY }} > tmp/id_rsa
         scp -Br -i tmp/id_rsa artifact/frontend-ssr ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_HOST }}:/data/sites/web/drentsheideschaapnl/ssr
         rm tmp/id_rsa
