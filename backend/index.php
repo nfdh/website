@@ -7,7 +7,7 @@
 
     $times = 3;
     while(true) {
-        $sock = fsockopen("unix:///tmp/ssr-server.sock", -1, $errno, $errstr);
+        $sock = fsockopen("unix:///data/sites/web/drentsheideschaapnl/tmp/ssr-server.sock", -1, $errno, $errstr);
         if ($sock) {
             break;
         }

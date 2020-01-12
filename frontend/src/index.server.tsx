@@ -12,6 +12,8 @@ import { spawn } from "child_process";
 
 import { App } from "./App";
 
+const socket_path_base = "/data/sites/web/drentsheideschaapnl/tmp";
+
 if(process.argv.length > 2) {
   run_command(process.argv[2]);
 }
@@ -37,11 +39,13 @@ function startFrontendServer(): Server {
   
   app.use(/^.*/i, serverRenderer);
   
-  try { fs.unlinkSync("/tmp/ssr-server.sock"); }
+  const socket_path = socket_path_base + "/ssr-server.sock";
+
+  try { fs.unlinkSync(socket_path); }
   catch {}
   
-  return app.listen("/tmp/ssr-server.sock", () => {
-    console.log(`SSR running on '/tmp/ssr-server.sock'`)
+  return app.listen(socket_path, () => {
+    console.log(`SSR running on '${socket_path}'`)
   });
 }
 
@@ -67,10 +71,12 @@ function startControlServer(frontendServer: Server) {
     });
   });
 
-  try { fs.unlinkSync("/tmp/ssr-server-control.sock"); }
+  const socket_path = socket_path_base + "/ssr-server-control.sock";
+
+  try { fs.unlinkSync(socket_path); }
   catch {}
 
-  server.listen("/tmp/ssr-server-control.sock");
+  server.listen(socket_path);
 }
 
 function startSelfOnExit() {
