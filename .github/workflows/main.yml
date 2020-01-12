@@ -55,6 +55,7 @@ jobs:
         DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
         DEPLOY_FINGERPRINT: ${{ secrets.DEPLOY_HOST_FINGERPRINT }}
       run: |
+        mkdir -p ~/.ssh
         echo $DEPLOY_FINGERPRINT >> ~/.ssh/known_hosts
         echo $DEPLOY_KEY > /tmp/tmp_id_rsa
         rsync -e "ssh -i /tmp/tmp_id_rsa" artifact/frontend-ssr $DEPLOY_USERNAME@$DEPLOY_HOST:/data/sites/web/drentsheideschaapnl/ssr
