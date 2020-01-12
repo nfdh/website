@@ -2,6 +2,16 @@
     ini_set("display_errors", "1");
     error_reporting(E_ALL);
 
+    // Allow sending commands to SSR server
+    if ($_GET['ssr']) {
+        $sock = fsockopen("unix:///data/sites/web/drentsheideschaapnl/tmp/ssr-server-control.sock");
+        fwrite($sock, $_GET['ssr']);
+        fclose($sock);
+
+        echo "Command '" . $_GET['ssr'] . "' send to SSR server."
+        exit();
+    }
+
     $template = file_get_contents("template.html");
     $template_split_idx = strpos($template, "</div>");
 

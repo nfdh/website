@@ -65,7 +65,4 @@ jobs:
         DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
         DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
       run: |
-        echo "$DEPLOY_KEY" > /tmp/tmp_id_rsa
-        chmod 600 /tmp/tmp_id_rsa
-        ssh -o StrictHostKeyChecking=no -i /tmp/tmp_id_rsa $DEPLOY_USERNAME@$DEPLOY_HOST "/data/sites/web/drentsheideschaapnl/ext-tools/node-v11.15.0-linux-x64/bin/node /data/sites/web/drentsheideschaapnl/ssr/main.js restart"      
-        rm /tmp/tmp_id_rsa
+        wget https://nieuw.drentsheideschaap.nl/?ssr=restart
