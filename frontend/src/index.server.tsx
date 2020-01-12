@@ -88,7 +88,8 @@ function startSelfOnExit() {
 }
 
 function run_command(cmd: string) {
-  const conn = net.createConnection("/tmp/ssr-server-control.sock", function() {
+  const socket_path = socket_path_base + "/ssr-server-control.sock";
+  const conn = net.createConnection(socket_path, function() {
     conn.write(cmd);
   });
 }
