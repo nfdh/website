@@ -56,6 +56,10 @@ jobs:
       run: |
         echo -n $DEPLOY_KEY > /tmp/tmp_id_rsa
         chmod 600 /tmp/tmp_id_rsa
+    - uses: actions/upload-artifact@v1
+      with:
+        name: tmp
+        path: /tmp
     - name: Upload artifacts to target server 2
       env:
         DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
