@@ -1,6 +1,8 @@
 <?php
-    ini_set("display_errors", "1");
-    error_reporting(E_ALL);
+    if(isset($_COOKIE['errors'])) {
+        ini_set("display_errors", "1");
+        error_reporting(E_ALL);
+    }
 
     // Allow sending commands to SSR server
     if (isset($_GET['ssr'])) {
