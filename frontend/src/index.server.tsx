@@ -23,8 +23,6 @@ else {
 function startFrontendServer(): Server {
   const app = express();
 
-  let { templateStart, templateEnd } = loadTemplate();
-  
   const serverRenderer = (req, res, next) => {
     const context = { statusCode: 200 };
     const rendered = ReactDOMServer.renderToString(
@@ -34,9 +32,7 @@ function startFrontendServer(): Server {
     );
   
     res.status(context.statusCode);
-    return res.send(
-      templateStart + rendered + templateEnd 
-    );
+    return res.send(rendered);
   }
   
   app.use(/^.*/i, serverRenderer);
@@ -47,18 +43,6 @@ function startFrontendServer(): Server {
   return app.listen("/tmp/ssr-server.sock", () => {
     console.log(`SSR running on '/tmp/ssr-server.sock'`)
   });
-}
-
-function loadTemplate() {
-  const template = fs.readFileSync(path.resolve(__dirname, "index.html"));
-  const rootEnd = template.indexOf('</div>');
-  const templateStart = template.toString("utf8", 0, rootEnd);
-  const templateEnd = template.toString("utf8", rootEnd);
-
-  return {
-    templateStart,
-    templateEnd
-  };
 }
 
 function startControlServer(frontendServer: Server) {

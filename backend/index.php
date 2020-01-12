@@ -2,6 +2,9 @@
     ini_set("display_errors", "1");
     error_reporting(E_ALL);
 
+    $template = file_get_contents("template.html");
+    $template_split_idx = strpos($template, "</div>");
+
     $times = 3;
     while(true) {
         $sock = fsockopen("unix:///tmp/ssr-server.sock", -1, $errno, $errstr);
@@ -42,6 +45,12 @@
     // Skip the rest of the headers
     while (strlen(fgets($sock)) > 2) { }
 
+    // Output header
+    echo substr($template, 0, $template_split_idx);
+
     // Read body
     fpassthru($sock);
+
+    // Output footer
+    echo substr($template, $template_split_idx);
 ?>

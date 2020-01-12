@@ -23,6 +23,8 @@ module.exports = function(env) {
     ];
 };
 
+const indentsMap = new Map();
+
 function config(isClient, isDev) {
     const result = {
         mode: isDev ? "development" : "production",
@@ -69,15 +71,17 @@ function config(isClient, isDev) {
                                 sourceMap: true
                             }
                         }
-                    ] : {
-                        loader: "css-loader",
-                        options: {
-                            modules: {
-                                getLocalIdent: isDev ? getLocalIdentDev : getLocalIdentProd
-                            },
-                            onlyLocals: true
+                    ] : [
+                        {
+                            loader: "css-loader",
+                            options: {
+                                modules: {
+                                    getLocalIdent: isDev ? getLocalIdentDev : getLocalIdentProd
+                                },
+                                onlyLocals: true
+                            }
                         }
-                    },
+                    ],
                     include: [
                         path.resolve(__dirname, "src")
                     ]
@@ -119,17 +123,16 @@ function config(isClient, isDev) {
             contentBase: path.join(__dirname, 'dist-client'),
             compress: true,
             historyApiFallback: {
-                index: 'index.html'
+                index: 'template.html'
             }
         };
-        if(isDev) {
-            result.plugins.push(
-                new HtmlWebpackPlugin({
-                    template: "src/index.html",
-                    filename: "../index.html"
-                })
-            );
-        }
+
+        result.plugins.push(
+            new HtmlWebpackPlugin({
+                template: "src/index.html",
+                filename: "../template.html"
+            })
+        );
 
         if(!isDev) {
             result.plugins.push(
@@ -144,20 +147,11 @@ function config(isClient, isDev) {
         }
     }
     else {
-        result.plugins.push(
-            new HtmlWebpackPlugin({
-                template: "src/index.html",
-                filename: "index.html"
-            })
-        );
-
         result.node = {
             __dirname: false,
             __filename: false
         };
     }
-
-    const indentsMap = new Map();
 
     return result;
 
