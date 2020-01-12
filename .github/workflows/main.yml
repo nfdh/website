@@ -54,5 +54,5 @@ jobs:
       run: |
         printenv
         echo $DEPLOY_KEY > /tmp/tmp_id_rsa
-        rsync -e "ssh -i /tmp/tmp_id.rsa" artifact/frontend-ssr ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_HOST }}:/data/sites/web/drentsheideschaapnl/ssr
+        rsync -e "ssh -i /tmp/tmp_id_rsa" artifact/frontend-ssr ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_HOST }}:/data/sites/web/drentsheideschaapnl/ssr
         rm /tmp/tmp_id_rsa
