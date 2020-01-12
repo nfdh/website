@@ -57,6 +57,7 @@ jobs:
         echo "$DEPLOY_KEY" > /tmp/tmp_id_rsa
         chmod 600 /tmp/tmp_id_rsa
         rsync --delete -r -e "ssh -o StrictHostKeyChecking=no -i /tmp/tmp_id_rsa" \
+          --exclude '.htaccess' \
           artifact/frontend-ssr $DEPLOY_USERNAME@$DEPLOY_HOST:/data/sites/web/drentsheideschaapnl/ssr \
           artifact/frontend-client $DEPLOY_USERNAME@$DEPLOY_HOST:/data/sites/web/drentsheideschaapnl/subsites/nieuw.drentsheideschaap.nl \
           artifact/backend $DEPLOY_USERNAME@$DEPLOY_HOST:/data/sites/web/drentsheideschaapnl/subsites/nieuw.drentsheideschaap.nl
