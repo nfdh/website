@@ -49,9 +49,10 @@ jobs:
         name: backend
         path: artifact/backend
     - name: Upload artifacts to target server
+      env:
+        DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
       run: |
-        compgen -c
-        echo $TMPDIR
-        echo ${{ secrets.DEPLOY_KEY }} > $TMPDIR/tmp_id_rsa
-        rsync -e "ssh -i $TMPDIR/tmp_id.rsa" artifact/frontend-ssr ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_HOST }}:/data/sites/web/drentsheideschaapnl/ssr
-        rm $TMPDIR/tmp_id_rsa
+        printenv
+        echo $DEPLOY_KEY > /tmp/tmp_id_rsa
+        rsync -e "ssh -i /tmp/tmp_id.rsa" artifact/frontend-ssr ${{ secrets.DEPLOY_USERNAME }}@${{ secrets.DEPLOY_HOST }}:/data/sites/web/drentsheideschaapnl/ssr
+        rm /tmp/tmp_id_rsa
