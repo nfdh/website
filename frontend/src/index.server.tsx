@@ -12,8 +12,13 @@ import { spawn } from "child_process";
 
 import { App } from "./App";
 
-const frontendServer = startFrontendServer();
-startControlServer(frontendServer);
+if(process.argv.length > 2) {
+  run_command(process.argv[2]);
+}
+else {
+  const frontendServer = startFrontendServer();
+  startControlServer(frontendServer);
+}
 
 function startFrontendServer(): Server {
   const app = express();
@@ -34,11 +39,6 @@ function startFrontendServer(): Server {
     );
   }
   
-  app.use(
-    "/static",
-    express.static(path.resolve(".", "dist-client", "static"), { maxAge: '30d' })
-  );
-  
   app.use(/^.*/i, serverRenderer);
   
   try { fs.unlinkSync("/tmp/ssr-server.sock"); }
@@ -50,7 +50,7 @@ function startFrontendServer(): Server {
 }
 
 function loadTemplate() {
-  const template = fs.readFileSync("./index.html");
+  const template = fs.readFileSync(path.resolve(__dirname, "index.html"));
   const rootEnd = template.indexOf('</div>');
   const templateStart = template.toString("utf8", 0, rootEnd);
   const templateEnd = template.toString("utf8", rootEnd);
@@ -65,8 +65,9 @@ function startControlServer(frontendServer: Server) {
   const server = net.createServer(function(client: net.Socket) {
     client.setEncoding("utf8");
     client.on("data", function(data: Buffer) {
-      const command = data.toString().trim();
+      client.end();
 
+      const command = data.toString().trim();
       console.log("Received control command: [" + command + "]");
 
       if (command === "stop") {
@@ -93,5 +94,11 @@ function startSelfOnExit() {
     spawn(process.execPath, [__filename], {
       detached: true
     }).unref();
+  });
+}
+
+function run_command(cmd: string) {
+  const conn = net.createConnection("/tmp/ssr-server-control.sock", function() {
+    conn.write(cmd);
   });
 }
