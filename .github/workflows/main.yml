@@ -54,17 +54,18 @@ jobs:
         DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
         DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
       run: |
-        echo -n $DEPLOY_KEY > /tmp/tmp_id_rsa
-        chmod 600 /tmp/tmp_id_rsa
+        mkdir -p /tmp/key
+        echo -n $DEPLOY_KEY > /tmp/key/tmp_id_rsa
     - uses: actions/upload-artifact@v1
       with:
         name: tmp
-        path: /tmp
-    - name: Upload artifacts to target server 2
-      env:
-        DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-        DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
-        DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
-      run: |
-        rsync -e "ssh -o StrictHostKeyChecking=no -i /tmp/tmp_id_rsa" artifact/frontend-ssr $DEPLOY_USERNAME@$DEPLOY_HOST:/data/sites/web/drentsheideschaapnl/ssr
-        rm /tmp/tmp_id_rsa
+        path: /tmp/key
+#    - name: Upload artifacts to target server 2
+#      env:
+#        DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+#        DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
+#        DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+#      run: |
+#        chmod 600 /tmp/key/tmp_id_rsa
+#        rsync -e "ssh -o StrictHostKeyChecking=no -i /tmp/key/tmp_id_rsa" artifact/frontend-ssr $DEPLOY_USERNAME@$DEPLOY_HOST:/data/sites/web/drentsheideschaapnl/ssr
+#        rm /tmp/key/tmp_id_rsa
