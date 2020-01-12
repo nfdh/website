@@ -93,16 +93,16 @@ function config(isClient, isDev) {
             ]
         },
         plugins: [
-            // new CleanWebpackPlugin({
-            //     dry: false,
-            //     cleanOnceBeforeBuildPatterns: isClient 
-            //         ? (isDev 
-            //             ? ["../**/*", "!../index.html"]
-            //             : ["../**/*"]
-            //           )
-            //         : ["**/*"],
-            //     dangerouslyAllowCleanPatternsOutsideProject: true
-            // }),
+            new CleanWebpackPlugin({
+                dry: false,
+                cleanOnceBeforeBuildPatterns: isClient 
+                    ? (isDev 
+                        ? ["../**/*", "!../index.html"]
+                        : ["../**/*"]
+                    )
+                    : ["**/*"],
+                dangerouslyAllowCleanPatternsOutsideProject: true
+            }),
             new MiniCssExtractPlugin({
                 filename: isDev ? '[name].css' : '[contenthash].css',
                 chunkFilename: '[id].css',
@@ -131,13 +131,6 @@ function config(isClient, isDev) {
             );
         }
 
-        result.plugins.push(
-            new HtmlWebpackPlugin({
-                template: "src/template.php",
-                filename: "../_template.php"
-            })
-        );
-
         if(!isDev) {
             result.plugins.push(
                 new OptimizeCssAssetsPlugin({
@@ -149,6 +142,19 @@ function config(isClient, isDev) {
                 })
             );
         }
+    }
+    else {
+        result.plugins.push(
+            new HtmlWebpackPlugin({
+                template: "src/index.html",
+                filename: "index.html"
+            })
+        );
+
+        result.node = {
+            __dirname: false,
+            __filename: false
+        };
     }
 
     const indentsMap = new Map();
