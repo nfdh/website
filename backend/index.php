@@ -3,7 +3,7 @@
     error_reporting(E_ALL);
 
     // Allow sending commands to SSR server
-    if ($_GET['ssr']) {
+    if (isset($_GET['ssr'])) {
         $sock = fsockopen("unix:///data/sites/web/drentsheideschaapnl/tmp/ssr-server-control.sock");
         fwrite($sock, $_GET['ssr']);
         fclose($sock);
