@@ -18,15 +18,18 @@ body {
     background: url("./schapen.jpeg");
     background-size: cover;
     height: 720px;
+    position: relative;
 }
 
 .title {
-    margin-left: 10%;
-    padding-top: 440px;
+    position: absolute;
+    left: 10%;
+    bottom: 72px;
     width: 80%;
     color: white;
     text-shadow: 0 0 40px rgba(0, 0, 0, 0.8),
         1px 1px 3px rgba(0, 0, 0, 0.9);
+    white-space: nowrap;
 }
 
 .title > h1 {
@@ -40,9 +43,13 @@ body {
 }
 
 .headerMenu {
-    padding-top: 10px;
-    margin-left: 10%;
+    position: absolute;
+    left: 10%;
+    bottom: 19px;
     width: 80%;
+    display: flex;
+    flex-direction: row;
+    white-space: nowrap;
 }
 
 .headerMenuSegment {
@@ -51,7 +58,8 @@ body {
     text-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
     border-radius: 5px;
     margin-right: 20px;
-    float: left;
+    flex-shrink: 0;
+    flex-grow: 0;
 }
 
 .headerMenuSegment:last-child {
