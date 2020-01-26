@@ -4,6 +4,7 @@ export const headerMenuSegment: string;
 export const headerMenuLink: string;
 export const active: string;
 export const content: string;
+export const centerContent: string;
 export const image: string;
 export const title: string;
 

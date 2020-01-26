@@ -1,0 +1,79 @@
+.center {
+    composes: centerContent from "../../index.css";
+}
+
+.center > h1 {
+    color: #000;
+    margin-bottom: 0;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    padding-top: 20px;
+}
+
+.portalLoginContent {
+    flex-grow: 0;
+    flex-shrink: 0;
+    width: 33%;
+    padding-right: 30px;
+    height: 100%;
+}
+
+.loginForm {
+    margin-top: 30px;
+}
+
+.usernameInput,
+.passwordInput {
+    margin-top: 5px;
+}
+
+.stayLoggedInLabel {
+    margin: 10px 0 10px 0;
+}
+
+.stayLoggedInInput {
+    margin: 0 6px 0 0;
+}
+
+.loginButton {
+    width: 100%;
+    margin-top: 5px;
+}
+
+.falcooLoginContent {
+    flex-grow: 0;
+    flex-shrink: 0;
+    width: 33%;
+    padding-left: 30px;
+    padding-right: 30px;
+    height: 100%;
+
+    border-left: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.falcooButtons {
+    width: 100%;
+}
+
+.falcooButton {
+    width: 33%;
+}
+
+.otherContent {
+    flex-grow: 0;
+    flex-shrink: 0;
+    padding-left: 30px;
+    width: 33%;
+    height: 100%;
+    border-left: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.portalLoginContent > h2,
+.falcooLoginContent > h2,
+.otherContent > h2 {
+    margin-top: 0;
+    color: #000;
+}

@@ -15,17 +15,24 @@ const otherAllowedCharacters = [
 ];
 
 module.exports = function(env) {
-    const isDev = !!env.dev;
+    const isDevServer = !!env.devServer;
 
-    return [
-        config(true, isDev),
-        config(false, isDev)
-    ];
+    if(isDevServer) {
+        return config(true, true, true);
+    }
+    else {
+        const isDev = !!env.dev;
+
+        return [
+            config(true, isDev, isDevServer),
+            config(false, isDev, isDevServer)
+        ];
+    }
 };
 
 const indentsMap = new Map();
 
-function config(isClient, isDev) {
+function config(isClient, isDev, isDevServer) {
     const result = {
         mode: isDev ? "development" : "production",
         entry: path.resolve(__dirname, "src", "index." + (isClient ? "client" : "server") + ".tsx"),
@@ -87,7 +94,7 @@ function config(isClient, isDev) {
                     ]
                 },
                 {
-                    test: /\.jpe?g$/,
+                    test: /\.(jpe?g|png)$/,
                     loader: "file-loader",
                     options: {
                         emitFile: isClient,
@@ -97,16 +104,6 @@ function config(isClient, isDev) {
             ]
         },
         plugins: [
-            new CleanWebpackPlugin({
-                dry: false,
-                cleanOnceBeforeBuildPatterns: isClient 
-                    ? (isDev 
-                        ? ["../**/*", "!../index.html"]
-                        : ["../**/*"]
-                    )
-                    : ["**/*"],
-                dangerouslyAllowCleanPatternsOutsideProject: true
-            }),
             new MiniCssExtractPlugin({
                 filename: isDev ? '[name].css' : '[contenthash].css',
                 chunkFilename: '[id].css',
@@ -117,6 +114,18 @@ function config(isClient, isDev) {
             minimize: !isDev && isClient
         }
     };
+
+    if(!isDevServer) {
+        result.plugins.push(
+            new CleanWebpackPlugin({
+                dry: false,
+                cleanOnceBeforeBuildPatterns: isClient 
+                    ? ["../**/*"]
+                    : ["**/*"],
+                dangerouslyAllowCleanPatternsOutsideProject: true
+            })
+        );
+    }
 
     if(isClient) {
         result.devServer = {

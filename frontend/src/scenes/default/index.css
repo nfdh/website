@@ -146,3 +146,8 @@ body {
 .copyRightNotice {
     font-size: 80%;
 }
+
+.centerContent {
+    margin: 0 auto;
+    width: 80%;
+}

@@ -7,6 +7,7 @@ import { DisclaimerScene } from "./scenes/disclaimer";
 import { NotFoundScene } from "./scenes/not-found";
 
 import * as styles from "./index.css";
+import { LoginScene } from "./scenes/login";
 
 export function DefaultScene() {
     return <>
@@ -28,13 +29,14 @@ export function DefaultScene() {
                 </div>
                 <div className={styles.headerMenuSegment}>
                     <NavLink className={styles.headerMenuLink} activeClassName={styles.active} to="/lid-worden">Lid worden</NavLink>
-                    <NavLink className={styles.headerMenuLink} to="/ledenportaal">Ledenportaal</NavLink>
+                    <NavLink className={styles.headerMenuLink} activeClassName={styles.active} to="/login">Inloggen</NavLink>
                 </div>
             </div>
         </div>
 
         <Switch>
             <Route path="/home" component={HomeScene} />
+            <Route path="/login" component={LoginScene} />
             <Route path="/disclaimer" component={DisclaimerScene} />
             <Redirect path="/" exact to="/home" />
             <Route component={NotFoundScene} />
