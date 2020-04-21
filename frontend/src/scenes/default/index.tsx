@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Redirect, Route, Switch } from "react-router";
+import { Route, Routes } from "react-router";
 import { NavLink, Link } from "react-router-dom";
 
 import { HomeScene } from "./scenes/home";
@@ -22,7 +22,7 @@ export function DefaultScene() {
 
             <div className={styles.headerMenu}>
                 <div className={styles.headerMenuSegment}>
-                    <NavLink className={styles.headerMenuLink} activeClassName={styles.active} to="/home">Home</NavLink>
+                    <NavLink className={styles.headerMenuLink} activeClassName={styles.active} to="/">Home</NavLink>
                     <NavLink className={styles.headerMenuLink} activeClassName={styles.active} to="/vereniging">Vereniging</NavLink>
                     <NavLink className={styles.headerMenuLink} activeClassName={styles.active} to="/rassen">Rassen</NavLink>
                     <NavLink className={styles.headerMenuLink} activeClassName={styles.active} to="/agenda">Agenda</NavLink>
@@ -34,13 +34,12 @@ export function DefaultScene() {
             </div>
         </div>
 
-        <Switch>
-            <Route path="/home" component={HomeScene} />
-            <Route path="/login" component={LoginScene} />
-            <Route path="/disclaimer" component={DisclaimerScene} />
-            <Redirect path="/" exact to="/home" />
-            <Route component={NotFoundScene} />
-        </Switch>
+        <Routes>
+            <Route path="" element={<HomeScene />} />
+            <Route path="login" element={<LoginScene />} />
+            <Route path="disclaimer" element={<DisclaimerScene />}></Route>
+            <Route path="*" element={<NotFoundScene />} />
+        </Routes>
 
         <div className={styles.footer}>
             <div className={styles.footerCenter}>

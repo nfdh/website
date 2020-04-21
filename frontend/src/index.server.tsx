@@ -7,8 +7,10 @@ import { Server}  from "http";
 
 import * as React from "react"
 import * as ReactDOMServer from "react-dom/server"
-import { StaticRouter } from 'react-router-dom';
+import { StaticRouter } from 'react-router-dom/server';
 import { spawn } from "child_process";
+
+import * as Status from "./index.server.status";
 
 import { App } from "./App";
 
@@ -26,14 +28,15 @@ function startFrontendServer(): Server {
   const app = express();
 
   const serverRenderer = (req, res, next) => {
-    const context = { statusCode: 200 };
+    Status.reset();
+
     const rendered = ReactDOMServer.renderToString(
-      <StaticRouter location={req.originalUrl} context={context}>
+      <StaticRouter location={req.originalUrl}>
           <App />
       </StaticRouter>
     );
   
-    res.status(context.statusCode);
+    res.status(Status.STATUSCODE);
     return res.send(rendered);
   }
   

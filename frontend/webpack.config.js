@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const { DefinePlugin } = require('webpack');
 
 const firstAllowedCharacters = [
     '_', ...character_range('a', 'z')
@@ -15,24 +16,22 @@ const otherAllowedCharacters = [
 ];
 
 module.exports = function(env) {
-    const isDevServer = !!env.devServer;
-
-    if(isDevServer) {
-        return config(true, true, true);
+    if(process.env.WEBPACK_DEV_SERVER) {
+        return config(true, true);
     }
     else {
         const isDev = !!env.dev;
 
         return [
-            config(true, isDev, isDevServer),
-            config(false, isDev, isDevServer)
+            config(true, isDev),
+            config(false, isDev)
         ];
     }
 };
 
 const indentsMap = new Map();
 
-function config(isClient, isDev, isDevServer) {
+function config(isClient, isDev) {
     const result = {
         mode: isDev ? "development" : "production",
         entry: path.resolve(__dirname, "src", "index." + (isClient ? "client" : "server") + ".tsx"),
@@ -115,7 +114,7 @@ function config(isClient, isDev, isDevServer) {
         }
     };
 
-    if(!isDevServer) {
+    if(!process.env.WEBPACK_DEV_SERVER) {
         result.plugins.push(
             new CleanWebpackPlugin({
                 dry: false,
@@ -140,6 +139,10 @@ function config(isClient, isDev, isDevServer) {
             new HtmlWebpackPlugin({
                 template: "src/index.html",
                 filename: "../template.html"
+            }),
+            new DefinePlugin({
+                "process.env.WEBPACK_DEV_SERVER": process.env.WEBPACK_DEV_SERVER,
+                "process.env.SSR": !isClient
             })
         );
 

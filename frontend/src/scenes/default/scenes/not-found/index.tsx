@@ -1,16 +1,11 @@
 import * as React from "react";
-import { RouteComponentProps } from "react-router";
 
 import * as styles from "./index.css";
 
-interface NotFoundSceneProps {
-    staticContext: any;
-}
-
-export function NotFoundScene(props: NotFoundSceneProps) {
-    if (props.staticContext) {
-        props.staticContext.statusCode = 404;
-    }
+export function NotFoundScene() {
+    /*if (process.env.SSR) {
+        require("../../../../index.server.status").IS_404 = true;
+    }*/
 
     return <p>
         De opgegeven pagina kan niet worden gevonden.

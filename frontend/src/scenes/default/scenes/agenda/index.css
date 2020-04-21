@@ -1,0 +1,3 @@
+.center {
+    composes: centerContent from "../../index.css";
+}
