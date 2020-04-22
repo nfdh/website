@@ -1,0 +1,24 @@
+.center {
+    composes: centerContent from "../../index.css";
+}
+
+.center > h1,
+.center > h3 {
+    color: black;
+}
+
+.contactInfo  > tbody > tr > td:first-child {
+    padding-right: 10px;
+    text-align: right;
+    vertical-align: top;
+    font-style: italic;
+}
+
+.contactInfo a {
+    color: rgba(0, 0, 255, 0.8);
+    text-decoration: none;
+}
+
+.contactInfo a:hover {
+    text-decoration: underline;
+}

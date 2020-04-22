@@ -10,8 +10,6 @@ import * as ReactDOMServer from "react-dom/server"
 import { StaticRouter } from 'react-router-dom/server';
 import { spawn } from "child_process";
 
-import * as Status from "./index.server.status";
-
 import { App } from "./App";
 
 const socket_path_base = "/data/sites/web/drentsheideschaapnl/tmp";
@@ -24,11 +22,15 @@ else {
   startControlServer(frontendServer);
 }
 
+export let STATUSCODE = 200;
+
 function startFrontendServer(): Server {
   const app = express();
 
   const serverRenderer = (req, res, next) => {
-    Status.reset();
+    // Reset the default status code, not found and error pages
+    // will update this variable accordingly
+    STATUSCODE = 200;
 
     const rendered = ReactDOMServer.renderToString(
       <StaticRouter location={req.originalUrl}>
@@ -36,7 +38,7 @@ function startFrontendServer(): Server {
       </StaticRouter>
     );
   
-    res.status(Status.STATUSCODE);
+    res.status(STATUSCODE);
     return res.send(rendered);
   }
   

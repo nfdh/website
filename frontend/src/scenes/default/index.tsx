@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router";
 import { NavLink, Link } from "react-router-dom";
 
 import { HomeScene } from "./scenes/home";
+import { ContactScene } from "./scenes/contact";
 import { DisclaimerScene } from "./scenes/disclaimer";
 import { NotFoundScene } from "./scenes/not-found";
 
@@ -25,7 +26,7 @@ export function DefaultScene() {
                     <NavLink className={styles.headerMenuLink} activeClassName={styles.active} to="/">Home</NavLink>
                     <NavLink className={styles.headerMenuLink} activeClassName={styles.active} to="/vereniging">Vereniging</NavLink>
                     <NavLink className={styles.headerMenuLink} activeClassName={styles.active} to="/rassen">Rassen</NavLink>
-                    <NavLink className={styles.headerMenuLink} activeClassName={styles.active} to="/agenda">Agenda</NavLink>
+                    <NavLink className={styles.headerMenuLink} activeClassName={styles.active} to="/contact">Contact</NavLink>
                 </div>
                 <div className={styles.headerMenuSegment}>
                     <NavLink className={styles.headerMenuLink} activeClassName={styles.active} to="/lid-worden">Lid worden</NavLink>
@@ -37,7 +38,8 @@ export function DefaultScene() {
         <Routes>
             <Route path="" element={<HomeScene />} />
             <Route path="login" element={<LoginScene />} />
-            <Route path="disclaimer" element={<DisclaimerScene />}></Route>
+            <Route path="disclaimer" element={<DisclaimerScene />} />
+            <Route path="contact" element={<ContactScene />} />
             <Route path="*" element={<NotFoundScene />} />
         </Routes>
 

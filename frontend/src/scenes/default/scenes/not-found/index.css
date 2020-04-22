@@ -1,8 +1,7 @@
 .center {
-    margin: 0 auto;
-    width: 80%;
+    composes: centerContent from "../../index.css";
 }
 
-.content {
-    width: 80%;
+.center > h1 {
+    color: #000;
 }

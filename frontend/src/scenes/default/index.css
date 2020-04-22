@@ -150,4 +150,5 @@ body {
 .centerContent {
     margin: 0 auto;
     width: 80%;
+    min-height: 45%;
 }
