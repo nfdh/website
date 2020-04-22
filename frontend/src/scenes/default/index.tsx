@@ -5,6 +5,9 @@ import { NavLink, Link } from "react-router-dom";
 import { HomeScene } from "./scenes/home";
 import { ContactScene } from "./scenes/contact";
 import { DisclaimerScene } from "./scenes/disclaimer";
+
+import { AgendaScene } from "./scenes/agenda";
+
 import { NotFoundScene } from "./scenes/not-found";
 
 import * as styles from "./index.css";
@@ -37,9 +40,12 @@ export function DefaultScene() {
 
         <Routes>
             <Route path="" element={<HomeScene />} />
-            <Route path="login" element={<LoginScene />} />
-            <Route path="disclaimer" element={<DisclaimerScene />} />
-            <Route path="contact" element={<ContactScene />} />
+            <Route path="login/*" element={<LoginScene />} />
+            <Route path="disclaimer/*" element={<DisclaimerScene />} />
+            <Route path="contact/*" element={<ContactScene />} />
+
+            <Route path="agenda/*" element={<AgendaScene />} />
+
             <Route path="*" element={<NotFoundScene />} />
         </Routes>
 
