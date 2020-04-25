@@ -1,6 +1,8 @@
 <?php
     session_start();
 
+    $base_path = "/data/sites/web/drentsheideschaapnl";
+
     if(isset($_COOKIE['errors'])) {
         ini_set("display_errors", "1");
         error_reporting(E_ALL);
@@ -8,7 +10,7 @@
 
     // Allow sending commands to SSR server
     if (isset($_GET['ssr'])) {
-        $sock = fsockopen("unix:///data/sites/web/drentsheideschaapnl/tmp/ssr-server-control.sock");
+        $sock = fsockopen("unix://$base_path/tmp/ssr-server-control.sock");
         fwrite($sock, $_GET['ssr']);
         fclose($sock);
 
@@ -22,7 +24,7 @@
 
     $times = 3;
     while(true) {
-        $sock = fsockopen("unix:///data/sites/web/drentsheideschaapnl/tmp/ssr-server.sock", -1, $errno, $errstr);
+        $sock = fsockopen("unix://$base_path/tmp/ssr-server.sock", -1, $errno, $errstr);
         if ($sock) {
             break;
         }
@@ -33,11 +35,11 @@
         }
 
         $desc = array(
-            1 => array("file", "/data/sites/web/drentsheideschaapnl/logs/ssr-stdout.log", "a"),  // stdout is a pipe that the child will write to
-            2 => array("file", "/data/sites/web/drentsheideschaapnl/logs/ssr-stderr.log", "a"),  // stderr
+            1 => array("file", "$base_path/logs/ssr-stdout.log", "a"),  // stdout is a pipe that the child will write to
+            2 => array("file", "$base_path/logs/ssr-stderr.log", "a"),  // stderr
         );
 
-        $proc = proc_open("/data/sites/web/drentsheideschaapnl/ext-tools/node-v11.15.0-linux-x64/bin/node /data/sites/web/drentsheideschaapnl/ssr/main.js &", $desc, $pipes);
+        $proc = proc_open("$base_path/ext-tools/node-v11.15.0-linux-x64/bin/node $base_path/ssr/main.js &", $desc, $pipes);
         usleep(200000);
         proc_close($proc);
 
