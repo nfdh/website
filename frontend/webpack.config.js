@@ -107,6 +107,10 @@ function config(isClient, isDev) {
                 filename: isDev ? '[name].css' : '[contenthash].css',
                 chunkFilename: '[id].css',
                 ignoreOrder: false
+            }),
+            new DefinePlugin({
+                "process.env.WEBPACK_DEV_SERVER": process.env.WEBPACK_DEV_SERVER,
+                "process.env.SSR": !isClient
             })
         ],
         optimization: {
@@ -139,10 +143,6 @@ function config(isClient, isDev) {
             new HtmlWebpackPlugin({
                 template: "src/index.html",
                 filename: "../template.html"
-            }),
-            new DefinePlugin({
-                "process.env.WEBPACK_DEV_SERVER": process.env.WEBPACK_DEV_SERVER,
-                "process.env.SSR": !isClient
             })
         );
 

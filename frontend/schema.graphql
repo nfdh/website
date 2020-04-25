@@ -1,14 +1,34 @@
 
 
 type Query {
-    hero: Hero
+    viewer: Viewer!
 }
 
-type Hero {
-    id: ID
-    name: String
+type Viewer {
+    user: User
+}
+
+enum UserRole {
+    MEMBER
+}
+
+type User {
+    id: ID!
+    name: String!
+    role: UserRole!
+}
+
+type LoginResult {
+    token: String
+    user: User
+}
+
+type Mutation {
+    login(username: String, password: String): LoginResult
+    logout: Boolean
 }
 
 schema {
     query: Query
+    mutation: Mutation
 }

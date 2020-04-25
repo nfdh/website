@@ -48,6 +48,15 @@ jobs:
       with:
         name: backend
         path: artifact/wwwroot
+    - uses: cschleiden/replace-tokens@v1
+      name: Fill in production settings
+      with:
+        files: '["artifact/wwwroot/conf/Settings.php"]'
+      env:
+        DB_HOST: ${{ secrets.DB_HOST }}
+        DB_USERNAME: ${{ secrets.DB_USERNAME }}
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        DB_DATABASE: ${{ secrets.DB_DATABASE }}
     - name: Upload artifacts to target server
       env:
         DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}

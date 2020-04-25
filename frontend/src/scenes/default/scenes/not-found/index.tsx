@@ -5,7 +5,7 @@ import * as styles from "./index.css";
 
 export function NotFoundScene() {
     if (process.env.SSR) {
-        require("../../../../index.server").STATUSCODE = true;
+        require("../../../../index.server").CurrentRequestInfo.statusCode = 404;
     }
 
     const loc = useLocation();

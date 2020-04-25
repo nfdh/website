@@ -1,19 +1,37 @@
 import * as React from "react";
-import { Route, Routes } from "react-router";
+import { Route, Routes, useLocation } from "react-router";
 import { NavLink, Link } from "react-router-dom";
+
+import { useUserInfo } from "../../services/auth";
 
 import { HomeScene } from "./scenes/home";
 import { ContactScene } from "./scenes/contact";
 import { DisclaimerScene } from "./scenes/disclaimer";
-
+import { LoginScene } from "./scenes/login";
+import { LogoutScene } from "./scenes/logout";
 import { AgendaScene } from "./scenes/agenda";
-
 import { NotFoundScene } from "./scenes/not-found";
 
 import * as styles from "./index.css";
-import { LoginScene } from "./scenes/login";
 
 export function DefaultScene() {
+    const authenticatedUser = useUserInfo();
+    const currentLocation = useLocation();
+
+    let memberRoutes;
+    if(authenticatedUser === null) {
+        memberRoutes = <>
+            <NavLink className={styles.headerMenuLink} activeClassName={styles.active} to="/lid-worden">Lid worden</NavLink>
+            <NavLink className={styles.headerMenuLink} activeClassName={styles.active} to="/login">Inloggen</NavLink>
+        </>;
+    }
+    else {
+        memberRoutes = <>
+            <NavLink className={styles.headerMenuLink} activeClassName={styles.active} to="/ledenportaal">Ledenportaal</NavLink>
+            <NavLink className={styles.headerMenuLink} activeClassName={styles.active} to={{ pathname: "/logout", search: "?returnPath=" + encodeURIComponent(currentLocation.pathname) }}>Uitloggen</NavLink>
+        </>;
+    }
+
     return <>
         <div className={styles.header}>
             <div className={styles.title}>
@@ -32,8 +50,7 @@ export function DefaultScene() {
                     <NavLink className={styles.headerMenuLink} activeClassName={styles.active} to="/contact">Contact</NavLink>
                 </div>
                 <div className={styles.headerMenuSegment}>
-                    <NavLink className={styles.headerMenuLink} activeClassName={styles.active} to="/lid-worden">Lid worden</NavLink>
-                    <NavLink className={styles.headerMenuLink} activeClassName={styles.active} to="/login">Inloggen</NavLink>
+                    {memberRoutes}
                 </div>
             </div>
         </div>
@@ -41,6 +58,7 @@ export function DefaultScene() {
         <Routes>
             <Route path="" element={<HomeScene />} />
             <Route path="login/*" element={<LoginScene />} />
+            <Route path="logout/*" element={<LogoutScene />} />
             <Route path="disclaimer/*" element={<DisclaimerScene />} />
             <Route path="contact/*" element={<ContactScene />} />
 

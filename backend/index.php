@@ -1,4 +1,6 @@
 <?php
+    session_start();
+
     if(isset($_COOKIE['errors'])) {
         ini_set("display_errors", "1");
         error_reporting(E_ALL);
@@ -15,7 +17,8 @@
     }
 
     $template = file_get_contents("template.html");
-    $template_split_idx = strpos($template, "</div>");
+    $template_content_start = strpos($template, "</div>");
+    $template_script_start = strpos($template, "<script");
 
     $times = 3;
     while(true) {
@@ -45,6 +48,7 @@
 
     $req = "GET $original_url HTTP/1.1\r\n";
     $req .= "Host: localhost\r\n";
+    $req .= "X-PHP-SID: " . session_id() . "\r\n";
     $req .= "Connection: close\r\n\r\n";
     fwrite($sock, $req);
 
@@ -54,15 +58,21 @@
 
     header($status, true, intval($status_parts[1]));
 
-    // Skip the rest of the headers
-    while (strlen(fgets($sock)) > 2) { }
+    $htmlContentLen = 0;
+    while (strlen($line = fgets($sock)) > 2) {
+        $hdr = "X-Html-Content-Length:";
 
-    // Output header
-    echo substr($template, 0, $template_split_idx);
+        if (strncmp($line, $hdr, strlen($hdr)) === 0) {
+            $htmlContentLen = intval(substr($line, strlen($hdr)));
+        }
+    }
 
-    // Read body
-    fpassthru($sock);
-
-    // Output footer
-    echo substr($template, $template_split_idx);
+    // Output the template intermittend with output data
+    echo substr($template, 0, $template_content_start);
+    echo stream_get_contents($sock, $htmlContentLen);
+    echo substr($template, $template_content_start, $template_script_start - $template_content_start);
+    echo '<script type="text/javascript">window.__SSR_DATA__=';
+    echo stream_get_contents($sock);
+    echo '</script>';
+    echo substr($template, $template_script_start);
 ?>

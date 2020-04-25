@@ -22,7 +22,11 @@ else {
   startControlServer(frontendServer);
 }
 
-export let STATUSCODE = 200;
+export const CurrentRequestInfo = {
+  statusCode: 200,
+  session_id: "",
+  cachedResponses: {}
+};
 
 function startFrontendServer(): Server {
   const app = express();
@@ -30,7 +34,9 @@ function startFrontendServer(): Server {
   const serverRenderer = (req, res, next) => {
     // Reset the default status code, not found and error pages
     // will update this variable accordingly
-    STATUSCODE = 200;
+    CurrentRequestInfo.statusCode = 200;
+    CurrentRequestInfo.session_id = req.headers['x-php-sid']
+    CurrentRequestInfo.cachedResponses = {};
 
     const rendered = ReactDOMServer.renderToString(
       <StaticRouter location={req.originalUrl}>
@@ -38,8 +44,11 @@ function startFrontendServer(): Server {
       </StaticRouter>
     );
   
-    res.status(STATUSCODE);
-    return res.send(rendered);
+    const cachedResponses = JSON.stringify(CurrentRequestInfo.cachedResponses);
+
+    res.setHeader("X-Html-Content-Length", rendered.length);
+    res.status(CurrentRequestInfo.statusCode);
+    return res.send(rendered + cachedResponses);
   }
   
   app.use(/^.*/i, serverRenderer);

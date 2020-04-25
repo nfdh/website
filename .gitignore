@@ -1,3 +1,4 @@
 /frontend/dist-client/
 /frontend/dist-ssr/
 /frontend/node_modules/
+/backend/conf/Settings.local.php
