@@ -23,7 +23,7 @@ function checkCache(hash: string) {
 let fetchRelay;
 if ("fetch" in window) {
     fetchRelay = async function(params: RequestParameters, variables: any, cacheConfig: CacheConfig, uploadables?: UploadableMap | null) {
-        const cached = checkCache[params.name];
+        const cached = checkCache(params.name);
         if(cached) {
             return cached;
         }
@@ -61,7 +61,7 @@ if ("fetch" in window) {
 else {
     fetchRelay = function(params: RequestParameters, variables: any, cacheConfig: CacheConfig, uploadables?: UploadableMap | null): Promise<any> {
         return new Promise(function (resolve, reject) {
-            const cached = checkCache[params.name];
+            const cached = checkCache(params.name);
             if(cached) {
                 resolve(cached);
                 return;
