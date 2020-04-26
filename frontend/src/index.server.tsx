@@ -9,9 +9,12 @@ import * as React from "react"
 import * as ReactDOMServer from "react-dom/server"
 import { StaticRouter } from 'react-router-dom/server';
 import { spawn } from "child_process";
+import { RelayEnvironmentProvider } from "react-relay/hooks";
+import { Environment, RequestParameters, CacheConfig, UploadableMap, Network, Store, RecordSource } from "relay-runtime";
 
 import { App } from "./App";
 
+//const socket_path_base = "/home/jan/nfdh_root/tmp";
 const socket_path_base = "/data/sites/web/drentsheideschaapnl/tmp";
 
 if(process.argv.length > 2) {
@@ -23,28 +26,43 @@ else {
 }
 
 export const CurrentRequestInfo = {
-  statusCode: 200,
-  session_id: "",
-  cachedResponses: {}
+  statusCode: 200
 };
 
 function startFrontendServer(): Server {
   const app = express();
 
-  const serverRenderer = (req, res, next) => {
+  const serverRenderer = async (req, res, next) => {
     // Reset the default status code, not found and error pages
     // will update this variable accordingly
     CurrentRequestInfo.statusCode = 200;
-    CurrentRequestInfo.session_id = req.headers['x-php-sid']
-    CurrentRequestInfo.cachedResponses = {};
 
-    const rendered = ReactDOMServer.renderToString(
-      <StaticRouter location={req.originalUrl}>
-          <App />
-      </StaticRouter>
-    );
-  
-    const cachedResponses = JSON.stringify(CurrentRequestInfo.cachedResponses);
+    const fetchContext: FetchContext = {
+      promises: [],
+      sessionId: req.headers['x-php-sid'],
+      cachedResponses: {}
+    };
+
+    const source = new RecordSource();
+    const store = new Store(source);
+    const network = Network.create(fetchRelay.bind(fetchContext)); 
+    
+    const env = new Environment({
+        network,
+        store,
+    });    
+
+    let rendered = ReactDOMServer.renderToString(render_element(req.originalUrl, env));
+
+    // Recursively wait for any pending requests
+    while (fetchContext.promises.length > 0) {
+      await Promise.all(fetchContext.promises);
+      fetchContext.promises = [];
+
+      rendered = ReactDOMServer.renderToString(render_element(req.originalUrl, env));
+    }
+
+    const cachedResponses = JSON.stringify(fetchContext.cachedResponses);
 
     res.setHeader("X-Html-Content-Length", rendered.length);
     res.status(CurrentRequestInfo.statusCode);
@@ -62,6 +80,74 @@ function startFrontendServer(): Server {
     console.log(`SSR running on '${socket_path}'`)
   });
 }
+
+function render_element(url: string, env: Environment) {
+  return <RelayEnvironmentProvider environment={env}>
+      <StaticRouter location={url}>
+        <App />
+      </StaticRouter>
+  </RelayEnvironmentProvider>
+}
+
+interface FetchContext {
+  promises: Promise<any>[],
+  sessionId: string,
+  cachedResponses: { [key: string]: any }
+}
+
+function fetchRelay(this: FetchContext, params: RequestParameters, variables: any, cacheConfig: CacheConfig, uploadables?: UploadableMap | null): Promise<any> {
+  const fetchContext = this;
+
+  const promise = new Promise(function(resolve, reject) {
+      const http = require('http');
+
+      const body = JSON.stringify({
+          query: params.text,
+          variables
+      });
+
+      const options = {
+          hostname: 'localhost',
+          path: '/query',
+          method: 'POST',
+          headers: {
+              "Content-Type": "application/json",
+              "Content-Length": body.length,
+              "Cookie": "PHPSESSID=" + fetchContext.sessionId
+          }
+      };
+
+      const req = http.request(options, res => {
+          if (res.statusCode !== 200) {
+              reject("Unexpected status code " + res.statusCode);
+          }
+          else {
+              const chunks = [];
+              res.on('data', chunk => {
+                  chunks.push(chunk);
+              });
+
+              res.on("end", function() {
+                  const result_text = chunks.join();
+                  const result = JSON.parse(result_text);
+                  
+                  fetchContext.cachedResponses[params.name] = result;
+                  
+                  resolve(result);
+              });
+          }
+      });
+
+      req.on('error', error => {
+          reject(error);
+      });
+
+      req.write(body);
+      req.end();
+  });
+  fetchContext.promises.push(promise);
+  return promise;
+};
 
 function startControlServer(frontendServer: Server) {
   const server = net.createServer(function(client: net.Socket) {

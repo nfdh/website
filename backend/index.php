@@ -1,8 +1,10 @@
 <?php
     session_start();
+    session_write_close();
 
+    //$base_path = "/home/jan/nfdh_root";
     $base_path = "/data/sites/web/drentsheideschaapnl";
-
+    
     if(isset($_COOKIE['errors'])) {
         ini_set("display_errors", "1");
         error_reporting(E_ALL);

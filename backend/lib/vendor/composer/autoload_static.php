@@ -24,7 +24,7 @@ class ComposerStaticInit236f4033d99ed3f7920a71d24bb4b5f5
     public static $prefixDirsPsr4 = array (
         'Lib\\' => 
         array (
-            0 => '/',
+            0 => __DIR__ . '/../..' . '/',
         ),
         'GraphQL\\' => 
         array (

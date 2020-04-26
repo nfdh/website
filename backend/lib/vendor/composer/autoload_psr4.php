@@ -6,7 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Lib\\' => array('/'),
+    'Lib\\' => array($baseDir . '/'),
     'GraphQL\\' => array($vendorDir . '/webonyx/graphql-php/src'),
     'Conf\\' => array($baseDir . '/../conf'),
 );
