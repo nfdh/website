@@ -62,11 +62,12 @@ function startFrontendServer(): Server {
       rendered = ReactDOMServer.renderToString(render_element(req.originalUrl, env));
     }
 
-    const cachedResponses = JSON.stringify(fetchContext.cachedResponses);
-
-    res.setHeader("X-Html-Content-Length", rendered.length);
     res.status(CurrentRequestInfo.statusCode);
-    return res.send(rendered + cachedResponses);
+    res.write(rendered);
+
+    const cachedResponses = JSON.stringify(fetchContext.cachedResponses);
+    res.write(cachedResponses);
+    res.end();
   }
   
   app.use(/^.*/i, serverRenderer);

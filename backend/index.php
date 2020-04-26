@@ -4,7 +4,7 @@
 
     //$base_path = "/home/jan/nfdh_root";
     $base_path = "/data/sites/web/drentsheideschaapnl";
-    
+
     if(isset($_COOKIE['errors'])) {
         ini_set("display_errors", "1");
         error_reporting(E_ALL);
@@ -62,21 +62,22 @@
 
     header($status, true, intval($status_parts[1]));
 
-    $htmlContentLen = 0;
-    while (strlen($line = fgets($sock)) > 2) {
-        $hdr = "X-Html-Content-Length:";
-
-        if (strncmp($line, $hdr, strlen($hdr)) === 0) {
-            $htmlContentLen = intval(substr($line, strlen($hdr)));
-        }
-    }
+    while (strlen($line = fgets($sock)) > 2) { }
 
     // Output the template intermittend with output data
     echo substr($template, 0, $template_content_start);
-    echo stream_get_contents($sock, $htmlContentLen);
+    
+    $rendered_len = intval(fgets($sock), 16);
+    echo stream_get_contents($sock, $rendered_len);
+    fgets($sock);
+    
     echo substr($template, $template_content_start, $template_script_start - $template_content_start);
     echo '<script type="text/javascript">window.__SSR_DATA__=';
-    echo stream_get_contents($sock);
+    
+    $response_cache_len = intval(fgets($sock), 16);
+    echo stream_get_contents($sock, $response_cache_len);
+    fgets($sock);
+
     echo '</script>';
     echo substr($template, $template_script_start);
 ?>
