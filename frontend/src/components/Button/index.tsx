@@ -3,9 +3,16 @@ import classnames from "classnames";
 
 import * as styles from "./index.css";
 
-export type ButtonVariant = "primary" | "default";
+export enum ButtonVariant {
+    Default,
+    Primary
+}
 
-export type ButtonProps = NormalButtonProps | AnchorButtonProps;
+export type ButtonProps = BaseButtonProps & (NormalButtonProps | AnchorButtonProps);
+
+export interface BaseButtonProps {
+    danger?: boolean
+}
 
 export interface NormalButtonProps
     extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -20,17 +27,21 @@ export interface AnchorButtonProps
     href: string;
 }
 
+function doNotFocusOnMouseDown(evt: React.MouseEvent) {
+    evt.preventDefault();
+}
+
 export function Button(props: ButtonProps) {
-    const { children, className, variant, ...otherProps } = props;
+    const { children, className, variant, danger, ...otherProps } = props;
 
     let variantStyle: string;
-    switch(props.variant) {
+    switch(variant) {
         case undefined:
-        case "default":
+        case ButtonVariant.Default:
             variantStyle = styles.defaultStyle;
             break;
 
-        case "primary":
+        case ButtonVariant.Primary:
             variantStyle = styles.primaryStyle;
             break;
 
@@ -38,11 +49,13 @@ export function Button(props: ButtonProps) {
             throw new Error(`Unkonwn variant '${props.variant}' specified.`);
     }
 
+    const elementClass = classnames(className, styles.button, variantStyle, danger && styles.danger);
+
     if("href" in otherProps) {
-        return <a className={classnames(className, styles.button, variantStyle)} {...otherProps}>{children}</a>;
+        return <a className={elementClass} onMouseDown={doNotFocusOnMouseDown} {...otherProps}>{children}</a>;
     }
     else {
-        return <button className={classnames(className, styles.button, variantStyle)} {...otherProps}>{children}</button>;
+        return <button className={elementClass} onMouseDown={doNotFocusOnMouseDown} {...otherProps}>{children}</button>;
     }
 }
 

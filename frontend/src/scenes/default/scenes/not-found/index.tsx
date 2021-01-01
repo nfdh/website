@@ -11,7 +11,7 @@ export function NotFoundScene() {
     const loc = useLocation();
 
     return <div className={styles.center}>
-        <h1>Pagina niet gevonden</h1>
+        <h1>404. Pagina niet gevonden</h1>
         De opgegeven pagina '{loc.pathname}' kan niet worden gevonden.
     </div>;
 }

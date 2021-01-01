@@ -1,0 +1,59 @@
+- Framework
+  - Dialog component
+- Content
+  - Hoofdpagina
+    - Agenda uit DB
+    - Vraag & aanbod uit DB
+    - Foto's uit DB
+    - Intro uit DB
+    - Artikelen uit DB
+    - Plaatsen van artikelen (Mogelijk gedeeld met leden artikelen te onderscheiden met alleeen een vinkje)
+  - Freeform pagina's
+    - Menu uit DB
+    - Pagina zelf uit DB
+    - Toevoegen/verwijderen van pagina's
+    - Bewerken van pagina's
+  - Contactgegevens
+    - Gegevens ophalen uit DB
+    - Bewerken
+  - Agenda
+    - Ophalen uit DB
+    - Evenementen toevoegen/verwijderen
+    - Evenementen linken aan foto albums
+  - Vraag & Aanbod
+    - Eigen pagina
+    - Ophalen uit DB
+    - Advertenties plaatsen (als lid)
+    - Advertenties bewerken/verwijderen
+    - Advertentie markeren als uitverkocht
+  - Foto's
+    - Eigen pagina
+    - Bestaat uit albums, waar elk album bestaat uit een of meerdere foto's
+    - Toevoegen/bewerken/verwijderen van albums
+- Ledenportaal
+  - Login
+    - Wachtwoord vergeten
+  - Stamboek beheer
+    - Inzien stamboek schapen (met complexe filters)
+    - Wordt opgehaald uit bestaand systeem
+  - Formulieren
+    - Dekverklaring
+      - Versturen
+      - Inzien
+      - Corrigeren
+    - Inschrijving keuring
+      - Versturen
+      - Inzien
+      - Corrigeren
+  - Admin
+    - Users
+      - Add user
+      - Delete user 
+
+MVP:
+- Admin beheer users
+- Formulieren
+- Inleiding website
+- Artikelen
+- Freeform pagina's
+- Wachtwoord vergeten

@@ -1,20 +1,4 @@
-html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-}
-
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #333;
-}
-
-:global(#root) {
-    height: 100%;
-}
-
 .header {
-    border-bottom: 1px solid darkgray;
     background: url("./schapen.jpeg");
     background-size: cover;
     height: 720px;
@@ -35,11 +19,13 @@ body {
 .title > h1 {
     font-size: 60px;
     margin: 0;
+    font-weight: bold;
 }
 
 .title > h2 {
     font-size: 30px;
     margin-top: 10px;
+    font-weight: bold;
 }
 
 .headerMenu {
@@ -53,7 +39,6 @@ body {
 }
 
 .headerMenuSegment {
-    overflow: hidden;
     background: rgba(30, 30, 30, 0.8);
     text-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
     border-radius: 5px;
@@ -71,7 +56,7 @@ body {
     padding: 10px 20px;
     color: white;
     text-decoration: none;
-    font-weight: bold;
+    font-weight: 600;
     font-size: 20px;
     border-right: 1px solid rgba(0, 0, 0, 0.2);
 }
@@ -90,6 +75,16 @@ body {
 
 .headerMenuLink:last-child {
     border-right: none;
+}
+
+.headerFade {
+    height: 20px;
+    background: linear-gradient(rgba(100, 100, 100, 0), rgba(100, 100, 100, 0.6));
+    border-bottom: 1px solid rgba(100, 100, 100, 1);
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
 
 .footer {

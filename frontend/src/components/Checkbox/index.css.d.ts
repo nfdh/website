@@ -4,3 +4,5 @@ export const checkbox: string;
 export const input: string;
 export const checkboxInner: string;
 export const check: string;
+export const checkRipple: string;
+export const intermediate: string;

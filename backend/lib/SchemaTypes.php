@@ -11,6 +11,9 @@ use GraphQL\Type\Schema;
 class SchemaTypes {
     public static $userRoleType;
     public static $userType;
+    public static $pageInfoType;
+    public static $usersConnectionType;
+    public static $usersEdgeType;
     public static $viewerType;
     public static $queryType;
     public static $successLoginResult;
@@ -23,7 +26,7 @@ class SchemaTypes {
         SchemaTypes::$userRoleType = new EnumType([
             'name' => 'UserRole',
             'values' => [
-                'Member' => [
+                'MEMBER' => [
                     'value' => 0
                 ]
             ]
@@ -34,6 +37,7 @@ class SchemaTypes {
             'fields' => [
                 'id' => Type::string(),
                 'name' => Type::string(),
+                'email' => Type::string(),
                 'role' => [
                     "type" => SchemaTypes::$userRoleType
                 ]
@@ -52,6 +56,32 @@ class SchemaTypes {
             ],
         ]);
 
+        SchemaTypes::$pageInfoType = new ObjectType([
+            'name' => 'PageInfo',
+            'fields' => [
+                'hasPreviousPage' => Type::nonNull(Type::boolean()),
+                'hasNextPage' => Type::nonNull(Type::boolean()),
+                'startCursor' => Type::string(),
+                'endCursor' => Type::string()
+            ]
+        ]);
+
+        SchemaTypes::$usersEdgeType = new ObjectType([
+            'name' => 'UsersEdge',
+            'fields' => [
+                'node' => SchemaTypes::$userType,
+                'cursor' => Type::nonNull(Type::string())
+            ]
+        ]);
+
+        SchemaTypes::$usersConnectionType = new ObjectType([
+            'name' => 'UsersConnection',
+            'fields' => [
+                'pageInfo' => SchemaTypes::$pageInfoType,
+                'edges' => Type::listOf(SchemaTypes::$usersEdgeType)
+            ]
+        ]);
+
         SchemaTypes::$queryType = new ObjectType([
             'name' => 'Query',
             'fields' => [
@@ -61,14 +91,45 @@ class SchemaTypes {
                         return [];
                     }
                 ],
+                'users' => [
+                    'type' => SchemaTypes::$usersConnectionType,
+                    'args' => [
+                        'searchTerm' => Type::string(),
+                        'first' => Type::nonNull(Type::int()),
+                        'after' => Type::string()
+                    ],
+                    'resolve' => function ($root, $args) {
+                        $dbUsers = $root['dataContext']->get_users($args['searchTerm'], $args['first'], $args['after'] ?? null);
+
+                        $numTotal = $dbUsers['totalCount'];
+                        $numResults = sizeof($dbUsers['list']);
+
+                        return [
+                            "totalCount" => $numTotal,
+                            "pageInfo" => [
+                                'startCursor' => $dbUsers['first'],
+                                'endCursor' => $dbUsers['last'],
+                                'hasNextPage' => $numResults > 0 && $dbUsers['last'] != $dbUsers['list'][$numResults - 1]['id'],
+                                'hasPreviousPage' => $numResults > 0 && $dbUsers['first'] != $dbUsers['list'][0]['id'],
+                            ],
+                            "edges" => array_map(function($dbUser) {
+                                return [
+                                    "node" => $dbUser,
+                                    "cursor" => $dbUser['id']
+                                ];
+                            }, $dbUsers['list'])
+                        ];
+                    }
+                ]
             ],
         ]);
     
         SchemaTypes::$successLoginResult = new ObjectType([
             'name' => 'SuccessLoginResult',
             'fields' => [
-                'id' => Type::nonNull(Type::string()),
-                'name' => Type::nonNull(Type::string())
+                'user' => [
+                    "type" => SchemaTypes::$userType
+                ]
             ]
         ]);
     
@@ -99,18 +160,27 @@ class SchemaTypes {
                             SchemaTypes::$failedLoginResult
                         ],
                         'resolveType' => function($value) {
-                            if (array_key_exists('id', $value)) {
+                            if (array_key_exists('user', $value)) {
                                 return SchemaTypes::$successLoginResult;
                             }
                             return SchemaTypes::$failedLoginResult;
                         }
                     ]),
                     'args' => [
-                        'username' => Type::nonNull(Type::string()),
+                        'email' => Type::nonNull(Type::string()),
                         'password' => Type::nonNull(Type::string())
                     ],
                     'resolve' => function($root, $args) {
-                        $result = $root['dataContext']->login($args['username'], $args['password']);
+                        $_SESSION['user'] = [
+                            "id" => 1,
+                            "email" => "jan@emmens.nl",
+                            "role" => 0
+                        ];
+                        return [
+                            "user" => $_SESSION['user']
+                        ];
+                     
+                        $result = $root['dataContext']->login($args['email'], $args['password']);
                         if(!$result) {
                             return [
                                 "reason" => 0
@@ -118,17 +188,20 @@ class SchemaTypes {
                         }
 
                         $_SESSION['user'] = [
-                            "id" => $result["user_id"],
-                            "name" => $result["username"],
+                            "id" => $result["id"],
+                            "email" => $result["email"],
                             "role" => $result["role"]
                         ];
-                        return $_SESSION['user'];
+                        return [
+                            "user" => $_SESSION['user']
+                        ];
                     }
                 ],
                 'logout' => [
                     'type' => Type::nonNull(Type::boolean()),
                     'resolve' => function($root, $args) {
                         $_SESSION['user'] = null;
+                        return true;
                     }
                 ]
             ]

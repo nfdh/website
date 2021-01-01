@@ -100,7 +100,7 @@ function fetchRelay(this: FetchContext, params: RequestParameters, variables: an
   const fetchContext = this;
 
   const promise = new Promise(function(resolve, reject) {
-      const http = require('https');
+      const http = require('http');
 
       const body = JSON.stringify({
           query: params.text,
@@ -108,7 +108,9 @@ function fetchRelay(this: FetchContext, params: RequestParameters, variables: an
       });
 
       const options = {
-          hostname: 'nieuw.drentsheideschaap.nl',
+          //hostname: 'nieuw.drentsheideschaap.nl',
+          hostname: 'localhost',
+	  port: 8080,
           path: '/query',
           method: 'POST',
           headers: {

@@ -1,19 +1,54 @@
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
 
 import { TextInput } from "../../../../components/TextInput";
 import { Checkbox } from "../../../../components/Checkbox";
-import { Button, ButtonGroup } from "../../../../components/Button";
+import { Button, ButtonGroup, ButtonVariant } from "../../../../components/Button";
+
+import { login } from "../../../../services/auth";
 
 import * as styles from "./index.css";
-
-import YoutubeIcon from "./youtube_icon.png";
-import PdfIcon from "./pdf_icon.png";
+import { useRelayEnvironment } from "react-relay/hooks";
 
 interface LoginSceneProps {
 
 }
 
 export function LoginScene(props: LoginSceneProps) {
+    const environment = useRelayEnvironment();
+    const usernameInput = React.useRef<HTMLInputElement>(null);
+    const passwordInput = React.useRef<HTMLInputElement>(null);
+    const navigate = useNavigate();
+
+    const [isBusy, setIsBusy] = React.useState<boolean>(false);
+    const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
+
+    const onLoginSubmit = React.useCallback(function(evt: React.FormEvent<HTMLFormElement>) {  
+        evt.preventDefault();
+
+        if (isBusy) {
+            return;
+        }
+
+        setErrorMessage(null);
+        setIsBusy(true);
+
+        login(environment, usernameInput.current.value, passwordInput.current.value)
+            .then(function(result) {
+                if (result.success) {
+                    navigate("/ledenportaal");
+                }
+                else {
+                    setIsBusy(false);
+                    setErrorMessage("De combinatie van e-mailadres en wachtwoord is onjuist");
+                }
+            })
+            .catch(function() {
+                setIsBusy(false);
+                setErrorMessage("Er is een fout opgetreden tijdens het inloggen, probeer het later opnieuw.");
+            });
+    }, [isBusy, navigate]);
+
     return <div className={styles.center}>
         <h1>Inloggen</h1>
 
@@ -29,11 +64,12 @@ export function LoginScene(props: LoginSceneProps) {
                     <li>Advertenties plaatsen voor koop en verkoop van schapen, wol of vlees</li>
                     <li>Inzien fokrammenlijst</li>
                 </ul>
-                <form className={styles.loginForm}>
-                    <TextInput className={styles.usernameInput} type="text" placeholder="Gebruikersnaam" />
-                    <TextInput className={styles.passwordInput} type="password" placeholder="Wachtwoord" />
-                    <Checkbox labelClassName={styles.stayLoggedInLabel} label="Ingelogd blijven" />
-                    <Button variant="primary" className={styles.loginButton} type="submit">Inloggen</Button>
+                {errorMessage && <div className={styles.errorMessage}>{errorMessage}</div>}
+                <form className={styles.loginForm} onSubmit={onLoginSubmit}>
+                    <TextInput icon="email" className={styles.usernameInput} ref={usernameInput} type="text" placeholder="E-mailadres" readOnly={isBusy} />
+                    <TextInput icon="lock" className={styles.passwordInput} ref={passwordInput} type="password" placeholder="Wachtwoord" readOnly={isBusy} />
+                    <Checkbox labelClassName={styles.stayLoggedInLabel} label="Ingelogd blijven" readOnly={isBusy} />
+                    <Button variant={ButtonVariant.Primary} className={styles.loginButton} type="submit" disabled={isBusy}>Inloggen</Button>
                 </form>
             </div>
             <div className={styles.falcooLoginContent}>
@@ -49,7 +85,7 @@ export function LoginScene(props: LoginSceneProps) {
                 </ul>
                 <br />
                 <ButtonGroup className={styles.falcooButtons}>
-                    <Button href="https://vnl.falcooonline.com/" target="_blank" variant="primary" className={styles.falcooButton}>Inloggen</Button>
+                    <Button href="https://vnl.falcooonline.com/" target="_blank" variant={ButtonVariant.Primary} className={styles.falcooButton}>Inloggen</Button>
                     <Button href="https://vnl.falcooonline.com/handleidingen/HetDrentseHeideschaap.pdf" target="_blank" className={styles.falcooButton}>Handleiding</Button>
                     <Button href="https://www.youtube.com/watch?v=_H1BMioZ85Y" target="_blank" className={styles.falcooButton}>Instructiefilmpje</Button> 
                 </ButtonGroup>

@@ -1,6 +1,5 @@
 /* tslint:disable */
 /* eslint-disable */
-/* @relayHash e53bfc1392482f057a630739fe57c8c4 */
 
 import { ConcreteRequest } from "relay-runtime";
 export type LogoutMutationVariables = {};
@@ -23,35 +22,35 @@ mutation LogoutMutation {
 const node: ConcreteRequest = (function(){
 var v0 = [
   {
-    "kind": "ScalarField",
     "alias": null,
-    "name": "logout",
     "args": null,
+    "kind": "ScalarField",
+    "name": "logout",
     "storageKey": null
   }
 ];
 return {
-  "kind": "Request",
   "fragment": {
-    "kind": "Fragment",
-    "name": "LogoutMutation",
-    "type": "Mutation",
-    "metadata": null,
     "argumentDefinitions": [],
-    "selections": (v0/*: any*/)
+    "kind": "Fragment",
+    "metadata": null,
+    "name": "LogoutMutation",
+    "selections": (v0/*: any*/),
+    "type": "Mutation"
   },
+  "kind": "Request",
   "operation": {
+    "argumentDefinitions": [],
     "kind": "Operation",
     "name": "LogoutMutation",
-    "argumentDefinitions": [],
     "selections": (v0/*: any*/)
   },
   "params": {
-    "operationKind": "mutation",
-    "name": "LogoutMutation",
     "id": null,
-    "text": "mutation LogoutMutation {\n  logout\n}\n",
-    "metadata": {}
+    "metadata": {},
+    "name": "LogoutMutation",
+    "operationKind": "mutation",
+    "text": "mutation LogoutMutation {\n  logout\n}\n"
   }
 };
 })();

@@ -2,6 +2,24 @@
 
 type Query {
     viewer: Viewer!
+    users(searchTerm: String, first: Int!, after: String): UsersConnection
+}
+
+type UsersConnection {
+    pageInfo: PageInfo
+    edges: [UsersEdge]
+}
+
+type PageInfo {
+    hasPreviousPage: Boolean!
+    hasNextPage: Boolean!
+    startCursor: String!
+    endCursor: String!
+}
+
+type UsersEdge {
+    node: User
+    cursor: String!
 }
 
 type Viewer {
@@ -15,16 +33,26 @@ enum UserRole {
 type User {
     id: ID!
     name: String!
+    email: String!
     role: UserRole!
 }
 
-type LoginResult {
-    token: String
-    user: User
+type SuccessLoginResult {
+    user: User!
 }
 
+enum FailedLoginReason {
+    INVALID_CREDENTIALS
+}
+
+type FailedLoginResult {
+    reason: FailedLoginReason
+}
+
+union LoginResult = SuccessLoginResult | FailedLoginResult
+
 type Mutation {
-    login(username: String, password: String): LoginResult
+    login(email: String, password: String): LoginResult
     logout: Boolean
 }
 

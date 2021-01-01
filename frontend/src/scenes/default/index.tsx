@@ -1,34 +1,41 @@
 import * as React from "react";
-import { Route, Routes, useLocation } from "react-router";
+import { Route, Routes } from "react-router";
 import { NavLink, Link } from "react-router-dom";
+import { useRelayEnvironment } from "react-relay/hooks";
 
-import { useUserInfo } from "../../services/auth";
+import { useUserInfo, logout } from "../../services/auth";
 
 import { HomeScene } from "./scenes/home";
 import { ContactScene } from "./scenes/contact";
 import { DisclaimerScene } from "./scenes/disclaimer";
 import { LoginScene } from "./scenes/login";
-import { LogoutScene } from "./scenes/logout";
 import { AgendaScene } from "./scenes/agenda";
 import { NotFoundScene } from "./scenes/not-found";
 
 import * as styles from "./index.css";
+import { MemberScene } from "./scenes/member";
 
 export function DefaultScene() {
     const authenticatedUser = useUserInfo();
-    const currentLocation = useLocation();
+    const environment = useRelayEnvironment();
+
+    const onLogoutClick = React.useCallback(function(evt: React.SyntheticEvent) {
+        logout(environment);
+
+        evt.preventDefault();
+    }, []);
 
     let memberRoutes;
     if(authenticatedUser === null) {
         memberRoutes = <>
-            <NavLink className={styles.headerMenuLink} activeClassName={styles.active} to="/lid-worden">Lid worden</NavLink>
-            <NavLink className={styles.headerMenuLink} activeClassName={styles.active} to="/login">Inloggen</NavLink>
+            <NavLink className={styles.headerMenuLink} activeClassName={styles.active} to="lid-worden">Lid worden</NavLink>
+            <NavLink className={styles.headerMenuLink} activeClassName={styles.active} to="login">Inloggen</NavLink>
         </>;
     }
     else {
         memberRoutes = <>
-            <NavLink className={styles.headerMenuLink} activeClassName={styles.active} to="/ledenportaal">Ledenportaal</NavLink>
-            <NavLink className={styles.headerMenuLink} activeClassName={styles.active} to={{ pathname: "/logout", search: "?returnPath=" + encodeURIComponent(currentLocation.pathname) }}>Uitloggen</NavLink>
+            <NavLink className={styles.headerMenuLink} activeClassName={styles.active} to="ledenportaal">Ledenportaal</NavLink>
+            <a className={styles.headerMenuLink} onClick={onLogoutClick} href="#">Uitloggen</a>
         </>;
     }
 
@@ -44,26 +51,27 @@ export function DefaultScene() {
 
             <div className={styles.headerMenu}>
                 <div className={styles.headerMenuSegment}>
-                    <NavLink className={styles.headerMenuLink} activeClassName={styles.active} to="/">Home</NavLink>
-                    <NavLink className={styles.headerMenuLink} activeClassName={styles.active} to="/vereniging">Vereniging</NavLink>
-                    <NavLink className={styles.headerMenuLink} activeClassName={styles.active} to="/rassen">Rassen</NavLink>
-                    <NavLink className={styles.headerMenuLink} activeClassName={styles.active} to="/contact">Contact</NavLink>
+                    <NavLink className={styles.headerMenuLink} activeClassName={styles.active} to="/" end>Home</NavLink>
+                    <NavLink className={styles.headerMenuLink} activeClassName={styles.active} to="vereniging">Vereniging</NavLink>
+                    <NavLink className={styles.headerMenuLink} activeClassName={styles.active} to="rassen">Rassen</NavLink>
+                    <NavLink className={styles.headerMenuLink} activeClassName={styles.active} to="contact">Contact</NavLink>
                 </div>
                 <div className={styles.headerMenuSegment}>
                     {memberRoutes}
                 </div>
             </div>
+
+            <div className={styles.headerFade}></div>
         </div>
 
         <Routes>
             <Route path="" element={<HomeScene />} />
             <Route path="login/*" element={<LoginScene />} />
-            <Route path="logout/*" element={<LogoutScene />} />
             <Route path="disclaimer/*" element={<DisclaimerScene />} />
             <Route path="contact/*" element={<ContactScene />} />
-
             <Route path="agenda/*" element={<AgendaScene />} />
-
+            <Route path="ledenportaal/*" element={<MemberScene />} />
+            
             <Route path="*" element={<NotFoundScene />} />
         </Routes>
 
@@ -95,7 +103,7 @@ export function DefaultScene() {
                 <div className={styles.footerColumn}>
                     <h4>Legal</h4>
                     <p>
-                        <Link to="/disclaimer">Disclaimer</Link><br />
+                        <Link to="disclaimer">Disclaimer</Link><br />
                         <a href="">Verenigingstatuut</a>
                     </p>
                     <br />

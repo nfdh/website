@@ -4,29 +4,39 @@ import { PayloadError } from "relay-runtime";
 
 export function commitLogin(
     environment: Environment,
-    username: string,
+    email: string,
     password: string,
     onError: (error: Error) => void,
     onCompleted: (response: LoginMutation["response"], errors: ReadonlyArray<PayloadError> | null | undefined) => void,
 ) {
     return commitMutation<LoginMutation>(environment, {
         mutation: graphql`
-            mutation LoginMutation($username: String!, $password: String!) {
-                login(username: $username, password: $password) {
-                    token
-                    user {
-                        id
-                        name
-                        role
+            mutation LoginMutation($email: String!, $password: String!) {
+                login(email: $email, password: $password) {
+                    ...on SuccessLoginResult {
+                        user {
+                            email
+                            role
+                        }
+                    }
+                    ...on FailedLoginResult {
+                        reason
                     }
                 }
             }
         `,
         variables: {
-            username: username,
+            email: email,
             password: password
         },
         onError: onError,
-        onCompleted: onCompleted
+        onCompleted: onCompleted,
+        updater: function(store, data) {
+            if (data.login.user) {
+                const viewer = store.getRoot().getLinkedRecord("viewer");
+                const user = store.getRootField("login").getLinkedRecord("user");
+                viewer.setLinkedRecord(user, "user");
+            }
+        }
     });
 }

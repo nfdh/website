@@ -1,21 +1,20 @@
 /* tslint:disable */
 /* eslint-disable */
-/* @relayHash caee19f971c32f1bb7ffce54bf771a83 */
 
 import { ConcreteRequest } from "relay-runtime";
+export type FailedLoginReason = "INVALID_CREDENTIALS" | "%future added value";
 export type UserRole = "MEMBER" | "%future added value";
 export type LoginMutationVariables = {
-    username: string;
+    email: string;
     password: string;
 };
 export type LoginMutationResponse = {
     readonly login: {
-        readonly token: string | null;
-        readonly user: {
-            readonly id: string;
-            readonly name: string;
+        readonly user?: {
+            readonly email: string;
             readonly role: UserRole;
-        } | null;
+        };
+        readonly reason?: FailedLoginReason | null;
     } | null;
 };
 export type LoginMutation = {
@@ -27,15 +26,20 @@ export type LoginMutation = {
 
 /*
 mutation LoginMutation(
-  $username: String!
+  $email: String!
   $password: String!
 ) {
-  login(username: $username, password: $password) {
-    token
-    user {
-      id
-      name
-      role
+  login(email: $email, password: $password) {
+    __typename
+    ... on SuccessLoginResult {
+      user {
+        email
+        role
+        id
+      }
+    }
+    ... on FailedLoginResult {
+      reason
     }
   }
 }
@@ -44,105 +48,159 @@ mutation LoginMutation(
 const node: ConcreteRequest = (function(){
 var v0 = [
   {
+    "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "username",
-    "type": "String!",
-    "defaultValue": null
+    "name": "email",
+    "type": "String!"
   },
   {
+    "defaultValue": null,
     "kind": "LocalArgument",
     "name": "password",
-    "type": "String!",
-    "defaultValue": null
+    "type": "String!"
   }
 ],
 v1 = [
   {
-    "kind": "LinkedField",
-    "alias": null,
-    "name": "login",
-    "storageKey": null,
-    "args": [
-      {
-        "kind": "Variable",
-        "name": "password",
-        "variableName": "password"
-      },
-      {
-        "kind": "Variable",
-        "name": "username",
-        "variableName": "username"
-      }
-    ],
-    "concreteType": "LoginResult",
-    "plural": false,
+    "kind": "Variable",
+    "name": "email",
+    "variableName": "email"
+  },
+  {
+    "kind": "Variable",
+    "name": "password",
+    "variableName": "password"
+  }
+],
+v2 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "email",
+  "storageKey": null
+},
+v3 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "role",
+  "storageKey": null
+},
+v4 = {
+  "kind": "InlineFragment",
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "reason",
+      "storageKey": null
+    }
+  ],
+  "type": "FailedLoginResult"
+};
+return {
+  "fragment": {
+    "argumentDefinitions": (v0/*: any*/),
+    "kind": "Fragment",
+    "metadata": null,
+    "name": "LoginMutation",
     "selections": [
       {
-        "kind": "ScalarField",
         "alias": null,
-        "name": "token",
-        "args": null,
-        "storageKey": null
-      },
-      {
+        "args": (v1/*: any*/),
+        "concreteType": null,
         "kind": "LinkedField",
-        "alias": null,
-        "name": "user",
-        "storageKey": null,
-        "args": null,
-        "concreteType": "User",
+        "name": "login",
         "plural": false,
         "selections": [
           {
-            "kind": "ScalarField",
-            "alias": null,
-            "name": "id",
-            "args": null,
-            "storageKey": null
+            "kind": "InlineFragment",
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "User",
+                "kind": "LinkedField",
+                "name": "user",
+                "plural": false,
+                "selections": [
+                  (v2/*: any*/),
+                  (v3/*: any*/)
+                ],
+                "storageKey": null
+              }
+            ],
+            "type": "SuccessLoginResult"
           },
-          {
-            "kind": "ScalarField",
-            "alias": null,
-            "name": "name",
-            "args": null,
-            "storageKey": null
-          },
-          {
-            "kind": "ScalarField",
-            "alias": null,
-            "name": "role",
-            "args": null,
-            "storageKey": null
-          }
-        ]
+          (v4/*: any*/)
+        ],
+        "storageKey": null
       }
-    ]
-  }
-];
-return {
-  "kind": "Request",
-  "fragment": {
-    "kind": "Fragment",
-    "name": "LoginMutation",
-    "type": "Mutation",
-    "metadata": null,
-    "argumentDefinitions": (v0/*: any*/),
-    "selections": (v1/*: any*/)
+    ],
+    "type": "Mutation"
   },
+  "kind": "Request",
   "operation": {
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "LoginMutation",
-    "argumentDefinitions": (v0/*: any*/),
-    "selections": (v1/*: any*/)
+    "selections": [
+      {
+        "alias": null,
+        "args": (v1/*: any*/),
+        "concreteType": null,
+        "kind": "LinkedField",
+        "name": "login",
+        "plural": false,
+        "selections": [
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "__typename",
+            "storageKey": null
+          },
+          {
+            "kind": "InlineFragment",
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "User",
+                "kind": "LinkedField",
+                "name": "user",
+                "plural": false,
+                "selections": [
+                  (v2/*: any*/),
+                  (v3/*: any*/),
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "id",
+                    "storageKey": null
+                  }
+                ],
+                "storageKey": null
+              }
+            ],
+            "type": "SuccessLoginResult"
+          },
+          (v4/*: any*/)
+        ],
+        "storageKey": null
+      }
+    ]
   },
   "params": {
-    "operationKind": "mutation",
-    "name": "LoginMutation",
     "id": null,
-    "text": "mutation LoginMutation(\n  $username: String!\n  $password: String!\n) {\n  login(username: $username, password: $password) {\n    token\n    user {\n      id\n      name\n      role\n    }\n  }\n}\n",
-    "metadata": {}
+    "metadata": {},
+    "name": "LoginMutation",
+    "operationKind": "mutation",
+    "text": "mutation LoginMutation(\n  $email: String!\n  $password: String!\n) {\n  login(email: $email, password: $password) {\n    __typename\n    ... on SuccessLoginResult {\n      user {\n        email\n        role\n        id\n      }\n    }\n    ... on FailedLoginResult {\n      reason\n    }\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = 'c35bf765ffc9e99d74790cca2c693a5f';
+(node as any).hash = 'fd13a4256863653c028bdc3b0f21b828';
 export default node;

@@ -1,12 +1,6 @@
 import { Network, RecordSource, Environment, Store, RequestParameters, CacheConfig, UploadableMap } from "relay-runtime";
 
-let URL;
-if (process.env.WEBPACK_DEV_SERVER) {
-    URL = "http://localhost/query";
-}
-else {
-    URL = "/query";
-}
+const URL = "/query";
 
 function checkCache(hash: string) {
     const ssr_data = (window as any).__SSR_DATA__;

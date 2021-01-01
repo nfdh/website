@@ -36,8 +36,7 @@ export function ContactScene() {
                 </tr>
             </tbody>
         </table>
-        <br />
-        <br />
+
         <h3>Website beheerder</h3>
         <p>
             Voor vragen met betrekking tot de website kunt u terecht bij de beheerder van deze website

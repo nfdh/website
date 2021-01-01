@@ -15,6 +15,12 @@ export function commitLogout(
         `,
         variables: {},
         onError: onError,
-        onCompleted: onCompleted
+        onCompleted: onCompleted,
+        updater: function(store, data) {
+            if (data.logout) {
+                const viewer = store.getRoot().getLinkedRecord("viewer");
+                viewer.setValue(null, "user");
+            }
+        }
     });
 }

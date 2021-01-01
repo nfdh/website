@@ -1,0 +1,14 @@
+ 
+  - Login werkend maken
+    - SQL connectie
+    - SQL tabellen
+    - server: query.php GraphQL response
+    - client: realy GraphQL query
+
+  - Client: Wanneer ingelogd:
+    - Menu aanpassen (Lid worden + Inloggen) word (Ledenportaal + Uitloggen)
+    - Uitloggen: Terug naar startpagina
+
+  - Later:
+    - Ledenportaal: Dekverklaring indienen
+    - Ledenportaal: Advertenties beheren
