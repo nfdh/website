@@ -114,9 +114,9 @@ function fetchRelay(this: FetchContext, params: RequestParameters, variables: an
       });
 
       const options = {
-          //hostname: 'nieuw.drentsheideschaap.nl',
-          hostname: 'localhost',
-	  port: 8080,
+          hostname: 'nieuw.drentsheideschaap.nl',
+          //hostname: 'localhost',
+	  	  port: 80,
           path: '/query',
           method: 'POST',
           headers: {
