@@ -83,15 +83,15 @@ export function DefaultScene() {
                         <tbody>
                             <tr>
                                 <td><i>Ten name van</i></td>
-                                <td>Nicolette Linton</td>
+                                <td>Marlaine de Munck</td>
                             </tr>
                             <tr>
                                 <td><i>Adres</i></td>
-                                <td>Schansweg 39<br />4791 RA Klundert</td>
+                                <td>Hoofdweg 16<br />4411 AR Rilland</td>
                             </tr>
                             <tr>
                                 <td><i>Telefoon</i></td>
-                                <td>0168-401543<br />06-14489596</td>
+                                <td>06-37382955</td>
                             </tr>
                             <tr>
                                 <td><i>Email</i></td>

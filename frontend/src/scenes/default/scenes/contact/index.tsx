@@ -14,20 +14,19 @@ export function ContactScene() {
             <tbody>
                 <tr>
                     <td>Ten name van</td>
-                    <td>Nicolette Linton</td>
+                    <td>Marlaine de Munck</td>
                 </tr>
                 <tr>
                     <td>Adres</td>
                     <td>
-                        Schansweg 39<br />
-                        4791 RA Klundert
+                        Hoofdweg 16<br />
+                    	4411 AR Rilland
                     </td>
                 </tr>
                 <tr>
                     <td>Telefoon</td>
                     <td>
-                        <a href="tel:0168-401543" target="_blank">0168-401543</a><br />
-                        <a href="tel:06-14489596" target="_blank">06-14489596</a>
+                        <a href="tel:06-37382955" target="_blank">06-37382955</a>
                     </td>
                 </tr>
                 <tr>
