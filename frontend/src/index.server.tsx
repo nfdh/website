@@ -106,7 +106,7 @@ function fetchRelay(this: FetchContext, params: RequestParameters, variables: an
   const fetchContext = this;
 
   const promise = new Promise(function(resolve, reject) {
-      const http = require('http');
+      const https = require('https');
 
       const body = JSON.stringify({
           query: params.text,
@@ -116,7 +116,7 @@ function fetchRelay(this: FetchContext, params: RequestParameters, variables: an
       const options = {
           hostname: 'nieuw.drentsheideschaap.nl',
           //hostname: 'localhost',
-	  	  port: 80,
+	  	  port: 443,
           path: '/query',
           method: 'POST',
           headers: {
@@ -126,7 +126,7 @@ function fetchRelay(this: FetchContext, params: RequestParameters, variables: an
           }
       };
 
-      const req = http.request(options, res => {
+      const req = https.request(options, res => {
           if (res.statusCode !== 200) {
               reject("Unexpected status code " + res.statusCode);
           }
