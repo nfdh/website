@@ -52,24 +52,30 @@ function startFrontendServer(): Server {
         store,
     });    
 
-    let rendered = ReactDOMServer.renderToString(render_element(req.originalUrl, env));
+	try {
+		let rendered = ReactDOMServer.renderToString(render_element(req.originalUrl, env));
 
-    // Recursively wait for any pending requests
-    while (fetchContext.promises.length > 0) {
-      await Promise.all(fetchContext.promises);
-      fetchContext.promises = [];
+		// Recursively wait for any pending requests
+		while (fetchContext.promises.length > 0) {
+		  await Promise.all(fetchContext.promises);
+		  fetchContext.promises = [];
 
-      rendered = ReactDOMServer.renderToString(render_element(req.originalUrl, env));
+		  rendered = ReactDOMServer.renderToString(render_element(req.originalUrl, env));
+		}
+
+		res.status(CurrentRequestInfo.statusCode);
+		res.write(rendered);
+
+		const cachedResponses = JSON.stringify(fetchContext.cachedResponses);
+		res.write(cachedResponses);
     }
-
-    res.status(CurrentRequestInfo.statusCode);
-    res.write(rendered);
-
-    const cachedResponses = JSON.stringify(fetchContext.cachedResponses);
-    res.write(cachedResponses);
-    res.end();
+	catch(ex) {
+		res.status(500);
+		res.write("Er is iets fout gegaan tijdens het laden van de pagina, probeer het later opnieuw. " + ex);
+	}
+	res.end();
   }
-  
+
   app.use(/^.*/i, serverRenderer);
   
   const socket_path = socket_path_base + "/ssr-server.sock";

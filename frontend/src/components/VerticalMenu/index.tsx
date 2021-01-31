@@ -32,9 +32,10 @@ export function VerticalMenuGroup(props: VerticalMenuGroupProps) {
 
 export interface VerticalMenuItemProps {
     children: React.ReactNode,
-    to: Location | string
+    to: Location | string,
+	end?: bool
 }
 
 export function VerticalMenuItem(props: VerticalMenuItemProps) {
-    return <NavLink to={props.to} className={styles.item} activeClassName={styles.active} end>{props.children}</NavLink>
+    return <NavLink to={props.to} className={styles.item} activeClassName={styles.active} end={props.end}>{props.children}</NavLink>
 }

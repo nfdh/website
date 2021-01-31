@@ -1,15 +1,16 @@
 import * as React from "react";
 import { useLazyLoadQuery, graphql } from "react-relay/hooks";
+import { useNavigate } from "react-router";
 
 import { Toolbar, ToolbarSeparator } from "../../../../../../components/Toolbar";
 import { Button, ButtonVariant } from "../../../../../../components/Button";
 import { Icon } from "../../../../../../components/Icon";
 import { Table, Header, Row, Cell, SelectionMode, getSelectionCount, Empty } from "../../../../../../components/Table";
 import { TextInput } from "../../../../../../components/TextInput";
-
-import * as styles from "./index.css";
-import { UsersSceneQuery, UserRole } from "./__generated__/UsersSceneQuery.graphql";
 import { SkeletonLine } from "../../../../../../components/Skeleton";
+
+import { UsersSceneQuery, UserRole } from "./__generated__/UsersSceneQuery.graphql";
+import * as styles from "./index.css";
 
 export function UsersScene() {
     const [searchTerm, setSearchTerm] = React.useState("");
@@ -32,20 +33,26 @@ export function UsersScene() {
         startTransition(() => setSearchTermData(evt.currentTarget.value));
     }, []);
 
+	const navigate = useNavigate();
+
+	const onAddClick = React.useCallback(function() {
+		navigate("toevoegen");
+	}, [navigate]);
+
     return <>
         <h2 className={styles.title}>Gebruikers</h2>
         <Toolbar>
             {selectionCount === 0
                 ? <>
+                    <Button key="add" onClick={onAddClick} variant={ButtonVariant.Primary}><Icon>add</Icon> Nieuwe gebruiker</Button>
+					<ToolbarSeparator />
                     <TextInput icon="search" placeholder="Zoeken..." value={searchTerm} onChange={onSearchChange} />
-                    <Button key="add" onClick={onAddClick}><Icon>add</Icon> Toevoegen</Button>
                 </>
                 : <>
-                    <Button key="edit" onClick={onAddClick} variant={ButtonVariant.Primary} disabled={selectionCount > 2}><Icon>edit</Icon> Bewerken</Button>
+                    <Button key="edit" onClick={onAddClick} variant={ButtonVariant.Primary} disabled={selectionCount >= 2}><Icon>edit</Icon> Bewerken</Button>
                     <Button onClick={onAddClick} danger><Icon>delete</Icon> Verwijderen</Button>
                 </>
             }
-            <ToolbarSeparator />
         </Toolbar>
 
         <Table
@@ -56,7 +63,6 @@ export function UsersScene() {
             head={<>
                 <Header>Naam</Header>
                 <Header>E-mail</Header>
-                <Header>Lidstatus</Header>
             </>}
             body={<React.Suspense fallback={<UserListSkeleton />}>
                 <UserList searchTerm={searchTermData} />
@@ -65,24 +71,12 @@ export function UsersScene() {
     </>;
 }
 
-function roleToString(role: UserRole) {
-    switch(role) {
-        case "MEMBER": return "Stamboek fokker";
-        default: ""
-    }
-}
-
 function onAddClick() {
     
 }
 
 function UserListSkeleton() {
     return <>
-        <Row>
-            <Cell colSpan="999">
-                <SkeletonLine />
-            </Cell>
-        </Row>
         <Row>
             <Cell colSpan="999">
                 <SkeletonLine />
@@ -109,7 +103,6 @@ function UserList(props: UserListProps): any {
                         id
                         name
                         email
-                        role
                     }
                 }
             }
@@ -120,7 +113,6 @@ function UserList(props: UserListProps): any {
         <Row key={e.node.id} selectionKey={e.node.id}>
             <Cell>{e.node.name}</Cell>
             <Cell>{e.node.email}</Cell>
-            <Cell>{roleToString(e.node.role)}</Cell>
         </Row>    
     ) : <Empty />;
 }

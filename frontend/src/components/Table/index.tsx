@@ -91,13 +91,15 @@ export function Table(props: TableProps) {
         selection: Set()
     }));
 
+	let selectionMode = props.selectionMode === undefined ? SelectionMode.None : props.selectionMode;
+
     const selectionContext: SelectionContext = React.useMemo(() => ({
-        mode: props.selectionMode,
+        mode: selectionMode,
         onSelectionChanged: props.onSelectionChanged,
         onActivate: props.onActivate,
         state: selectionState,
         setState: setSelectionState
-    }), [props.selectionMode, props.onSelectionChanged, selectionState]);
+    }), [selectionMode, props.onSelectionChanged, selectionState]);
 
     const onChecked = React.useCallback(function(evt: React.SyntheticEvent<HTMLInputElement>) {
         const newSelection = Set();
@@ -114,7 +116,7 @@ export function Table(props: TableProps) {
     }, [selectionContext]);
 
     let selectionHeader;
-    switch (props.selectionMode) {
+    switch (selectionMode) {
         case SelectionMode.None: selectionHeader = null; break;
         case SelectionMode.Single: selectionHeader = <th className={classnames(styles.header, styles.selectionCell)}></th>; break;
         case SelectionMode.Multiple: 

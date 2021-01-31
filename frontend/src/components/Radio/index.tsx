@@ -18,12 +18,12 @@ function doNotFocusOnMouseDown(evt: React.MouseEvent) {
     evt.preventDefault();
 }
 
-export function Radio(props: RadioProps) {
+export const Radio = React.forwardRef(function(props: RadioProps, ref: React.Ref<HTMLInputElement>) {
     const { label, labelClassName, className, ...otherProps } = props;
 
     return <label className={classnames(styles.label, labelClassName)}>
         <span className={styles.checkbox}>
-            <input type="radio" className={classnames(styles.input, className)} onMouseDown={doNotFocusOnMouseDown} onClick={doNotPropagate} {...otherProps} />
+            <input type="radio" className={classnames(styles.input, className)} onMouseDown={doNotFocusOnMouseDown} onClick={doNotPropagate} ref={ref} {...otherProps} />
             <span className={styles.checkboxInner}></span>
             <div className={styles.checkRipple}></div>
         </span>
@@ -34,4 +34,4 @@ export function Radio(props: RadioProps) {
             : null
         }
     </label>
-}
+});

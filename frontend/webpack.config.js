@@ -180,15 +180,9 @@ function config(isClient, isDev) {
     }
 
     function getLocalIdentDev(context, localIdentName, localName, options) {
-        const key = context.resourcePath;
-
-        let filePrefix = indentsMap.get(key);
-        if (!filePrefix) {
-            filePrefix = generateIdentifier(indentsMap.size);
-            indentsMap.set(key, filePrefix);
-        }
-
-        return filePrefix + "-" + localName;
+        let key = path.relative(__dirname, context.resourcePath);
+		key = key.replace(/(\.|\\|\/)/gi, '\\$1');
+        return key + "-" + localName;
     }
 }
 

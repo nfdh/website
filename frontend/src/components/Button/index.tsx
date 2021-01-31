@@ -11,7 +11,9 @@ export enum ButtonVariant {
 export type ButtonProps = BaseButtonProps & (NormalButtonProps | AnchorButtonProps);
 
 export interface BaseButtonProps {
-    danger?: boolean
+    danger?: boolean,
+	onClick: (evt: React.MouseEvent<HTMLButtonElement>, eventData?: any) => void,
+	eventData?: any
 }
 
 export interface NormalButtonProps
@@ -32,7 +34,16 @@ function doNotFocusOnMouseDown(evt: React.MouseEvent) {
 }
 
 export function Button(props: ButtonProps) {
-    const { children, className, variant, danger, ...otherProps } = props;
+    const { children, className, variant, danger, onClick, eventData, type, ...otherProps } = props;
+
+	const onClickHandler = React.useMemo(function() {
+		if(onClick === undefined || eventData === undefined) {
+			return onClick;
+		}
+		return function(evt: any) {
+			return onClick(evt, eventData); 
+		};
+	}, [onClick, eventData]);
 
     let variantStyle: string;
     switch(variant) {
@@ -52,10 +63,15 @@ export function Button(props: ButtonProps) {
     const elementClass = classnames(className, styles.button, variantStyle, danger && styles.danger);
 
     if("href" in otherProps) {
-        return <a className={elementClass} onMouseDown={doNotFocusOnMouseDown} {...otherProps}>{children}</a>;
+        return <a className={elementClass} onMouseDown={doNotFocusOnMouseDown} onClick={onClickHandler} {...otherProps}>{children}</a>;
     }
     else {
-        return <button className={elementClass} onMouseDown={doNotFocusOnMouseDown} {...otherProps}>{children}</button>;
+		let defaultedType = type;
+		if(defaultedType === undefined) {
+			if(onClick !== undefined) defaultedType = "button";
+		}
+
+        return <button type={defaultedType} className={elementClass} onMouseDown={doNotFocusOnMouseDown} onClick={onClickHandler} {...otherProps}>{children}</button>;
     }
 }
 

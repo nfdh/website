@@ -22,8 +22,55 @@ type UsersEdge {
     cursor: String!
 }
 
+type DekverklaringenConnection {
+	pageInfo: PageInfo
+	edges: [DekverklaringenEdge]
+}
+
+type DekverklaringenEdge {
+	node: Dekverklaring
+	cursor: String!
+}
+
+type Dekverklaring {
+	id: ID!
+	season: Int!
+	studbook: Studbook!
+	date_sent: Date!
+	date_corrected: Date
+}
+
+input DekverklaringInput {
+	season: Int!
+	studbook: Studbook!
+
+	name: String!
+	kovo: Int!
+	koe: Int!
+	kool: Int!
+	korl: Int!
+	
+	dekgroepen: [DekgroepInput!]!
+
+	remarks: String!
+}
+
+input DekgroepInput {
+	ewe_count: Int!
+	rammen: [String!]!
+}
+
+enum Studbook {
+	DRENTS_HEIDESCHAAP
+	SCHOONEBEEKER
+}
+
+scalar Date
+
 type Viewer {
     user: User
+
+	dekverklaringen(first: Int!, after: String): DekverklaringenConnection
 }
 
 enum UserRole {
@@ -51,9 +98,25 @@ type FailedLoginResult {
 
 union LoginResult = SuccessLoginResult | FailedLoginResult
 
+type SuccessSendDekverklaringResult {
+	dekverklaring: Dekverklaring
+}
+
+enum FailedSendDekverklaringReason {
+	UNKNOWN
+}
+
+type FailedSendDekverklaringResult {
+	reason: FailedSendDekverklaringReason
+}
+
+union SendDekverklaringResult = SuccessSendDekverklaringResult | FailedSendDekverklaringResult
+
 type Mutation {
     login(email: String, password: String): LoginResult
     logout: Boolean
+
+	sendDekverklaring(dekverklaring: DekverklaringInput!): SendDekverklaringResult
 }
 
 schema {

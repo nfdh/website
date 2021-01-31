@@ -7,9 +7,11 @@
 
 .title {
     position: absolute;
-    left: 10%;
+    left: 50%;
+	transform: translate(-50%,0);
     bottom: 72px;
     width: 80%;
+	max-width: 1536px;
     color: white;
     text-shadow: 0 0 40px rgba(0, 0, 0, 0.8),
         1px 1px 3px rgba(0, 0, 0, 0.9);
@@ -30,9 +32,11 @@
 
 .headerMenu {
     position: absolute;
-    left: 10%;
+    left: 50%;
+	transform: translate(-50%,0);
     bottom: 19px;
     width: 80%;
+	max-width: 1536px;
     display: flex;
     flex-direction: row;
     white-space: nowrap;
@@ -94,6 +98,7 @@
 
 .footerCenter {
     width: 80%;
+	max-width: 1536px;
     margin: 0 auto;
     padding: 25px;
     display: flex;
@@ -146,4 +151,5 @@
     margin: 0 auto;
     width: 80%;
     min-height: 45%;
+	max-width: 1536px;
 }

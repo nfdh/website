@@ -2,7 +2,6 @@
 /* eslint-disable */
 
 import { ConcreteRequest } from "relay-runtime";
-export type UserRole = "MEMBER" | "%future added value";
 export type UsersSceneQueryVariables = {
     searchTerm?: string | null;
 };
@@ -13,7 +12,6 @@ export type UsersSceneQueryResponse = {
                 readonly id: string;
                 readonly name: string;
                 readonly email: string;
-                readonly role: UserRole;
             } | null;
         } | null> | null;
     } | null;
@@ -35,7 +33,6 @@ query UsersSceneQuery(
         id
         name
         email
-        role
         __typename
       }
       cursor
@@ -98,13 +95,6 @@ v2 = [
             "args": null,
             "kind": "ScalarField",
             "name": "email",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "role",
             "storageKey": null
           },
           {
@@ -228,9 +218,9 @@ return {
     },
     "name": "UsersSceneQuery",
     "operationKind": "query",
-    "text": "query UsersSceneQuery(\n  $searchTerm: String\n) {\n  users(searchTerm: $searchTerm, first: 15) {\n    edges {\n      node {\n        id\n        name\n        email\n        role\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query UsersSceneQuery(\n  $searchTerm: String\n) {\n  users(searchTerm: $searchTerm, first: 15) {\n    edges {\n      node {\n        id\n        name\n        email\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = '0ddeb7bd187104788aa678139675bd07';
+(node as any).hash = '6d5ed8a5ca88881f227ff64112a67980';
 export default node;

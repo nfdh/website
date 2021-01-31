@@ -1,6 +1,10 @@
-.container {
+.inputContainer {
     position: relative;
     height: 40px;
+}
+
+.textareaContainer {
+	
 }
 
 .iconContainer {
@@ -17,11 +21,10 @@
     pointer-events: none;
 }
 
-.input {
+.input, .textarea {
     width: 100%;
     height: 100%;
     padding: 4px 11px;
-    font-size: 14px;
     line-height: 1.5;
     background-color: #fff;
     background-image: none;
@@ -29,22 +32,28 @@
     border-radius: 4px;
     -webkit-transition: all 0.3s;
     transition: all 0.3s;
+	font-size: inherit;
+	font-family: inherit;
     color: inherit;
+}
+
+.textarea {
+	padding: 11px;
 }
 
 .iconContainer + .input {
     padding-left: 40px;
 }
 
-.input:hover {
+.input:hover, .textarea:hover {
     border-color: #40a9ff;
 }
 
-.input:placeholder-shown {
+.input:placeholder-shown, .textarea:placeholder-shown {
     text-overflow: ellipsis;
 }
 
-.input:focus {
+.input:focus, .textarea:focus {
     border-color: #40a9ff;
     outline: 0;
     -webkit-box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);

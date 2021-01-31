@@ -25,9 +25,9 @@ $variableValues = isset($input['variables']) ? $input['variables'] : null;
 $conf = Settings::get();
 
 // Connect to the database
-$rootValue = [ "dataContext" => new DataContext($conf['db_server'], $conf['db_username'], $conf['db_password'], $conf['db_database']) ];
+$context = [ "dataContext" => new DataContext($conf['db_server'], $conf['db_username'], $conf['db_password'], $conf['db_database']) ];
 
-$result = GraphQL::executeQuery(SchemaTypes::$schema, $query, $rootValue, null, $variableValues);
+$result = GraphQL::executeQuery(SchemaTypes::$schema, $query, [], $context, $variableValues);
 foreach ($result->errors as $error) {
     error_log("Caught " . $error);
 }

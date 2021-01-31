@@ -1,0 +1,49 @@
+
+
+.title {
+	color: #000;
+	margin: 0;
+	padding: 0;
+}
+
+.row {
+	display: flex;
+	flex-direction: row;
+	margin-bottom: 5px;
+	align-items: center;
+}
+
+.label {
+	width: 250px;
+	flex-shrink: 0;
+	flex-grow: 0;
+	padding-top: 9px;
+	align-self: flex-start;
+}
+
+.inputContainer {
+	flex-grow: 1;
+	flex-shrink: 1;
+}
+
+.input {
+	width: 100%;
+}
+
+.buttonSet {
+	display: flex;
+	flex-direction: row;
+}
+
+.button {
+	margin-right: 10px;
+}
+
+.section {
+	margin-bottom: 15px;
+}
+
+.sectionTitle {
+	padding: 0;
+	margin: 10px 0 5px 0;
+}
