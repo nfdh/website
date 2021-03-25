@@ -4,7 +4,7 @@ import classnames from "classnames";
 import { Icon } from "../Icon";
 import { Input, InputProps, TextArea as FormulizerTextArea, TextAreaProps as FormulizerTextAreaProps } from "formulizer";
 
-import * as styles from "./index.css";
+import styles from "./index.css";
 
 export interface TextInputProps
     extends InputProps {

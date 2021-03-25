@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import { Button } from "../../../../../../../../components/Button";
 
-import * as styles from "./index.css";
+import styles from "./index.css";
 
 export function VerzondenScene() {
 	const navigate = useNavigate();

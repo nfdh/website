@@ -3,7 +3,7 @@ import { useNavigate, Routes, Route } from "react-router";
 
 import { VerticalMenu, VerticalMenuGroup, VerticalMenuItem } from "../../../../components/VerticalMenu";
 
-import * as styles from "./index.css";
+import styles from "./index.css";
 import { useUserInfo } from "../../../../services/auth";
 import { MemberHomeScene } from "./scenes/home";
 import { UsersScene } from "./scenes/users";

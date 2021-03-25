@@ -9,7 +9,7 @@ import { Button, ButtonGroup, ButtonVariant } from "../../../../components/Butto
 
 import { login } from "../../../../services/auth";
 
-import * as styles from "./index.css";
+import styles from "./index.css";
 
 interface LoginSceneProps {
 

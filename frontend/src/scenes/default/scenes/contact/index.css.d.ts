@@ -1,2 +1,5 @@
-export const center: string;
-export const contactInfo: string;
+export const styles: {
+	center: string;
+	contactInfo: string;
+};
+export default styles;

@@ -1,2 +1,5 @@
-export const container: string;
-export const separator: string;
+declare const styles: {
+    container: string;
+    separator: string;
+};
+export default styles;

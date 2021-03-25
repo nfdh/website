@@ -1,7 +1,7 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 
-import * as styles from "./index.css";
+import styles from "./index.css";
 import { Link } from "react-router-dom";
 
 import ad1 from "./ad1.jpg";

@@ -1,8 +1,7 @@
 const path = require("path");
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const { DefinePlugin } = require('webpack');
 
 const firstAllowedCharacters = [
@@ -16,11 +15,11 @@ const otherAllowedCharacters = [
 ];
 
 module.exports = function(env) {
-    if(process.env.WEBPACK_DEV_SERVER) {
+	if(env.WEBPACK_SERVE) {
         return config(true, true);
     }
     else {
-        const isDev = !!env.dev;
+		const isDev = !!env.dev;
 
         return [
             config(true, isDev),
@@ -35,13 +34,15 @@ function config(isClient, isDev) {
     const result = {
         mode: isDev ? "development" : "production",
         entry: path.resolve(__dirname, "src", "index." + (isClient ? "client" : "server") + ".tsx"),
-        devtool: isDev ? 'cheap-module-eval-source-map' : 'source-map',
+        devtool: isDev ? 'eval-cheap-module-source-map' : 'hidden-source-map',
         output: {
             path: isClient
                 ? path.resolve(__dirname, "dist-client", "static")
                 : path.resolve(__dirname, "dist-ssr"),
             publicPath: "/static/",
-            filename: (isDev || !isClient) ? "[name].js" : "[chunkhash].js"
+            filename: (isDev || !isClient) ? "[name].js" : "[chunkhash].js",
+			assetModuleFilename: isDev ? "[name]-[contenthash][ext]" : "[contenthash][ext]",
+			clean: true
         },
         target: isClient ? "web" : "node",
         resolve: {
@@ -63,10 +64,7 @@ function config(isClient, isDev) {
                     test: /\.css$/,
                     use: isClient ? [
                         {
-                            loader: MiniCssExtractPlugin.loader,
-                            options: {
-                                hmr: isDev
-                            }
+                            loader: MiniCssExtractPlugin.loader
                         },
                         {
                             loader: "css-loader",
@@ -82,9 +80,9 @@ function config(isClient, isDev) {
                             loader: "css-loader",
                             options: {
                                 modules: {
-                                    getLocalIdent: isDev ? getLocalIdentDev : getLocalIdentProd
-                                },
-                                onlyLocals: true
+                                    getLocalIdent: isDev ? getLocalIdentDev : getLocalIdentProd,
+									exportOnlyLocals: true
+                                }
                             }
                         }
                     ],
@@ -94,11 +92,10 @@ function config(isClient, isDev) {
                 },
                 {
                     test: /\.(jpe?g|png)$/,
-                    loader: "file-loader",
-                    options: {
-                        emitFile: isClient,
-                        name: isDev ? "[name]-[contenthash].[ext]" : "[contenthash].[ext]"
-                    }
+					type: 'asset/resource',
+					generator: {
+						emit: isClient
+					}
                 }
             ]
         },
@@ -109,30 +106,21 @@ function config(isClient, isDev) {
                 ignoreOrder: false
             }),
             new DefinePlugin({
-                "process.env.WEBPACK_DEV_SERVER": process.env.WEBPACK_DEV_SERVER,
                 "process.env.SSR": !isClient
             })
         ],
         optimization: {
-            minimize: !isDev && isClient
+            minimize: !isDev && isClient,
+			minimizer: [
+				`...`,
+				new CssMinimizerPlugin()
+			]
         }
-    };
-
-    if(!process.env.WEBPACK_DEV_SERVER) {
-        result.plugins.push(
-            new CleanWebpackPlugin({
-                dry: false,
-                cleanOnceBeforeBuildPatterns: isClient 
-                    ? ["../**/*"]
-                    : ["**/*"],
-                dangerouslyAllowCleanPatternsOutsideProject: true
-            })
-        );
-    }
+    }; 
 
     if(isClient) {
         result.devServer = {
-            contentBase: path.join(__dirname, 'dist-client'),
+  			static: path.join(__dirname, 'dist-client'),
             compress: true,
             historyApiFallback: {
                 index: 'template.html'
@@ -145,18 +133,6 @@ function config(isClient, isDev) {
                 filename: "../template.html"
             })
         );
-
-        if(!isDev) {
-            result.plugins.push(
-                new OptimizeCssAssetsPlugin({
-                    cssProcessorOptions: {
-                        map: {
-                            inline: false
-                        }
-                    }
-                })
-            );
-        }
     }
     else {
         result.node = {

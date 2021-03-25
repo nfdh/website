@@ -1,1 +1,4 @@
-export const center: string;
+declare const styles: {
+	center: string;
+};
+export default styles;

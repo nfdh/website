@@ -12,7 +12,7 @@ import { LoginScene } from "./scenes/login";
 import { AgendaScene } from "./scenes/agenda";
 import { NotFoundScene } from "./scenes/not-found";
 
-import * as styles from "./index.css";
+import styles from "./index.css";
 import { MemberScene } from "./scenes/member";
 
 export function DefaultScene() {

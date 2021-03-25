@@ -1,5 +1,8 @@
-export const inputContainer: string;
-export const textareaContainer: string;
-export const input: string;
-export const iconContainer: string;
-export const textarea: string;
+declare const styles: {
+    inputContainer: string;
+    textareaContainer: string;
+    input: string;
+    iconContainer: string;
+    textarea: string;
+};
+export default styles;

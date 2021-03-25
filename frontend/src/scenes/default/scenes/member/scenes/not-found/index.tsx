@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useLocation } from "react-router";
 
-import * as styles from "./index.css";
+import styles from "./index.css";
 
 export function NotFoundScene() {
     if (process.env.SSR) {

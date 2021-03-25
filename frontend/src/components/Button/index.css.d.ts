@@ -1,5 +1,8 @@
-export const button: string;
-export const defaultStyle: string;
-export const primaryStyle: string;
-export const danger: string;
-export const buttonGroup: string;
+declare const styles: {
+    button: string;
+    defaultStyle: string;
+    primaryStyle: string;
+    danger: string;
+    buttonGroup: string;
+};
+export default styles;

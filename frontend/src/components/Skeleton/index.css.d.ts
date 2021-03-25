@@ -1,1 +1,4 @@
-export const line: string;
+declare const styles: {
+	line: string;
+};
+export default styles;

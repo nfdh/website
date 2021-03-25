@@ -9,7 +9,7 @@ import { Table, SelectionMode, Header, Row, Cell, Empty } from "../../../../../.
 import { SkeletonLine } from "../../../../../../components/Skeleton";
 
 import { FormsSceneQuery, Studbook } from "./__generated__/FormsSceneQuery.graphql";
-import * as styles from "./index.css";
+import styles from "./index.css";
 
 export function FormsScene() {
 	const onActivate = React.useCallback(function(v) {

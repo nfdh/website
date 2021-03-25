@@ -5,7 +5,7 @@ import classnames from "classnames";
 import { Radio } from "../Radio";
 import { Checkbox } from "../Checkbox";
 
-import * as styles from "./index.css";
+import styles from "./index.css";
 
 interface SelectionState {
     type: SelectionType,

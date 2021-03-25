@@ -1,4 +1,7 @@
-export const center: string;
-export const content: string;
-export const sidebar: string;
-export const section: string;
+declare const styles: {
+    center: string;
+    content: string;
+    sidebar: string;
+    section: string;
+};
+export default styles;

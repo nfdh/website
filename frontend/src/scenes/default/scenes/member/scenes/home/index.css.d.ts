@@ -1,3 +1,6 @@
-export const center: string;
-export const menu: string;
-export const content: string;
+declare const styles: {
+	center: string;
+	menu: string;
+	content: string;
+};
+export default styles;

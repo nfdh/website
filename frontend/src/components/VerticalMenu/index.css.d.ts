@@ -1,7 +1,10 @@
-export const container: string;
-export const group: string;
-export const groupTitle: string;
-export const groupContent: string;
+declare const styles: {
+    container: string;
+    group: string;
+    groupTitle: string;
+    groupContent: string;
 
-export const item: string;
-export const active: string;
+    item: string;
+    active: string;
+};
+export default styles;

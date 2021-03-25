@@ -4,7 +4,7 @@ import { Button, ButtonVariant } from "../../../../../../../../components/Button
 import { TextInput } from "../../../../../../../../components/TextInput";
 import { Checkbox } from "../../../../../../../../components/Checkbox";
 
-import * as styles from "./index.css";
+import styles from "./index.css";
 
 export function AddUserScene() {
 

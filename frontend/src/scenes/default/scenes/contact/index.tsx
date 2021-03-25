@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import * as styles from "./index.css";
+import styles from "./index.css";
 
 export function ContactScene() {
 

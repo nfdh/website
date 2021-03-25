@@ -1,2 +1,5 @@
-export const messageContainer: string;
-export const button: string;
+declare const styles: {
+    messageContainer: string;
+    button: string;
+};
+export default styles;

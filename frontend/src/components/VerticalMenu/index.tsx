@@ -3,7 +3,7 @@ import classnames from "classnames";
 import { Location } from "history";
 import { NavLink } from "react-router-dom";
 
-import * as styles from "./index.css";
+import styles from "./index.css";
 
 export interface VerticalMenuProps {
     children: React.ReactNode,

@@ -1,16 +1,19 @@
-export const header: string;
-export const headerMenu: string;
-export const headerMenuSegment: string;
-export const headerMenuLink: string;
-export const active: string;
-export const headerFade: string;
+declare const styles: {
+    header: string;
+    headerMenu: string;
+    headerMenuSegment: string;
+    headerMenuLink: string;
+    active: string;
+    headerFade: string;
 
-export const content: string;
-export const centerContent: string;
-export const image: string;
-export const title: string;
+    content: string;
+	centerContent: string;
+	image: string;
+	title: string;
 
-export const footer: string;
-export const footerCenter: string;
-export const footerColumn: string;
-export const copyRightNotice: string;
+	footer: string;
+	footerCenter: string;
+	footerColumn: string;
+	copyRightNotice: string;
+}
+export default styles;

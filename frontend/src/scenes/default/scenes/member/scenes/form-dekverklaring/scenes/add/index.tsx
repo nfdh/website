@@ -12,7 +12,7 @@ import { Radio } from "../../../../../../../../components/Radio";
 
 import { commitSendDekverklaring } from "./mutations/SendDekverklaringMutation";
 
-import * as styles from "./index.css";
+import styles from "./index.css";
 
 let idGenerator = 0;
 

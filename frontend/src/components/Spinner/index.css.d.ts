@@ -1,1 +1,4 @@
-export const spinner: string;
+declare const styles: {
+	spinner: string;
+};
+export default styles;

@@ -1,8 +1,11 @@
-export const container: string;
-export const table: string;
-export const header: string;
-export const row: string;
-export const selected: string;
-export const cell: string;
-export const selectionCell: string;
-export const empty: string;
+declare const styles: {
+    container: string;
+    table: string;
+    header: string;
+    row: string;
+    selected: string;
+    cell: string;
+    selectionCell: string;
+    empty: string;
+};
+export default styles;

@@ -10,7 +10,7 @@ import { TextInput } from "../../../../../../components/TextInput";
 import { SkeletonLine } from "../../../../../../components/Skeleton";
 
 import { UsersSceneQuery, UserRole } from "./__generated__/UsersSceneQuery.graphql";
-import * as styles from "./index.css";
+import styles from "./index.css";
 
 export function UsersScene() {
     const [searchTerm, setSearchTerm] = React.useState("");

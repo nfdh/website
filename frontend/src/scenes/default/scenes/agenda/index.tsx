@@ -8,7 +8,7 @@ import { TextInput } from "../../../../components/TextInput";
 import { Checkbox } from "../../../../components/Checkbox";
 import { Button, ButtonGroup } from "../../../../components/Button";
 
-import * as styles from "./index.css";
+import styles from "./index.css";
 import { button } from "../../../../components/Button/index.css";
 
 interface AgendaSceneProps {

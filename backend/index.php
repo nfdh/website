@@ -22,7 +22,7 @@
 
     $template = file_get_contents("template.html");
     $template_content_start = strpos($template, "</div>");
-    $template_script_start = strpos($template, "<script");
+    $template_script_start = $template_content_start + 6;
 
     $times = 3;
     while(true) {
@@ -65,19 +65,19 @@
     while (strlen($line = fgets($sock)) > 2) { }
 
     // Output the template intermittend with output data
-    echo substr($template, 0, $template_content_start);
+	echo substr($template, 0, $template_content_start);
     
     $rendered_len = intval(fgets($sock), 16);
-    echo stream_get_contents($sock, $rendered_len);
+	echo stream_get_contents($sock, $rendered_len);
     fgets($sock);
+
+	echo substr($template, $template_content_start, $template_script_start - $template_content_start);
+	echo '<script type="text/javascript">window.__SSR_DATA__=';
     
-    echo substr($template, $template_content_start, $template_script_start - $template_content_start);
-    echo '<script type="text/javascript">window.__SSR_DATA__=';
-    
-    $response_cache_len = intval(fgets($sock), 16);
+	$response_cache_len = intval(fgets($sock), 16);
     echo stream_get_contents($sock, $response_cache_len);
     fgets($sock);
 
-    echo '</script>';
-    echo substr($template, $template_script_start);
+	echo '</script>';
+	echo substr($template, $template_script_start);
 ?>
