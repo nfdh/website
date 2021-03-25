@@ -1,5 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
+// @ts-nocheck
 
 import { ConcreteRequest } from "relay-runtime";
 export type FailedSendDekverklaringReason = "UNKNOWN" | "%future added value";
@@ -68,8 +69,7 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "dekverklaring",
-    "type": "DekverklaringInput!"
+    "name": "dekverklaring"
   }
 ],
 v1 = [
@@ -129,7 +129,8 @@ v2 = {
       "storageKey": null
     }
   ],
-  "type": "SuccessSendDekverklaringResult"
+  "type": "SuccessSendDekverklaringResult",
+  "abstractKey": null
 },
 v3 = {
   "kind": "InlineFragment",
@@ -142,7 +143,8 @@ v3 = {
       "storageKey": null
     }
   ],
-  "type": "FailedSendDekverklaringResult"
+  "type": "FailedSendDekverklaringResult",
+  "abstractKey": null
 };
 return {
   "fragment": {
@@ -165,7 +167,8 @@ return {
         "storageKey": null
       }
     ],
-    "type": "Mutation"
+    "type": "Mutation",
+    "abstractKey": null
   },
   "kind": "Request",
   "operation": {
@@ -196,6 +199,7 @@ return {
     ]
   },
   "params": {
+    "cacheID": "7bcf8c7aed17f812617d7471c21b7cec",
     "id": null,
     "metadata": {},
     "name": "SendDekverklaringMutation",

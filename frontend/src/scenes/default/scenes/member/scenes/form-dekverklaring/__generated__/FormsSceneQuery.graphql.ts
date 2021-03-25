@@ -1,5 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
+// @ts-nocheck
 
 import { ConcreteRequest } from "relay-runtime";
 export type Studbook = "DRENTS_HEIDESCHAAP" | "SCHOONEBEEKER" | "%future added value";
@@ -185,7 +186,8 @@ return {
         "storageKey": null
       }
     ],
-    "type": "Query"
+    "type": "Query",
+    "abstractKey": null
   },
   "kind": "Request",
   "operation": {
@@ -226,6 +228,7 @@ return {
     ]
   },
   "params": {
+    "cacheID": "0c599f50b0bdbe221884143f28a23bc5",
     "id": null,
     "metadata": {
       "connection": [
