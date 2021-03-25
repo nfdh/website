@@ -17,9 +17,9 @@ export function UsersScene() {
     const [searchTermData, setSearchTermData] = React.useState("");
 
     const [selectionCount, setSelectionCount] = React.useState(0);
-    const [startTransition, isLoading] = React.useTransition({ timeoutMs: 1000 });
+    const [startTransition, isLoading] = React.unstable_useTransition({ timeoutMs: 1000 });
 
-    const onSelectionChanged = React.useCallback(function(old, n) {
+	const onSelectionChanged = React.useCallback(function(old, n) {
         setSelectionCount(getSelectionCount(n));
     }, []);
 

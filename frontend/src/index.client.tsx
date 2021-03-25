@@ -7,7 +7,7 @@ import { App } from "./App";
 import RelayEnvironment from "./relay-environment";
 
 const rootElement = document.getElementById("root");
-const root = ReactDOM.createRoot(rootElement, { hydrate: true });
+const root = ReactDOM.unstable_createRoot(rootElement, { hydrate: true });
 
 root.render(
     <RelayEnvironmentProvider environment={RelayEnvironment}>
