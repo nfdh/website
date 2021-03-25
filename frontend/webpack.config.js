@@ -34,7 +34,7 @@ function config(isClient, isDev) {
     const result = {
         mode: isDev ? "development" : "production",
         entry: path.resolve(__dirname, "src", "index." + (isClient ? "client" : "server") + ".tsx"),
-        devtool: isDev ? 'eval-cheap-module-source-map' : 'hidden-source-map',
+        devtool: isDev ? 'eval-cheap-module-source-map' : 'source-map',
         output: {
             path: isClient
                 ? path.resolve(__dirname, "dist-client", "static")
