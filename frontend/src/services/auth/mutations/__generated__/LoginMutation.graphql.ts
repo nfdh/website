@@ -1,5 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
+// @ts-nocheck
 
 import { ConcreteRequest } from "relay-runtime";
 export type FailedLoginReason = "INVALID_CREDENTIALS" | "%future added value";
@@ -50,14 +51,12 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "email",
-    "type": "String!"
+    "name": "email"
   },
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "password",
-    "type": "String!"
+    "name": "password"
   }
 ],
 v1 = [
@@ -97,7 +96,8 @@ v4 = {
       "storageKey": null
     }
   ],
-  "type": "FailedLoginResult"
+  "type": "FailedLoginResult",
+  "abstractKey": null
 };
 return {
   "fragment": {
@@ -131,14 +131,16 @@ return {
                 "storageKey": null
               }
             ],
-            "type": "SuccessLoginResult"
+            "type": "SuccessLoginResult",
+            "abstractKey": null
           },
           (v4/*: any*/)
         ],
         "storageKey": null
       }
     ],
-    "type": "Mutation"
+    "type": "Mutation",
+    "abstractKey": null
   },
   "kind": "Request",
   "operation": {
@@ -185,7 +187,8 @@ return {
                 "storageKey": null
               }
             ],
-            "type": "SuccessLoginResult"
+            "type": "SuccessLoginResult",
+            "abstractKey": null
           },
           (v4/*: any*/)
         ],
@@ -194,6 +197,7 @@ return {
     ]
   },
   "params": {
+    "cacheID": "1891f188c50bc804e212a1c99642059c",
     "id": null,
     "metadata": {},
     "name": "LoginMutation",
