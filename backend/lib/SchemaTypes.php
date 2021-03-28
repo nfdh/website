@@ -13,12 +13,15 @@ use GraphQL\Type\Schema;
 class SchemaTypes {
 	public static $dateType;
     public static $userRoleType;
-    public static $userType;
+	public static $userType;
+	public static $userInput;
     public static $pageInfoType;
     public static $usersConnectionType;
     public static $usersEdgeType;
 	public static $viewerType;
 	public static $studbookType;
+	public static $studbookMembershipType;
+	public static $studbookMembershipInput;
 	public static $dekverklaringenConnectionType;
 	public static $dekverklaringenEdgeType;
 	public static $dekverklaringType;
@@ -31,6 +34,12 @@ class SchemaTypes {
 	public static $successSendDekverklaringResult;
 	public static $failedSendDekverklaringReason;
 	public static $failedSendDekverklaringResult;
+	public static $successAddUserResult;
+	public static $failedAddUserReason;
+	public static $failedAddUserResult;
+    public static $successUpdateUserResult;
+	public static $failedUpdateUserReason;
+	public static $failedUpdateUserResult;
     public static $mutationType;
     public static $schema;
 
@@ -43,7 +52,7 @@ class SchemaTypes {
 				if (!$valueNode instanceof StringValueNode) {
             		throw new Error('Query error: Can only parse strings got: ' . $valueNode->kind, [$valueNode]);
 				}
-				return \DateTime::createFromFormat(\DateTime::ISO8601, $value);
+				return \DateTime::createFromFormat(\DateTime::ISO8601, $valueNode->value);
 			},
 		]);
 
@@ -56,15 +65,44 @@ class SchemaTypes {
             ]
         ]);
 
+		SchemaTypes::$studbookMembershipType = new ObjectType([
+			'name' => 'StudbookMembership',
+			'fields' => [
+				'ko' => Type::nonNull(Type::boolean())
+			]
+		]);
+
+        SchemaTypes::$studbookMembershipInput = new InputObjectType([
+            'name' => 'StudbookMembershipInput',
+            'fields' => [
+                'ko' => Type::nonNull(Type::boolean())
+            ]
+        ]);
+
         SchemaTypes::$userType = new ObjectType([
             'name' => 'User',
             'fields' => [
-                'id' => Type::string(),
+                'id' => Type::id(),
                 'name' => Type::string(),
                 'email' => Type::string(),
-                'role' => [
-                    "type" => SchemaTypes::$userRoleType
-                ]
+                'studbook_heideschaap' => SchemaTypes::$studbookMembershipType,
+                'studbook_schoonebeeker' => SchemaTypes::$studbookMembershipType,
+                'role_website_contributor' => Type::nonNull(Type::boolean()),
+                'role_studbook_administrator' => Type::nonNull(Type::boolean()),
+                'role_studbook_inspector' => Type::nonNull(Type::boolean())
+            ],
+        ]);
+
+        SchemaTypes::$userInput = new InputObjectType([
+            'name' => 'UserInput',
+            'fields' => [
+                'name' => Type::string(),
+                'email' => Type::string(),
+                'studbook_heideschaap' => SchemaTypes::$studbookMembershipInput,
+                'studbook_schoonebeeker' => SchemaTypes::$studbookMembershipInput,
+                'role_website_contributor' => Type::nonNull(Type::boolean()),
+                'role_studbook_administrator' => Type::nonNull(Type::boolean()),
+                'role_studbook_inspector' => Type::nonNull(Type::boolean())
             ],
         ]);
 
@@ -73,12 +111,12 @@ class SchemaTypes {
             'fields' => [
                 'hasPreviousPage' => Type::nonNull(Type::boolean()),
                 'hasNextPage' => Type::nonNull(Type::boolean()),
-                'startCursor' => Type::string(),
-                'endCursor' => Type::string()
+                'startCursor' => Type::id(),
+                'endCursor' => Type::id()
             ]
 		]);
 
-		SchemaTypes::$studbookType = new EnumType([
+        SchemaTypes::$studbookType = new EnumType([
 			'name' => 'Studbook',
 			'values' => [
 				'DRENTS_HEIDESCHAAP' => [
@@ -89,15 +127,12 @@ class SchemaTypes {
 				]
 			]
 		]);
-
 		SchemaTypes::$dekverklaringType = new ObjectType([
 			'name' => 'Dekverklaring',
 			'fields' => [
-				'id' => Type::string(),
+				'id' => Type::id(),
 				'season' => Type::int(),
-				'studbook' => [
-					"type" => SchemaTypes::$studbookType
-				],
+				'studbook' => SchemaTypes::$studbookType,
 				'date_sent' => SchemaTypes::$dateType,
 				'date_corrected' => SchemaTypes::$dateType
 			]
@@ -116,7 +151,7 @@ class SchemaTypes {
 			'fields' => [
 				'season' => Type::nonNull(Type::int()),
 				'name' => Type::nonNull(Type::string()),
-				'studbook' => Type::nonNull(SchemaTypes::$studbookType),
+                'studbook' => Type::nonNull(SchemaTypes::$studbookType),
 				'kovo' => Type::nonNull(Type::int()),
 				'koe' => Type::nonNull(Type::int()),
 				'kool' => Type::nonNull(Type::int()),
@@ -130,7 +165,7 @@ class SchemaTypes {
             'name' => 'DekverklaringenEdge',
             'fields' => [
                 'node' => SchemaTypes::$dekverklaringType,
-                'cursor' => Type::nonNull(Type::string())
+                'cursor' => Type::nonNull(Type::id())
             ]
         ]);
 
@@ -210,6 +245,38 @@ class SchemaTypes {
                         return [];
                     }
                 ],
+                'user' => [
+                    'type' => SchemaTypes::$userType,
+                    'args' => [
+                        'id' => Type::nonNull(Type::id())
+                    ],
+                    'resolve' => function($root, $args, $context) {
+                        // TODO: Check authorization
+
+                        $dbUser = $context['dataContext']->get_user($args['id']);
+                        if (!$dbUser) {
+                            return null;
+                        }
+
+                        return [
+                            "id" => $args['id'],
+                            "email" => $dbUser["email"],
+                            "name" => $dbUser["name"],
+
+                            "studbook_heideschaap" => $dbUser["studbook_heideschaap"]
+                                ? [ "ko" => $dbUser["studbook_heideschaap_ko"] ]
+                                : null,
+
+                            "studbook_schoonebeeker" => $dbUser["studbook_schoonebeeker"]
+                                ? [ "ko" => $dbUser["studbook_schoonebeeker_ko"] ]
+                                : null,
+
+                            "role_website_contributor" => $dbUser["role_website_contributor"],
+                            "role_studbook_administrator" => $dbUser["role_studbook_administrator"],
+                            "role_studbook_inspector" => $dbUser["role_studbook_inspector"]
+                        ];
+                    }
+                ],
                 'users' => [
                     'type' => SchemaTypes::$usersConnectionType,
                     'args' => [
@@ -255,8 +322,11 @@ class SchemaTypes {
         SchemaTypes::$failedLoginReason = new EnumType([
             'name' => 'FailedLoginReason',
             'values' => [
-                'INVALID_CREDENTIALS' => [
+                'UNKNOWN' => [
                     'value' => 0
+                ],
+                'INVALID_CREDENTIALS' => [
+                    'value' => 1
                 ]
             ]
         ]);
@@ -291,6 +361,62 @@ class SchemaTypes {
 			]
 		]);
 
+		SchemaTypes::$successAddUserResult = new ObjectType([
+			'name' => 'SuccessAddUserResult',
+			'fields' => [
+				'user' => SchemaTypes::$userType
+			]
+		]);
+
+		SchemaTypes::$failedAddUserReason = new EnumType([
+			'name' => 'FailedAddUserReason',
+			'values' => [	
+				'UNKNOWN' => [
+					'value' => 0
+				],
+				'UNAUTHORIZED' => [
+					'value' => 1
+                ],
+                'EMAIL_IN_USE' => [
+                    'value' => 2
+                ]
+			]
+		]);
+
+		SchemaTypes::$failedAddUserResult = new ObjectType([
+			'name' => 'FailedAddUserResult',
+			'fields' => [
+				'reason' => SchemaTypes::$failedAddUserReason
+			]	
+		]);
+
+        SchemaTypes::$successUpdateUserResult = new ObjectType([
+			'name' => 'SuccessUpdateUserResult',
+			'fields' => []
+		]);
+
+		SchemaTypes::$failedUpdateUserReason = new EnumType([
+			'name' => 'FailedUpdateUserReason',
+			'values' => [	
+				'UNKNOWN' => [
+					'value' => 0
+				],
+				'UNAUTHORIZED' => [
+					'value' => 1
+                ],
+                'EMAIL_IN_USE' => [
+                    'value' => 2
+                ]
+			]
+		]);
+
+		SchemaTypes::$failedUpdateUserResult = new ObjectType([
+			'name' => 'FailedUpdateUserResult',
+			'fields' => [
+				'reason' => SchemaTypes::$failedUpdateUserReason
+			]	
+		]);
+
         SchemaTypes::$mutationType = new ObjectType([
             'name' => 'Mutation',
             'fields' => [
@@ -312,27 +438,22 @@ class SchemaTypes {
                         'email' => Type::nonNull(Type::string()),
                         'password' => Type::nonNull(Type::string())
                     ],
-                    'resolve' => function($root, $args, $context) {
-                        $_SESSION['user'] = [
-                            "id" => 1,
-                            "email" => "jan@emmens.nl",
-                            "role" => 0
-                        ];
-                        return [
-                            "user" => $_SESSION['user']
-                        ];
-                     
+                    'resolve' => function($root, $args, $context) {                     
                         $result = $context['dataContext']->login($args['email'], $args['password']);
                         if(!$result) {
                             return [
-                                "reason" => 0
+                                "reason" => 1
                             ];
                         }
 
                         $_SESSION['user'] = [
-                            "id" => $result["id"],
+							"id" => $result["id"],
+							"name" => $result["name"],
                             "email" => $result["email"],
-                            "role" => $result["role"]
+                    		
+							"role_website_contributor" => $result["role_website_contributor"],
+							"role_studbook_administrator" => $result["role_studbook_administrator"],
+							"role_studbook_inspector" => $result["role_studbook_inspector"]
                         ];
                         return [
                             "user" => $_SESSION['user']
@@ -373,7 +494,128 @@ class SchemaTypes {
 							'dekverklaring' => $result
 						];
 					} 
-				]
+				],
+                'addUser' => [
+                    'type' => new UnionType([
+                        'name' => 'AddUserResult',
+                        'types' => [
+                            SchemaTypes::$successAddUserResult,
+                            SchemaTypes::$failedAddUserResult
+                        ],
+                        'resolveType' => function($value) {
+                            if (array_key_exists('user', $value)) {
+                                return SchemaTypes::$successAddUserResult;
+                            }
+                            return SchemaTypes::$failedAddUserResult;
+                        }
+                    ]),
+                    'args' => [
+                        'user' => Type::nonNull(SchemaTypes::$userInput)
+                    ],
+					'resolve' => function($root, $args, $context) {
+						// TODO: Check if current user is authorized
+						
+                        // TODO: Generate password and send by mail
+                        $password = "test";
+
+                        $user = [
+                            "email" => $args["user"]["email"],
+                            "password" => $password,
+                            "name" => $args["user"]["name"],
+                            "studbook_heideschaap" => $args["user"]["studbook_heideschaap"] != null,
+                            "studbook_heideschaap_ko" => $args["user"]["studbook_heideschaap"] != null
+                                && $args["user"]["studbook_heideschaap"]["ko"],
+                            "studbook_schoonebeeker" => $args["user"]["studbook_schoonebeeker"] != null,
+                            "studbook_schoonebeeker_ko" => $args["user"]["studbook_schoonebeeker"] != null 
+                                && $args["user"]["studbook_heideschaap"]["ko"],
+
+                            "role_website_contributor" => $args["user"]["role_website_contributor"],
+                            "role_studbook_administrator" => $args["user"]["role_studbook_administrator"],
+                            "role_studbook_inspector" => $args["user"]["role_studbook_inspector"]
+                        ];
+
+                        $result = null;
+                        try {
+                            $result = $context['dataContext']->add_user($user);
+                        }
+                        catch (\PDOException $e) {
+                            if ($e->errorInfo[1] == 1062) {
+                                return [
+                                    "reason" => 2
+                                ];
+                            }
+                        }
+
+                        if(!$result) {
+                            return [
+                                "reason" => 0
+                            ];
+                        }
+
+                        return [
+                            "user" => [
+                                "id" => $result['id']
+                            ]
+                        ];
+                    }
+                ],
+                'updateUser' => [
+                    'type' => new UnionType([
+                        'name' => 'UpdateUserResult',
+                        'types' => [
+                            SchemaTypes::$successUpdateUserResult,
+                            SchemaTypes::$failedUpdateUserResult
+                        ],
+                        'resolveType' => function($value) {
+                            if (array_key_exists('reason', $value)) {
+                                return SchemaTypes::$failedUpdateUserResult;
+                            }
+                            return SchemaTypes::$successUpdateUserResult;
+                        }
+                    ]),
+                    'args' => [
+                        'id' => Type::nonNull(Type::id()),
+                        'user' => Type::nonNull(SchemaTypes::$userInput)
+                    ],
+					'resolve' => function($root, $args, $context) {
+						// TODO: Check if current user is authorized
+						
+                        $user = [
+                            "email" => $args["user"]["email"],
+                            "name" => $args["user"]["name"],
+                            "studbook_heideschaap" => $args["user"]["studbook_heideschaap"] != null,
+                            "studbook_heideschaap_ko" => $args["user"]["studbook_heideschaap"] != null
+                                && $args["user"]["studbook_heideschaap"]["ko"],
+                            "studbook_schoonebeeker" => $args["user"]["studbook_schoonebeeker"] != null,
+                            "studbook_schoonebeeker_ko" => $args["user"]["studbook_schoonebeeker"] != null 
+                                && $args["user"]["studbook_heideschaap"]["ko"],
+
+                            "role_website_contributor" => $args["user"]["role_website_contributor"],
+                            "role_studbook_administrator" => $args["user"]["role_studbook_administrator"],
+                            "role_studbook_inspector" => $args["user"]["role_studbook_inspector"]
+                        ];
+
+                        $result = null;
+                        try {
+                            $result = $context['dataContext']->update_user($args['id'], $user);
+                        }
+                        catch (\PDOException $e) {
+                            if ($e->errorInfo[1] == 1062) {
+                                return [
+                                    "reason" => 2
+                                ];
+                            }
+                        }
+
+                        if(!$result) {
+                            return [
+                                "reason" => 0
+                            ];
+                        }
+
+                        return [];
+                    }
+                ]
             ]
         ]);
     

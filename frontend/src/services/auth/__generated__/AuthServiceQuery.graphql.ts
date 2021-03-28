@@ -3,13 +3,14 @@
 // @ts-nocheck
 
 import { ConcreteRequest } from "relay-runtime";
-export type UserRole = "MEMBER" | "%future added value";
 export type AuthServiceQueryVariables = {};
 export type AuthServiceQueryResponse = {
     readonly viewer: {
         readonly user: {
-            readonly email: string;
-            readonly role: UserRole;
+            readonly name: string;
+            readonly role_website_contributor: boolean;
+            readonly role_studbook_administrator: boolean;
+            readonly role_studbook_inspector: boolean;
         } | null;
     };
 };
@@ -24,8 +25,10 @@ export type AuthServiceQuery = {
 query AuthServiceQuery {
   viewer {
     user {
-      email
-      role
+      name
+      role_website_contributor
+      role_studbook_administrator
+      role_studbook_inspector
       id
     }
   }
@@ -37,14 +40,28 @@ var v0 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "email",
+  "name": "name",
   "storageKey": null
 },
 v1 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "role",
+  "name": "role_website_contributor",
+  "storageKey": null
+},
+v2 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "role_studbook_administrator",
+  "storageKey": null
+},
+v3 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "role_studbook_inspector",
   "storageKey": null
 };
 return {
@@ -71,7 +88,9 @@ return {
             "plural": false,
             "selections": [
               (v0/*: any*/),
-              (v1/*: any*/)
+              (v1/*: any*/),
+              (v2/*: any*/),
+              (v3/*: any*/)
             ],
             "storageKey": null
           }
@@ -106,6 +125,8 @@ return {
             "selections": [
               (v0/*: any*/),
               (v1/*: any*/),
+              (v2/*: any*/),
+              (v3/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -122,14 +143,14 @@ return {
     ]
   },
   "params": {
-    "cacheID": "aba92359872dcf160c5ea4043503f2df",
+    "cacheID": "828b50903e10c979fc5a8bcb3327df25",
     "id": null,
     "metadata": {},
     "name": "AuthServiceQuery",
     "operationKind": "query",
-    "text": "query AuthServiceQuery {\n  viewer {\n    user {\n      email\n      role\n      id\n    }\n  }\n}\n"
+    "text": "query AuthServiceQuery {\n  viewer {\n    user {\n      name\n      role_website_contributor\n      role_studbook_administrator\n      role_studbook_inspector\n      id\n    }\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = '0b65dca316eea36c5e5986016e7be970';
+(node as any).hash = '2d203a3fd5defce7bbfe0a1b06521622';
 export default node;

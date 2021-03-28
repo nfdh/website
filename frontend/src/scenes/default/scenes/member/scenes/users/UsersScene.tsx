@@ -5,27 +5,32 @@ import { useNavigate } from "react-router";
 import { Toolbar, ToolbarSeparator } from "../../../../../../components/Toolbar";
 import { Button, ButtonVariant } from "../../../../../../components/Button";
 import { Icon } from "../../../../../../components/Icon";
-import { Table, Header, Row, Cell, SelectionMode, getSelectionCount, Empty } from "../../../../../../components/Table";
+import { Table, Header, Row, Cell, SelectionMode, getSelectionCount, Empty, TableSelection, SelectionType } from "../../../../../../components/Table";
 import { TextInput } from "../../../../../../components/TextInput";
 import { SkeletonLine } from "../../../../../../components/Skeleton";
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "../../../../../../components/Modal";
 
-import { UsersSceneQuery, UserRole } from "./__generated__/UsersSceneQuery.graphql";
+import { UsersSceneQuery } from "./__generated__/UsersSceneQuery.graphql";
 import styles from "./index.css";
 
 export function UsersScene() {
     const [searchTerm, setSearchTerm] = React.useState("");
     const [searchTermData, setSearchTermData] = React.useState("");
 
-    const [selectionCount, setSelectionCount] = React.useState(0);
+    const [selection, setSelection] = React.useState<TableSelection | null>(null);
+    const selectionCount = selection === null ? 0 : getSelectionCount(selection);
+
     const [startTransition, isLoading] = React.unstable_useTransition({ timeoutMs: 1000 });
 
+	const navigate = useNavigate();
+
 	const onSelectionChanged = React.useCallback(function(old, n) {
-        setSelectionCount(getSelectionCount(n));
-    }, []);
+        setSelection(n);
+    }, [setSelection]);
 
     const onActivate = React.useCallback(function(key) {
-        console.log("activate", key);
-    }, []);
+        navigate("./" + key);
+    }, [navigate]);
 
     const onSearchChange = React.useCallback(function(evt: React.SyntheticEvent<HTMLInputElement>) {
         setSearchTerm(evt.currentTarget.value);
@@ -33,11 +38,18 @@ export function UsersScene() {
         startTransition(() => setSearchTermData(evt.currentTarget.value));
     }, []);
 
-	const navigate = useNavigate();
-
 	const onAddClick = React.useCallback(function() {
 		navigate("toevoegen");
 	}, [navigate]);
+
+    const onUpdateClick = React.useCallback(function() {
+        if(selection === null || selection.type !== SelectionType.Including || selection.selection.size > 1) {
+            return;
+        }
+
+        const id = selection.selection.first();
+        navigate("./" + id);
+    }, [navigate, selection]);
 
     return <>
         <h2 className={styles.title}>Gebruikers</h2>
@@ -49,8 +61,7 @@ export function UsersScene() {
                     <TextInput icon="search" placeholder="Zoeken..." value={searchTerm} onChange={onSearchChange} />
                 </>
                 : <>
-                    <Button key="edit" onClick={onAddClick} variant={ButtonVariant.Primary} disabled={selectionCount >= 2}><Icon>edit</Icon> Bewerken</Button>
-                    <Button onClick={onAddClick} danger><Icon>delete</Icon> Verwijderen</Button>
+                    <Button key="edit" onClick={onUpdateClick} variant={ButtonVariant.Primary} disabled={selectionCount >= 2}><Icon>edit</Icon> Bewerken</Button>
                 </>
             }
         </Toolbar>
@@ -67,7 +78,7 @@ export function UsersScene() {
             body={<React.Suspense fallback={<UserListSkeleton />}>
                 <UserList searchTerm={searchTermData} />
             </React.Suspense>}
-            />
+        />
     </>;
 }
 

@@ -2,6 +2,7 @@
 
 type Query {
     viewer: Viewer!
+	user(id: ID!): User
     users(searchTerm: String, first: Int!, after: String): UsersConnection
 }
 
@@ -73,15 +74,37 @@ type Viewer {
 	dekverklaringen(first: Int!, after: String): DekverklaringenConnection
 }
 
-enum UserRole {
-    MEMBER
+type StudbookMembership {
+	ko: Boolean!
 }
 
 type User {
     id: ID!
-    name: String!
     email: String!
-    role: UserRole!
+	name: String!
+   	
+	studbook_heideschaap: StudbookMembership
+	studbook_schoonebeeker: StudbookMembership
+
+	role_website_contributor: Boolean!
+	role_studbook_administrator: Boolean!
+	role_studbook_inspector: Boolean!
+}
+
+input StudbookMembershipInput {
+	ko: Boolean!
+}
+
+input UserInput {
+	email: String!
+	name: String!
+
+	studbook_heideschaap: StudbookMembershipInput
+	studbook_schoonebeeker: StudbookMembershipInput
+
+	role_website_contributor: Boolean!
+	role_studbook_administrator: Boolean!
+	role_studbook_inspector: Boolean!
 }
 
 type SuccessLoginResult {
@@ -112,11 +135,46 @@ type FailedSendDekverklaringResult {
 
 union SendDekverklaringResult = SuccessSendDekverklaringResult | FailedSendDekverklaringResult
 
+type SuccessAddUserResult {
+	user: User
+}
+
+enum FailedAddUserReason {
+	UNKNOWN
+	UNAUTHORIZED
+	EMAIL_IN_USE
+}
+
+type FailedAddUserResult {
+	reason: FailedAddUserReason
+}
+
+union AddUserResult = SuccessAddUserResult | FailedAddUserResult
+
+type SuccessUpdateUserResult {
+	user: User
+}
+
+enum FailedUpdateUserReason {
+	UNKNOWN
+	UNAUTHORIZED
+	EMAIL_IN_USE
+}
+
+type FailedUpdateUserResult {
+	reason: FailedUpdateUserReason
+}
+
+union UpdateUserResult = SuccessUpdateUserResult | FailedUpdateUserResult
+
 type Mutation {
     login(email: String, password: String): LoginResult
     logout: Boolean
 
 	sendDekverklaring(dekverklaring: DekverklaringInput!): SendDekverklaringResult
+
+	addUser(user: UserInput!): AddUserResult
+	updateUser(id: ID!, user: UserInput!): UpdateUserResult
 }
 
 schema {

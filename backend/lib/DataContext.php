@@ -13,7 +13,7 @@ class DataContext {
 
     function login($email, $password) {
         $stmt = $this->conn->prepare("
-            SELECT `id`, `email`, `password_hash`, `role`
+            SELECT `id`, `name`, `email`, `password_hash`, `role_website_contributor`, `role_studbook_administrator`, `role_studbook_inspector` 
             FROM `users`
             WHERE `email` = :email
         ");
@@ -21,14 +21,49 @@ class DataContext {
         $stmt->execute();
 
         $row = $stmt->fetch(\PDO::FETCH_NUM);
-        if (!$row || !password_verify($password, $row[2])) {
+        if (!$row || !password_verify($password, $row[3])) {
             return false;
         }
 
         return [
-            "id" => $row[0],
-            "email" => $row[1],
-            "role" => $row[3]
+			"id" => $row[0],
+			"name" => $row[1],
+            "email" => $row[2],
+			"role_website_contributor" => $row[6] != 0,
+			"role_studbook_administrator" => $row[7] != 0,
+			"role_studbook_inspector" => $row[8] != 0
+        ];
+    }
+
+    function get_user($id) {
+        $sql = "
+            SELECT `email`, `name`, 
+                `studbook_heideschaap`, `studbook_heideschaap_ko`, `studbook_schoonebeeker`, `studbook_schoonebeeker_ko`,
+                `role_website_contributor`, `role_studbook_administrator`, `role_studbook_inspector`
+            FROM `users`
+            WHERE `id` = :user_id
+        ";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(':user_id', $id);
+        $stmt->execute();
+        $row = $stmt->fetch(\PDO::FETCH_NUM);
+
+        if(!$row) {
+            return false;
+        }
+
+        return [
+            "email" => $row[0],
+            "name" => $row[1],
+            "studbook_heideschaap" => $row[2],
+            "studbook_heideschaap_ko" => $row[3],
+            "studbook_schoonebeeker" => $row[4],
+            "studbook_schoonebeeker_ko" => $row[5],
+
+			"role_website_contributor" => $row[6],
+			"role_studbook_administrator" => $row[7],
+			"role_studbook_inspector" => $row[8]
         ];
     }
 
@@ -53,7 +88,7 @@ class DataContext {
         $firstCursor = $row[1];
         $lastCursor = $row[2];
 
-        $sql = "SELECT `id`, `name`, `email`, `role`
+        $sql = "SELECT `id`, `name`, `email`
             FROM `users`
             WHERE 1=1";
 
@@ -88,8 +123,7 @@ class DataContext {
             array_push($result, [
                 "id" => $row[0],
                 "name" => $row[1],
-                "email" => $row[2],
-                "role" => $row[3]
+                "email" => $row[2]
             ]);
         }
 
@@ -100,6 +134,73 @@ class DataContext {
             "list" => $result
         ];
 	}
+
+    function add_user($user) {
+        $sql = '
+            INSERT INTO `users` (`name`, `email`, `password_hash`, 
+                `studbook_heideschaap`, `studbook_heideschaap_ko`, `studbook_schoonebeeker`, `studbook_schoonebeeker_ko`, 
+                `role_website_contributor`, `role_studbook_administrator`, `role_studbook_inspector` ) 
+            VALUES (:name, :email, :password_hash, 
+                :studbook_heideschaap, :studbook_heideschaap_ko, :studbook_schoonebeeker, :studbook_schoonebeeker_ko,
+                :role_website_contributor, :role_studbook_administrator, :role_studbook_inspector)
+        ';
+
+        $password_hash = password_hash($user["password"], PASSWORD_DEFAULT);
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(':name', $user['name']);
+        $stmt->bindValue(':email', $user['email']);
+        $stmt->bindValue(':password_hash', $password_hash);
+        $stmt->bindValue(':studbook_heideschaap', $user['studbook_heideschaap']);
+        $stmt->bindValue(':studbook_heideschaap_ko', $user['studbook_heideschaap_ko']);
+        $stmt->bindValue(':studbook_schoonebeeker', $user['studbook_schoonebeeker']);
+        $stmt->bindValue(':studbook_schoonebeeker_ko', $user['studbook_schoonebeeker_ko']);
+        $stmt->bindValue(':role_website_contributor', $user['role_website_contributor']);
+        $stmt->bindValue(':role_studbook_administrator', $user['role_studbook_administrator']);
+        $stmt->bindValue(':role_studbook_inspector', $user['role_studbook_inspector']);
+        $stmt->execute();
+
+        $user_id = $this->conn->lastInsertId();
+
+        // We return the created user
+        return [
+            'id' => $user_id,	
+        ];
+    }
+
+    function update_user($id, $user) {
+        $sql = '
+            UPDATE `users`
+            SET
+                `name` = :name, 
+                `email` = :email, 
+                `studbook_heideschaap` = :studbook_heideschaap,
+                `studbook_heideschaap_ko` = :studbook_heideschaap_ko,
+                `studbook_schoonebeeker` = :studbook_schoonebeeker, 
+                `studbook_schoonebeeker_ko` = :studbook_schoonebeeker_ko, 
+                `role_website_contributor` = :role_website_contributor, 
+                `role_studbook_administrator` = :role_studbook_administrator, 
+                `role_studbook_inspector` = :role_studbook_inspector 
+            WHERE
+                id = :user_id
+        ';
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(':user_id', $id);
+        $stmt->bindValue(':name', $user['name']);
+        $stmt->bindValue(':email', $user['email']);
+        $stmt->bindValue(':studbook_heideschaap', $user['studbook_heideschaap']);
+        $stmt->bindValue(':studbook_heideschaap_ko', $user['studbook_heideschaap_ko']);
+        $stmt->bindValue(':studbook_schoonebeeker', $user['studbook_schoonebeeker']);
+        $stmt->bindValue(':studbook_schoonebeeker_ko', $user['studbook_schoonebeeker_ko']);
+        $stmt->bindValue(':role_website_contributor', $user['role_website_contributor']);
+        $stmt->bindValue(':role_studbook_administrator', $user['role_studbook_administrator']);
+        $stmt->bindValue(':role_studbook_inspector', $user['role_studbook_inspector']);
+        $stmt->execute();
+        
+        // We return the created user
+        return true;
+    }
 
 	function get_dekverklaringen_of_user($user_id, $count, $after) {
         $sql = "SELECT COUNT(1), MIN(`id`), MAX(`id`) FROM `dekverklaringen` WHERE user_id=:user_id"; 

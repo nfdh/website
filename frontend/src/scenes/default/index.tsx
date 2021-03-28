@@ -14,6 +14,7 @@ import { NotFoundScene } from "./scenes/not-found";
 
 import styles from "./index.css";
 import { MemberScene } from "./scenes/member";
+import { ToastContainer } from "react-toastify";
 
 export function DefaultScene() {
     const authenticatedUser = useUserInfo();
@@ -115,5 +116,7 @@ export function DefaultScene() {
                 </div>
             </div>
         </div>
+
+        <ToastContainer />
     </>;
 }

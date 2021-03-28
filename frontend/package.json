@@ -18,7 +18,7 @@
     "@types/react-router": "^5.1.11",
     "@types/react-router-dom": "^5.1.7",
     "classnames": "^2.2.6",
-    "formulizer": "^0.1.0",
+    "formulizer": "^0.1.2",
     "history": "^5.0.0",
     "immutable": "^4.0.0-rc.12",
     "react": "^0.0.0-experimental-6a589ad71",
@@ -26,6 +26,7 @@
     "react-relay": "^0.0.0-experimental-4c4107dd",
     "react-router": "^6.0.0-beta.0",
     "react-router-dom": "^6.0.0-beta.0",
+    "react-toastify": "^7.0.3",
     "relay-runtime": "^11.0.1"
   },
   "devDependencies": {

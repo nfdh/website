@@ -15,10 +15,6 @@ export function commitSendDekverklaring(
                     ...on SuccessSendDekverklaringResult {
 						dekverklaring {
 							id
-							season
-							studbook
-							date_sent
-							date_corrected
 						}
 					}
 					...on FailedSendDekverklaringResult {
