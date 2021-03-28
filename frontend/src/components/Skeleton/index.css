@@ -18,6 +18,11 @@
     margin-bottom: 0;
 }
 
+.textInput {
+    composes: line;
+    height: 40px;
+}
+
 @-webkit-keyframes skeleton-loading {
     0% {
         background-position: 100% 50%

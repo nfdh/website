@@ -3,53 +3,49 @@
 // @ts-nocheck
 
 import { ConcreteRequest } from "relay-runtime";
-export type FailedSendDekverklaringReason = "UNKNOWN" | "%future added value";
-export type Studbook = "DRENTS_HEIDESCHAAP" | "SCHOONEBEEKER" | "%future added value";
-export type DekverklaringInput = {
-    season: number;
-    studbook: Studbook;
+export type FailedAddUserReason = "EMAIL_IN_USE" | "UNAUTHORIZED" | "UNKNOWN" | "%future added value";
+export type UserInput = {
+    email: string;
     name: string;
-    kovo: number;
-    koe: number;
-    kool: number;
-    korl: number;
-    dekgroepen: Array<DekgroepInput>;
-    remarks: string;
+    studbook_heideschaap?: StudbookMembershipInput | null;
+    studbook_schoonebeeker?: StudbookMembershipInput | null;
+    role_website_contributor: boolean;
+    role_studbook_administrator: boolean;
+    role_studbook_inspector: boolean;
 };
-export type DekgroepInput = {
-    ewe_count: number;
-    rammen: Array<string>;
+export type StudbookMembershipInput = {
+    ko: boolean;
 };
-export type SendDekverklaringMutationVariables = {
-    dekverklaring: DekverklaringInput;
+export type AddUserMutationVariables = {
+    user: UserInput;
 };
-export type SendDekverklaringMutationResponse = {
-    readonly sendDekverklaring: {
-        readonly dekverklaring?: {
+export type AddUserMutationResponse = {
+    readonly addUser: {
+        readonly user?: {
             readonly id: string;
         } | null;
-        readonly reason?: FailedSendDekverklaringReason | null;
+        readonly reason?: FailedAddUserReason | null;
     } | null;
 };
-export type SendDekverklaringMutation = {
-    readonly response: SendDekverklaringMutationResponse;
-    readonly variables: SendDekverklaringMutationVariables;
+export type AddUserMutation = {
+    readonly response: AddUserMutationResponse;
+    readonly variables: AddUserMutationVariables;
 };
 
 
 
 /*
-mutation SendDekverklaringMutation(
-  $dekverklaring: DekverklaringInput!
+mutation AddUserMutation(
+  $user: UserInput!
 ) {
-  sendDekverklaring(dekverklaring: $dekverklaring) {
+  addUser(user: $user) {
     __typename
-    ... on SuccessSendDekverklaringResult {
-      dekverklaring {
+    ... on SuccessAddUserResult {
+      user {
         id
       }
     }
-    ... on FailedSendDekverklaringResult {
+    ... on FailedAddUserResult {
       reason
     }
   }
@@ -61,14 +57,14 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "dekverklaring"
+    "name": "user"
   }
 ],
 v1 = [
   {
     "kind": "Variable",
-    "name": "dekverklaring",
-    "variableName": "dekverklaring"
+    "name": "user",
+    "variableName": "user"
   }
 ],
 v2 = {
@@ -77,9 +73,9 @@ v2 = {
     {
       "alias": null,
       "args": null,
-      "concreteType": "Dekverklaring",
+      "concreteType": "User",
       "kind": "LinkedField",
-      "name": "dekverklaring",
+      "name": "user",
       "plural": false,
       "selections": [
         {
@@ -93,7 +89,7 @@ v2 = {
       "storageKey": null
     }
   ],
-  "type": "SuccessSendDekverklaringResult",
+  "type": "SuccessAddUserResult",
   "abstractKey": null
 },
 v3 = {
@@ -107,7 +103,7 @@ v3 = {
       "storageKey": null
     }
   ],
-  "type": "FailedSendDekverklaringResult",
+  "type": "FailedAddUserResult",
   "abstractKey": null
 };
 return {
@@ -115,14 +111,14 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "SendDekverklaringMutation",
+    "name": "AddUserMutation",
     "selections": [
       {
         "alias": null,
         "args": (v1/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
-        "name": "sendDekverklaring",
+        "name": "addUser",
         "plural": false,
         "selections": [
           (v2/*: any*/),
@@ -138,14 +134,14 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "SendDekverklaringMutation",
+    "name": "AddUserMutation",
     "selections": [
       {
         "alias": null,
         "args": (v1/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
-        "name": "sendDekverklaring",
+        "name": "addUser",
         "plural": false,
         "selections": [
           {
@@ -163,14 +159,14 @@ return {
     ]
   },
   "params": {
-    "cacheID": "42ded0d3981c2998abe6a4f517ebdb87",
+    "cacheID": "d6309bda36f3a07414b6b343abea7dfc",
     "id": null,
     "metadata": {},
-    "name": "SendDekverklaringMutation",
+    "name": "AddUserMutation",
     "operationKind": "mutation",
-    "text": "mutation SendDekverklaringMutation(\n  $dekverklaring: DekverklaringInput!\n) {\n  sendDekverklaring(dekverklaring: $dekverklaring) {\n    __typename\n    ... on SuccessSendDekverklaringResult {\n      dekverklaring {\n        id\n      }\n    }\n    ... on FailedSendDekverklaringResult {\n      reason\n    }\n  }\n}\n"
+    "text": "mutation AddUserMutation(\n  $user: UserInput!\n) {\n  addUser(user: $user) {\n    __typename\n    ... on SuccessAddUserResult {\n      user {\n        id\n      }\n    }\n    ... on FailedAddUserResult {\n      reason\n    }\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = '3c26ada97f9509042c655a7018bdd551';
+(node as any).hash = '3dc2e7ac219326dcf9bf12f36a0eb095';
 export default node;

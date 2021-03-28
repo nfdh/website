@@ -15,8 +15,10 @@ export function commitLogin(
                 login(email: $email, password: $password) {
                     ...on SuccessLoginResult {
                         user {
-                            email
-                            role
+                            name
+               				role_website_contributor
+							role_studbook_administrator
+							role_studbook_inspector
                         }
                     }
                     ...on FailedLoginResult {

@@ -4,7 +4,6 @@
 
 import { ConcreteRequest } from "relay-runtime";
 export type FailedLoginReason = "INVALID_CREDENTIALS" | "%future added value";
-export type UserRole = "MEMBER" | "%future added value";
 export type LoginMutationVariables = {
     email: string;
     password: string;
@@ -12,8 +11,10 @@ export type LoginMutationVariables = {
 export type LoginMutationResponse = {
     readonly login: {
         readonly user?: {
-            readonly email: string;
-            readonly role: UserRole;
+            readonly name: string;
+            readonly role_website_contributor: boolean;
+            readonly role_studbook_administrator: boolean;
+            readonly role_studbook_inspector: boolean;
         };
         readonly reason?: FailedLoginReason | null;
     } | null;
@@ -34,8 +35,10 @@ mutation LoginMutation(
     __typename
     ... on SuccessLoginResult {
       user {
-        email
-        role
+        name
+        role_website_contributor
+        role_studbook_administrator
+        role_studbook_inspector
         id
       }
     }
@@ -75,17 +78,31 @@ v2 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "email",
+  "name": "name",
   "storageKey": null
 },
 v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "role",
+  "name": "role_website_contributor",
   "storageKey": null
 },
 v4 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "role_studbook_administrator",
+  "storageKey": null
+},
+v5 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "role_studbook_inspector",
+  "storageKey": null
+},
+v6 = {
   "kind": "InlineFragment",
   "selections": [
     {
@@ -126,7 +143,9 @@ return {
                 "plural": false,
                 "selections": [
                   (v2/*: any*/),
-                  (v3/*: any*/)
+                  (v3/*: any*/),
+                  (v4/*: any*/),
+                  (v5/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -134,7 +153,7 @@ return {
             "type": "SuccessLoginResult",
             "abstractKey": null
           },
-          (v4/*: any*/)
+          (v6/*: any*/)
         ],
         "storageKey": null
       }
@@ -176,6 +195,8 @@ return {
                 "selections": [
                   (v2/*: any*/),
                   (v3/*: any*/),
+                  (v4/*: any*/),
+                  (v5/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -190,21 +211,21 @@ return {
             "type": "SuccessLoginResult",
             "abstractKey": null
           },
-          (v4/*: any*/)
+          (v6/*: any*/)
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "cacheID": "1891f188c50bc804e212a1c99642059c",
+    "cacheID": "a1b18f3d12d15f78e2bc4fc8b40a8f9e",
     "id": null,
     "metadata": {},
     "name": "LoginMutation",
     "operationKind": "mutation",
-    "text": "mutation LoginMutation(\n  $email: String!\n  $password: String!\n) {\n  login(email: $email, password: $password) {\n    __typename\n    ... on SuccessLoginResult {\n      user {\n        email\n        role\n        id\n      }\n    }\n    ... on FailedLoginResult {\n      reason\n    }\n  }\n}\n"
+    "text": "mutation LoginMutation(\n  $email: String!\n  $password: String!\n) {\n  login(email: $email, password: $password) {\n    __typename\n    ... on SuccessLoginResult {\n      user {\n        name\n        role_website_contributor\n        role_studbook_administrator\n        role_studbook_inspector\n        id\n      }\n    }\n    ... on FailedLoginResult {\n      reason\n    }\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = 'fd13a4256863653c028bdc3b0f21b828';
+(node as any).hash = 'bbf58905ee8e43cef0b0c39377d95859';
 export default node;

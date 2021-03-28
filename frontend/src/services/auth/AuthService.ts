@@ -11,8 +11,11 @@ export function useUserInfo(): AuthServiceQuery["response"]["viewer"]["user"] {
         query AuthServiceQuery {
             viewer {
                 user {
-                    email
-                    role
+                    name
+                    
+					role_website_contributor
+					role_studbook_administrator
+					role_studbook_inspector
                 }
             }
         }

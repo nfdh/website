@@ -68,10 +68,10 @@ function startFrontendServer(): Server {
 
 		const cachedResponses = JSON.stringify(fetchContext.cachedResponses);
 		res.write(cachedResponses);
-    }
+  }
 	catch(ex) {
 		res.status(500);
-		res.write("Er is iets fout gegaan tijdens het laden van de pagina, probeer het later opnieuw. " + ex);
+		res.write("Er is iets fout gegaan tijdens het laden van de pagina, probeer het later opnieuw.");
 	}
 	res.end();
   }
@@ -106,7 +106,7 @@ function fetchRelay(this: FetchContext, params: RequestParameters, variables: an
   const fetchContext = this;
 
   const promise = new Promise(function(resolve, reject) {
-      const https = require('https');
+      const http = require('http');
 
       const body = JSON.stringify({
           query: params.text,
@@ -114,9 +114,9 @@ function fetchRelay(this: FetchContext, params: RequestParameters, variables: an
       });
 
       const options = {
-          hostname: 'nieuw.drentsheideschaap.nl',
-          //hostname: 'localhost',
-	  	  port: 443,
+          //hostname: 'nieuw.drentsheideschaap.nl',
+          hostname: 'localhost',
+	  	    port: 8080,
           path: '/query',
           method: 'POST',
           headers: {
@@ -126,7 +126,7 @@ function fetchRelay(this: FetchContext, params: RequestParameters, variables: an
           }
       };
 
-      const req = https.request(options, res => {
+      const req = http.request(options, res => {
           if (res.statusCode !== 200) {
               reject("Unexpected status code " + res.statusCode);
           }

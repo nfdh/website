@@ -69,6 +69,31 @@ function config(isClient, isDev) {
                         {
                             loader: "css-loader",
                             options: {
+                                modules: false,
+                                sourceMap: true
+                            }
+                        }
+                    ] : [
+                        {
+                            loader: "css-loader",
+                            options: {
+                                modules: false
+                            }
+                        }
+                    ],
+                    include: [
+                        path.resolve(__dirname, "node_modules")
+                    ]
+                },
+                {
+                    test: /\.css$/,
+                    use: isClient ? [
+                        {
+                            loader: MiniCssExtractPlugin.loader
+                        },
+                        {
+                            loader: "css-loader",
+                            options: {
                                 modules: {
                                     getLocalIdent: isDev ? getLocalIdentDev : getLocalIdentProd
                                 },
