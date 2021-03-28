@@ -105,9 +105,9 @@ export function EditUserScene() {
 		role_studbook_inspector: user.user.role_studbook_inspector,
 		role_website_contributor: user.user.role_website_contributor,
 		studbook_heideschaap: user.user.studbook_heideschaap !== null,
-		studbook_heideschaap_ko: user.user.studbook_heideschaap?.ko,
+		studbook_heideschaap_ko: user.user.studbook_heideschaap !== null && user.user.studbook_heideschaap.ko,
 		studbook_schoonebeeker: user.user.studbook_schoonebeeker !== null,
-		studbook_schoonebeeker_ko: user.user.studbook_schoonebeeker?.ko
+		studbook_schoonebeeker_ko: user.user.studbook_schoonebeeker !== null && user.user.studbook_schoonebeeker.ko
 	};
 
 	return <div>
