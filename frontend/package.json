@@ -21,7 +21,7 @@
     "formulizer": "^0.1.2",
     "history": "^5.0.0",
     "immutable": "^4.0.0-rc.12",
-    "react": "^0.0.0-experimental-6a589ad71",
+    "react": "^0.14.0",
     "react-dom": "^0.0.0-experimental-6a589ad71",
     "react-relay": "^0.0.0-experimental-4c4107dd",
     "react-router": "^6.0.0-beta.0",
