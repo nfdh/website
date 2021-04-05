@@ -724,6 +724,11 @@ if (false !== $pos = strpos($uri, '?')) {
 }
 $uri = rawurldecode($uri);
 
+// Remove leading slash
+if($uri[0] === '/') {
+    $uri = substr($uri, 1);
+}
+
 // Parse input
 $inputJSON = file_get_contents('php://input');
 $input = json_decode($inputJSON, TRUE);
