@@ -27,6 +27,7 @@ import { MatRadioModule } from "@angular/material/radio";
 import { MatCardModule } from '@angular/material/card'
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSelectModule } from '@angular/material/select';
+import { GalleryModule } from 'ng-gallery';
 
 import { AppComponent } from './app.component';
 import { HomePageComponent } from './home-page/home-page.component';
@@ -99,6 +100,7 @@ import { ContactPageComponent } from './contact-page/contact-page.component';
     MatCardModule,
     MatDividerModule,
     MatSelectModule,
+    GalleryModule,
     
     VerticalMenuModule,
     ToolbarModule,
