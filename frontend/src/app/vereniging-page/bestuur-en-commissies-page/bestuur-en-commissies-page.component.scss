@@ -1,0 +1,64 @@
+h1 {
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2 {
+    color: #000;
+}
+
+h2 {
+    margin-bottom: 7px;
+}
+
+h1 + p,
+h2 + p {
+    margin-top: 7px;
+}
+
+.member-list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.member {
+    width: 280px;
+}
+
+.member .name {
+    font-weight: bold;
+}
+
+.member .role {
+    color: dimgray;
+    margin-bottom: 10px;
+}
+
+.member .phone,
+.member .address {
+    margin-bottom: 9px;
+}
+
+.member .phone,
+.member .mail,
+.member .address {
+    display: flex;
+    flex-direction: row;
+}
+
+.member .phone mat-icon,
+.member .mail mat-icon ,
+.member .address mat-icon {
+    font-size: 100%;
+    height: 1em;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}

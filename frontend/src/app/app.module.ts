@@ -53,6 +53,10 @@ import { HuiskeuringFormComponent } from './member-page/huiskeuringen-page/huisk
 import { EditHuiskeuringPageComponent } from './member-page/huiskeuringen-page/edit-huiskeuring-page/edit-huiskeuring-page.component';
 import { BaseUrlInterceptor } from './base-url.interceptor';
 import { ContactPageComponent } from './contact-page/contact-page.component';
+import { VerenigingPageComponent } from './vereniging-page/vereniging-page.component';
+import { OverDeVerenigingPageComponent } from './vereniging-page/over-de-vereniging-page/over-de-vereniging-page.component';
+import { BestuurEnCommissiesPageComponent } from './vereniging-page/bestuur-en-commissies-page/bestuur-en-commissies-page.component';
+import { CalamiteitenplanPageComponent } from './vereniging-page/calamiteitenplan-page/calamiteitenplan-page.component';
 
 @NgModule({
   declarations: [
@@ -76,7 +80,11 @@ import { ContactPageComponent } from './contact-page/contact-page.component';
     AddHuiskeuringPageComponent,
     HuiskeuringFormComponent,
     EditHuiskeuringPageComponent,
-    ContactPageComponent
+    ContactPageComponent,
+    VerenigingPageComponent,
+    OverDeVerenigingPageComponent,
+    BestuurEnCommissiesPageComponent,
+    CalamiteitenplanPageComponent
   ],
   imports: [
     BrowserModule,
