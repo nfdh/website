@@ -51,6 +51,7 @@ import { AddHuiskeuringPageComponent } from './member-page/huiskeuringen-page/ad
 import { HuiskeuringFormComponent } from './member-page/huiskeuringen-page/huiskeuring-form/huiskeuring-form.component';
 import { EditHuiskeuringPageComponent } from './member-page/huiskeuringen-page/edit-huiskeuring-page/edit-huiskeuring-page.component';
 import { BaseUrlInterceptor } from './base-url.interceptor';
+import { ContactPageComponent } from './contact-page/contact-page.component';
 
 @NgModule({
   declarations: [
@@ -73,7 +74,8 @@ import { BaseUrlInterceptor } from './base-url.interceptor';
     HuiskeuringenPageComponent,
     AddHuiskeuringPageComponent,
     HuiskeuringFormComponent,
-    EditHuiskeuringPageComponent
+    EditHuiskeuringPageComponent,
+    ContactPageComponent
   ],
   imports: [
     BrowserModule,
