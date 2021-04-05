@@ -3,9 +3,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatPaginatorIntlImpl } from './localization/MatPaginator';
 
+import { environment } from '../environments/environment';
 
 import { AppRoutingModule } from './app-routing.module';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -49,6 +50,7 @@ import { HuiskeuringenPageComponent } from './member-page/huiskeuringen-page/hui
 import { AddHuiskeuringPageComponent } from './member-page/huiskeuringen-page/add-huiskeuring-page/add-huiskeuring-page.component';
 import { HuiskeuringFormComponent } from './member-page/huiskeuringen-page/huiskeuring-form/huiskeuring-form.component';
 import { EditHuiskeuringPageComponent } from './member-page/huiskeuringen-page/edit-huiskeuring-page/edit-huiskeuring-page.component';
+import { BaseUrlInterceptor } from './base-url.interceptor';
 
 @NgModule({
   declarations: [
@@ -103,7 +105,13 @@ import { EditHuiskeuringPageComponent } from './member-page/huiskeuringen-page/e
   providers: [
     AuthenticationService,
     { provide: MatPaginatorIntl, useClass: MatPaginatorIntlImpl },
-    TableDataSourceFactory
+    TableDataSourceFactory,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: BaseUrlInterceptor,
+      multi: true,
+    },
+    { provide: "BASE_API_URL", useValue: environment.apiUrl }
   ],
   bootstrap: [AppComponent]
 })
