@@ -1,0 +1,57 @@
+.studbook_radio {
+    margin-right: 15px;
+}
+
+.studbook_radio_group {
+    margin-bottom: 20px;
+}
+
+.season-input {
+    width: 200px;
+}
+
+.ko-input {
+    width: 500px;
+}
+
+.section-text {
+    margin: 0;
+    padding: 0;
+}
+
+.add-dekgroep-button {
+    margin: 10px 0;
+    align-self: flex-start;
+}
+
+.dekgroepen {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.dekgroep {
+    width: 300px;
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+.remarks-input {
+    margin-top: 10px;
+}
+
+.ram {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.dkao-input {
+    width: 100%;
+}
+
+.ram-input {
+    width: 225px;
+}

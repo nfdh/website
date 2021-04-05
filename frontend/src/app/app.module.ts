@@ -1,0 +1,110 @@
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatPaginatorIntlImpl } from './localization/MatPaginator';
+
+
+import { AppRoutingModule } from './app-routing.module';
+import { HttpClientModule } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from "@angular/material/input";
+import { MatIconModule } from "@angular/material/icon";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { MatTableModule } from "@angular/material/table";
+import { VerticalMenuModule } from './vertical-menu/vertical-menu.module';
+import { AuthenticationService } from './services/authentication.service';
+import { ToolbarModule } from "./toolbar/toolbar.module";
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginator';
+import { MatProgressBarModule } from '@angular/material/progress-bar'; 
+import { MatDialogModule } from "@angular/material/dialog";
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { FormModule } from './form/form.module';
+import { MatRadioModule } from "@angular/material/radio";
+import { MatCardModule } from '@angular/material/card'
+import { MatDividerModule } from '@angular/material/divider';
+import { MatSelectModule } from '@angular/material/select';
+
+import { AppComponent } from './app.component';
+import { HomePageComponent } from './home-page/home-page.component';
+import { DisclaimerPageComponent } from './disclaimer-page/disclaimer-page.component';
+import { NotFoundPageComponent } from './not-found-page/not-found-page.component';
+import { LoginPageComponent } from './login-page/login-page.component';
+import { MemberPageComponent } from './member-page/member-page.component';
+import { UsersPageComponent } from './member-page/users-page/users-page.component';
+import { DeleteConfirmationDialogComponent } from './delete-confirmation-dialog/delete-confirmation-dialog.component';
+import { AddUserPageComponent } from './member-page/users-page/add-user-page/add-user-page.component';
+import { EditUserPageComponent } from './member-page/users-page/edit-user-page/edit-user-page.component';
+import { UserFormComponent } from './member-page/users-page/user-form/user-form.component';
+
+import { TableDataSourceFactory } from './services/table-data-source.service';
+import { MessageComponent } from './message/message.component';
+import { DekverklaringenPageComponent } from './member-page/dekverklaringen-page/dekverklaringen-page.component';
+import { AddDekverklaringPageComponent } from './member-page/dekverklaringen-page/add-dekverklaring-page/add-dekverklaring-page.component';
+import { DekverklaringFormComponent } from './member-page/dekverklaringen-page/dekverklaring-form/dekverklaring-form.component';
+import { EditDekverklaringPageComponent } from './member-page/dekverklaringen-page/edit-dekverklaring-page/edit-dekverklaring-page.component';
+import { HuiskeuringenPageComponent } from './member-page/huiskeuringen-page/huiskeuringen-page.component';
+import { AddHuiskeuringPageComponent } from './member-page/huiskeuringen-page/add-huiskeuring-page/add-huiskeuring-page.component';
+import { HuiskeuringFormComponent } from './member-page/huiskeuringen-page/huiskeuring-form/huiskeuring-form.component';
+import { EditHuiskeuringPageComponent } from './member-page/huiskeuringen-page/edit-huiskeuring-page/edit-huiskeuring-page.component';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HomePageComponent,
+    DisclaimerPageComponent,
+    NotFoundPageComponent,
+    LoginPageComponent,
+    MemberPageComponent,
+    UsersPageComponent,
+    DeleteConfirmationDialogComponent,
+    AddUserPageComponent,
+    EditUserPageComponent,
+    UserFormComponent,
+    MessageComponent,
+    DekverklaringenPageComponent,
+    AddDekverklaringPageComponent,
+    DekverklaringFormComponent,
+    EditDekverklaringPageComponent,
+    HuiskeuringenPageComponent,
+    AddHuiskeuringPageComponent,
+    HuiskeuringFormComponent,
+    EditHuiskeuringPageComponent
+  ],
+  imports: [
+    BrowserModule,
+    ReactiveFormsModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    HttpClientModule,
+
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    MatTableModule,
+    MatCheckboxModule,
+    MatPaginatorModule,
+    MatProgressBarModule,
+    MatDialogModule,
+    MatSnackBarModule,
+    MatRadioModule,
+    MatCardModule,
+    MatDividerModule,
+    MatSelectModule,
+    
+    VerticalMenuModule,
+    ToolbarModule,
+    FormModule
+  ],
+  providers: [
+    AuthenticationService,
+    { provide: MatPaginatorIntl, useClass: MatPaginatorIntlImpl },
+    TableDataSourceFactory
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }

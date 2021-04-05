@@ -4,6 +4,4 @@
 /backend/conf/Settings.local.php
 /work_dir
 
-# Symbolic links for local testing
-/backend/static
-/backend/template.html
+dev-proxy.json

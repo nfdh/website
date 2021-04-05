@@ -1,0 +1,159 @@
+:host {
+    height: 100%;
+}
+
+.header {
+    background: url("/assets/schapen.jpeg");
+    background-size: cover;
+    height: 720px;
+    position: relative;
+}
+
+.title {
+    position: absolute;
+    left: 50%;
+	transform: translate(-50%,0);
+    bottom: 72px;
+    width: 80%;
+	max-width: 1536px;
+    color: white;
+    text-shadow: 0 0 40px rgba(0, 0, 0, 0.8),
+        1px 1px 3px rgba(0, 0, 0, 0.9);
+    white-space: nowrap;
+}
+
+.title > h1 {
+    font-size: 60px;
+    margin: 0;
+    font-weight: bold;
+}
+
+.title > h2 {
+    font-size: 30px;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.header-menu {
+    position: absolute;
+    left: 50%;
+	transform: translate(-50%,0);
+    bottom: 19px;
+    width: 80%;
+	max-width: 1536px;
+    display: flex;
+    flex-direction: row;
+    white-space: nowrap;
+}
+
+.header-menu-segment {
+    background: rgba(30, 30, 30, 0.8);
+    text-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+    margin-right: 20px;
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+.header-menu-segment:last-child {
+    margin-right: 0;
+}
+
+.header-menu-link {
+    display: inline-block;
+    padding: 10px 20px;
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 20px;
+    border-right: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.header-menu-link:hover {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.header-menu-link.active {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.header-menu-link.active:hover {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.header-menu-link:last-child {
+    border-right: none;
+}
+
+.header-fade {
+    height: 20px;
+    background: linear-gradient(rgba(100, 100, 100, 0), rgba(100, 100, 100, 0.6));
+    border-bottom: 1px solid rgba(100, 100, 100, 1);
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.footer {
+    background: rgba(0, 0, 0, 0.1);
+    margin-top: 25px;
+}
+
+.footer-center {
+    width: 80%;
+	max-width: 1536px;
+    margin: 0 auto;
+    padding: 25px;
+    display: flex;
+    flex-direction: row;
+}
+
+.footer-column {
+    width: 400px;
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+
+.footer-column > h4 {
+    margin: 0;
+    padding: 0;
+    margin-bottom: 5px;
+    color: #000;
+}
+
+.footer-column > p {
+    margin: 0;
+}
+
+.footer-column > table > tbody > tr > td:first-child {
+    padding-right: 10px;
+    text-align: right;
+    vertical-align: top;
+}
+
+.footer-column a {
+    color: rgba(0, 0, 255, 0.8);
+    text-decoration: none;
+    line-height: 24px;
+}
+
+.footer-column a:hover {
+    text-decoration: underline;
+}
+
+.footer-column:last-child {
+    flex-grow: 1;
+    width: auto;
+}
+
+.copyright-notice {
+    font-size: 80%;
+}
+
+.center-content {
+    margin: 0 auto;
+    width: 80%;
+    min-height: 45%;
+	max-width: 1536px;
+}

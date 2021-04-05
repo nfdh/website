@@ -1,0 +1,75 @@
+<div class="header">
+  <div class="title">
+      <h1>
+          Nederlandse Fokkersvereniging<br />
+          Het Drentse Heideschaap
+      </h1>
+      <h2>Drents Heideschaap en Schoonebeeker</h2>
+  </div>
+
+  <div class="header-menu">
+      <div class="header-menu-segment">
+          <a class="header-menu-link" routerLink="." routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
+          <a class="header-menu-link" routerLink="vereniging" routerLinkActive="active">Vereniging</a>
+          <a class="header-menu-link" routerLink="rassen" routerLinkActive="active">Rassen</a>
+          <a class="header-menu-link" routerLink="contact" routerLinkActive="active">Contact</a>
+      </div>
+      <div class="header-menu-segment">
+        <ng-container *ngIf="isAuthenticated$ | async">
+          <a class="header-menu-link" routerLink="ledenportaal" routerLinkActive="active">Ledenportaal</a>
+          <a class="header-menu-link" href="#" (click)="logout($event)">Uitloggen</a>
+        </ng-container>
+        <ng-container *ngIf="!(isAuthenticated$ | async)">
+          <a class="header-menu-link" routerLink="lid-worden" routerLinkActive="active">Lid worden</a>
+          <a class="header-menu-link" routerLink="login" routerLinkActive="active">Inloggen</a>
+        </ng-container>
+      </div>
+  </div>
+
+  <div class="header-fade"></div>
+</div>
+
+<div class="center-content">
+    <router-outlet></router-outlet>
+</div>
+
+<div class="footer">
+  <div class="footer-center">
+      <div class="footer-column">
+          <h4>Contact</h4>
+          <table>
+              <tbody>
+                  <tr>
+                      <td><i>Ten name van</i></td>
+                      <td>Marlaine de Munck</td>
+                  </tr>
+                  <tr>
+                      <td><i>Adres</i></td>
+                      <td>Hoofdweg 16<br />4411 AR Rilland</td>
+                  </tr>
+                  <tr>
+                      <td><i>Telefoon</i></td>
+                      <td>06-37382955</td>
+                  </tr>
+                  <tr>
+                      <td><i>Email</i></td>
+                      <td><a href="mailto:info@nfdh.nl" target="_blank">info@nfdh.nl</a></td>
+                  </tr>
+              </tbody>
+          </table>
+      </div>
+      <div class="footer-column">
+          <h4>Legal</h4>
+          <p>
+              <a routerLink="disclaimer">Disclaimer</a><br />
+              <a href="">Verenigingstatuut</a>
+          </p>
+          <br />
+          <br />
+          <p class="copyright-notice">
+              Copyright &copy; 2020 Nederlandse Fokkersvereniging Het Drentse Heideschaap<br />
+              Website door <a href="https://www.linkedin.com/in/jan-emmens-525029189/" target="_blank">Jan Emmens</a>
+          </p>
+      </div>
+  </div>
+</div>

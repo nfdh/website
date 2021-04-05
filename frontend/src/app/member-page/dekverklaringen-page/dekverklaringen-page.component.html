@@ -1,0 +1,59 @@
+<h2 class="title">Dekverklaringen</h2>
+<app-toolbar>
+    <ng-container *ngIf="selection.size === 0">
+        <button mat-raised-button (click)="onAddClick()" color="primary"><mat-icon>add</mat-icon> Nieuwe dekverklaring indienen</button>
+    </ng-container>
+    <ng-container *ngIf="selection.size > 0">
+        <button mat-raised-button (click)="onUpdateClick()" color="primary" [disabled]="selection.size >= 2"><mat-icon>wysiwyg</mat-icon> Tonen</button>
+    </ng-container>
+</app-toolbar>
+
+<table class="dekverklaring-list" mat-table [dataSource]="dekverklaringen">
+    <ng-container matColumnDef="select">
+        <th mat-header-cell *matHeaderCellDef width="65">
+            <mat-checkbox (change)="selection.toggleMaster()"
+                [checked]="selection.allSelected"
+                [indeterminate]="selection.partialSelection"
+                color="primary">
+            </mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let row">
+            <mat-checkbox (click)="$event.stopPropagation()"
+                        (change)="selection.toggle(row.id)"
+                        [checked]="selection.isSelected(row.id)"
+                        color="primary">
+            </mat-checkbox>
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="season">
+        <th mat-header-cell *matHeaderCellDef>Seizoen</th>
+        <td mat-cell *matCellDef="let form">{{form.season}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="studbook">
+        <th mat-header-cell *matHeaderCellDef>Stamboek</th>
+        <td mat-cell *matCellDef="let form" [ngSwitch]="form.studbook">
+            <ng-container *ngSwitchCase="Studbook.DRENTS_HEIDESCHAAP">Drents Heideschaap</ng-container>
+            <ng-container *ngSwitchCase="Studbook.SCHOONEBEEKER">Schoonebeeker</ng-container>
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="date_sent">
+        <th mat-header-cell *matHeaderCellDef>Verzonden op</th>
+        <td mat-cell *matCellDef="let form">{{form.date_sent | date}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="paginator">
+        <td mat-footer-cell *matFooterCellDef colspan="99" class="paginator">
+            <mat-paginator [pageIndex]="dekverklaringen.pageIndex" [pageSize]="dekverklaringen.pageSize" [length]="dekverklaringen.totalRowCount" [pageSizeOptions]="[50]" (page)="onPage($event)" showFirstLastButtons></mat-paginator>
+        </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+    <tr mat-row class="table-row" *matRowDef="let row; columns: columnsToDisplay" 
+        (click)="selection.selectSingle(row.id)"
+        (dblclick)="onDoubleClick(row.id)"
+    ></tr>
+    <tr mat-footer-row *matFooterRowDef="['paginator']"></tr>
+</table>

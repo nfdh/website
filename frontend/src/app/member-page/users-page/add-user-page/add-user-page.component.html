@@ -1,0 +1,11 @@
+<h2 class="title">Gebruiker toevoegen</h2>
+<app-message type="error" *ngIf="errorMessage !== null"> 
+    {{errorMessage}}
+</app-message>
+<form (submit)="onSubmit($event)">
+    <app-user-form [addNew]="true" [formGroup]="formGroup"></app-user-form>
+    <app-form-actions>
+        <button mat-raised-button color="primary" type="submit">Toevoegen</button>
+        <button mat-button (click)="onCancelClick()">Annuleren</button>
+    </app-form-actions>
+</form>

@@ -1,0 +1,16 @@
+<h2 mat-dialog-title>{{entityName}} verwijderen</h2>
+<mat-dialog-content>
+    <ng-container *ngIf="type === 'including'">
+        Weet u zeker dat u de {{size === 1 ? 'geselecteerde regel' : size + ' geselecteerde regels' }} wilt verwijderen?
+    </ng-container>
+    <ng-container *ngIf="type === 'excluding'">
+        Weet u zeker dat u alle behalve de gedeselecteerde regels wilt verwijderen?
+    </ng-container>
+    <ng-container *ngIf="type === 'all'">
+        Weet u zeker dat u alle regels wilt verwijderen?
+    </ng-container>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Annuleren</button>
+  <button mat-button color="warn" [mat-dialog-close]="true" cdkFocusInitial>Verwijderen</button>
+</mat-dialog-actions>

@@ -1,4 +1,3 @@
 RewriteEngine on
-RewriteRule ^query query.php [NC,QSA,L]
-RewriteCond %{REQUEST_URI} !^/static/.*
-RewriteRule ^(.*) index.php [NC,L]
+RewriteCond %{REQUEST_URI} !^/(static|api)/.*
+RewriteRule ^(.*) index.html [NC,L]

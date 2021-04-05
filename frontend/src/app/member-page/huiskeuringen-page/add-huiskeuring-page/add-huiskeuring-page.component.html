@@ -1,0 +1,8 @@
+<h2 class="title">Inschrijven voor huiskeuring</h2>
+<form (submit)="onSubmit($event)">
+    <app-huiskeuring-form [formGroup]="formGroup"></app-huiskeuring-form>
+    <app-form-actions>
+        <button mat-raised-button color="primary" type="submit">Versturen</button>
+        <button mat-button (click)="onCancelClick()">Annuleren</button>
+    </app-form-actions>
+</form>
