@@ -1,3 +1,4 @@
 RewriteEngine on
-RewriteCond %{REQUEST_URI} !^/(static|api)/.*
+RewriteCond %{REQUEST_URI} !^/api/.*
+RewriteCond %{REQUEST_URI} !\.(js|css|ico)$
 RewriteRule ^(.*) index.html [NC,L]
