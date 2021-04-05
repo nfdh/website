@@ -18,9 +18,21 @@ import { HuiskeuringenPageComponent as MemberHuiskeuringenPageComponent } from '
 import { AddHuiskeuringPageComponent as MemberAddHuiskeuringPageComponent } from './member-page/huiskeuringen-page/add-huiskeuring-page/add-huiskeuring-page.component';
 import { EditHuiskeuringPageComponent as MemberEditHuiskeuringPageComponent } from './member-page/huiskeuringen-page/edit-huiskeuring-page/edit-huiskeuring-page.component';
 import { ContactPageComponent } from './contact-page/contact-page.component';
+import { VerenigingPageComponent } from './vereniging-page/vereniging-page.component';
+import { OverDeVerenigingPageComponent } from './vereniging-page/over-de-vereniging-page/over-de-vereniging-page.component';
+import { BestuurEnCommissiesPageComponent } from './vereniging-page/bestuur-en-commissies-page/bestuur-en-commissies-page.component';
+import { CalamiteitenplanPageComponent } from './vereniging-page/calamiteitenplan-page/calamiteitenplan-page.component';
 
 const routes: Routes = [
   { path: "", component: HomePageComponent },
+  { path: "vereniging", component: VerenigingPageComponent,
+    children: [
+      { path: "", redirectTo: "over-de-vereniging", pathMatch: "full" },
+      { path: "over-de-vereniging", component: OverDeVerenigingPageComponent },
+      { path: "bestuur-en-commissies", component: BestuurEnCommissiesPageComponent },
+      { path: "calamiteitenplan", component: CalamiteitenplanPageComponent }
+    ]
+  },
   { path: "disclaimer", component: DisclaimerPageComponent },
   { path: "contact", component: ContactPageComponent },
   { path: "login", component: LoginPageComponent },
