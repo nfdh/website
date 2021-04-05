@@ -6,14 +6,18 @@ namespace Composer\Autoload;
 
 class ComposerStaticInit236f4033d99ed3f7920a71d24bb4b5f5
 {
+    public static $files = array (
+        '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
+    );
+
     public static $prefixLengthsPsr4 = array (
         'L' => 
         array (
             'Lib\\' => 4,
         ),
-        'G' => 
+        'F' => 
         array (
-            'GraphQL\\' => 8,
+            'FastRoute\\' => 10,
         ),
         'C' => 
         array (
@@ -26,9 +30,9 @@ class ComposerStaticInit236f4033d99ed3f7920a71d24bb4b5f5
         array (
             0 => __DIR__ . '/../..' . '/',
         ),
-        'GraphQL\\' => 
+        'FastRoute\\' => 
         array (
-            0 => __DIR__ . '/..' . '/webonyx/graphql-php/src',
+            0 => __DIR__ . '/..' . '/nikic/fast-route/src',
         ),
         'Conf\\' => 
         array (
@@ -36,11 +40,16 @@ class ComposerStaticInit236f4033d99ed3f7920a71d24bb4b5f5
         ),
     );
 
+    public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+    );
+
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit236f4033d99ed3f7920a71d24bb4b5f5::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit236f4033d99ed3f7920a71d24bb4b5f5::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit236f4033d99ed3f7920a71d24bb4b5f5::$classMap;
 
         }, null, ClassLoader::class);
     }

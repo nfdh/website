@@ -1,0 +1,8 @@
+<h2 class="title">Nieuwe dekverklaring indienen</h2>
+<form (submit)="onSubmit($event)">
+    <app-dekverklaring-form [formGroup]="formGroup"></app-dekverklaring-form>
+    <app-form-actions>
+        <button mat-raised-button color="primary" type="submit">Versturen</button>
+        <button mat-button (click)="onCancelClick()">Annuleren</button>
+    </app-form-actions>
+</form>

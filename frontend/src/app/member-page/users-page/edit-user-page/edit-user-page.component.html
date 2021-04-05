@@ -1,0 +1,16 @@
+<app-message type="error" *ngIf="loadErrorMessage !== null">
+    {{loadErrorMessage}}
+</app-message>
+<ng-container *ngIf="loadErrorMessage === null">
+    <h2 class="title">Gebruiker {{formGroup.controls.name.value}}</h2>
+    <app-message type="error" *ngIf="errorMessage !== null"> 
+        {{errorMessage}}
+    </app-message>
+    <form (submit)="onSubmit($event)">
+        <app-user-form [addNew]="false" [formGroup]="formGroup"></app-user-form>
+        <app-form-actions>
+            <button mat-raised-button color="primary" type="submit" [disabled]="loading">Bijwerken</button>
+            <button mat-button (click)="onCancelClick()">Annuleren</button>
+        </app-form-actions>
+    </form>
+</ng-container>

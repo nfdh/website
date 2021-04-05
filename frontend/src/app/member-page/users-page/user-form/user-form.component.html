@@ -1,0 +1,35 @@
+
+<div [formGroup]="formGroup">
+    <app-form-section title="Inloggegevens">
+        <mat-form-field appearance="fill">
+            <mat-label>E-mail adres</mat-label>
+            <input matInput formControlName="email" />
+            <mat-error *ngIf="formGroup.get('email')!.hasError('notUnique')">Opgegeven e-mail is al in gebruik</mat-error>
+            <mat-error *ngIf="formGroup.get('email')!.hasError('required')">Verplicht</mat-error>
+            <mat-error *ngIf="formGroup.get('email')!.hasError('email')">Vul een geldig e-mail adres in</mat-error>
+        </mat-form-field>
+        <p *ngIf="addNew">Wachtwoord zal automatisch worden aangemaakt en verstuurd naar het bovenstaande e-mail adres</p>
+    </app-form-section>
+    <app-form-section title="Persoonsgegevens">
+        <mat-form-field appearance="fill">
+            <mat-label>Naam</mat-label>
+            <input matInput formControlName="name" />
+            <mat-error *ngIf="formGroup.get('name')!.hasError('required')">Verplicht</mat-error>
+        </mat-form-field>
+    </app-form-section>
+    <app-form-section title="Stamboek lidmaatschap">
+        <mat-checkbox formControlName="studbook_heideschaap" color="primary">Drents Heideschaap</mat-checkbox>
+        <div class="ko-field" *ngIf="formGroup.controls.studbook_heideschaap.value">
+            <mat-checkbox formControlName="studbook_heideschaap_ko" color="primary">Kuddeovereenkomst</mat-checkbox>
+        </div>
+        <mat-checkbox class="checkbox" formControlName="studbook_schoonebeeker" color="primary">Schoonebeeker</mat-checkbox>
+        <div class="ko-field" *ngIf="formGroup.controls.studbook_schoonebeeker.value">
+            <mat-checkbox formControlName="studbook_schoonebeeker_ko" color="primary">Kuddeovereenkomst</mat-checkbox>
+        </div>
+    </app-form-section>
+    <app-form-section title="Rechten">
+        <mat-checkbox formControlName="role_website_contributor" color="primary">Website beheerder</mat-checkbox>
+        <mat-checkbox class="checkbox" formControlName="role_studbook_administrator" color="primary">Stamboek administratie</mat-checkbox>
+        <mat-checkbox class="checkbox" formControlName="role_studbook_inspector" color="primary">Keuringsmeester</mat-checkbox>
+    </app-form-section>
+</div>

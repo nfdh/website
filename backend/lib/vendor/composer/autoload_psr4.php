@@ -7,6 +7,6 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Lib\\' => array($baseDir . '/'),
-    'GraphQL\\' => array($vendorDir . '/webonyx/graphql-php/src'),
+    'FastRoute\\' => array($vendorDir . '/nikic/fast-route/src'),
     'Conf\\' => array($baseDir . '/../conf'),
 );

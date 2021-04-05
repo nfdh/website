@@ -1,0 +1,74 @@
+<h1>Inloggen</h1>
+
+<div class="container">
+    <div class="portal-login-content">
+        <h2>Ledenportaal</h2>
+        <p>
+            Via het ledenportaal kunt u de volgende acties zelf regelen:
+        </p>
+        <ul>
+            <li>Invoeren jaarlijkse dekverklaring</li>
+            <li>Aanmelden voor huiskeuring</li>
+            <li>Advertenties plaatsen voor koop en verkoop van schapen, wol of vlees</li>
+            <li>Inzien fokrammenlijst</li>
+        </ul>
+        <app-message type="error" *ngIf="errorMessage !== null"> 
+            {{errorMessage}}
+        </app-message>
+        <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <mat-form-field appearance="fill" class="username-input">
+                <mat-label>E-mailadres</mat-label>
+                <mat-icon matSuffix>email</mat-icon>
+                <input matInput formControlName="email">
+            </mat-form-field>
+            <mat-form-field appearance="fill" class="password-input">
+                <mat-label>Wachtwoord</mat-label>
+                <mat-icon matSuffix>lock</mat-icon>
+                <input matInput type="password" formControlName="password">
+            </mat-form-field>
+            <button mat-raised-button color="primary" class="login-button" type="submit" [disabled]="isBusy">
+                <ng-container *ngIf="isBusy"><mat-spinner class="login-button-spinner" diameter="25"></mat-spinner></ng-container> 
+                <ng-container *ngIf="!isBusy">INLOGGEN</ng-container>
+            </button>
+        </form>
+    </div>
+    <div class="falcoo-login-content">
+        <h2>Falcoo</h2>
+        <p>
+            Falcoo is een applicatie die de vereniging gebruikt om het stamboek te administreren.
+            U kunt hierop inloggen om de volgende zaken omtrent het stamboek zelf te regelen:
+        </p>
+        <ul>
+            <li>Ingeven lammeren (alleen indien beide ouders geregistreerd zijn);</li>
+            <li>Alle afvoeren. Afvoeren binnen de NFDH komen automatisch op naam van de fokker/koper te staan</li>
+            <li>Sterftes</li>
+        </ul>
+        <br />
+        <div class="falcoo-buttons">
+            <a mat-stroked-button href="https://vnl.falcooonline.com/" target="_blank" class="falcoo-button">Inloggen</a>
+            <a mat-stroked-button href="https://vnl.falcooonline.com/handleidingen/HetDrentseHeideschaap.pdf" target="_blank" class="falcoo-button">Handleiding</a>
+            <a mat-stroked-button href="https://www.youtube.com/watch?v=_H1BMioZ85Y" target="_blank" class="falcoo-button">Instructiefilmpje</a> 
+        </div>
+    </div>
+    <div class="other-content">
+        <h2>Overige zaken</h2>
+        <p>
+            De volgende zaken kunt u niet zelf regelen, maar moet u telefonisch of per e-mail doorgeven aan de stamboekadministratie:
+        </p>
+        <ul>
+            <li>aanvoeren vanaf een niet NFDH lid</li>
+            <li>geboortes waarvan één of beide ouders onbekend zijn</li>
+            <li>genotype (indien u een dier laat onderzoeken)</li>
+            <li>keuringsuitslagen worden door de stamboekadministratie ingevoerd</li>
+            <li>herstelwerkzaamheden, zoals:
+                <ol>
+                    <li>wijzigen geslacht</li>
+                    <li>wijzigen vader/moeder</li>
+                    <li>wijzigen geboortedatum/jaar en/of worpgrootte</li>
+                    <li>herstellen van foutieve afvoeren/doodmeldingen</li>
+                    <li>omnummeringen</li>
+                </ol>
+            </li>
+        </ul>
+    </div>
+</div>

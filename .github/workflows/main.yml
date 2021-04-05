@@ -21,12 +21,8 @@ jobs:
       working-directory: frontend
     - uses: actions/upload-artifact@v2
       with:
-        name: frontend-ssr
-        path: frontend/dist-ssr
-    - uses: actions/upload-artifact@v2
-      with:
-        name: frontend-client
-        path: frontend/dist-client
+        name: frontend
+        path: frontend/dist/frontend
     - uses: actions/upload-artifact@v2
       with:
         name: backend
@@ -38,11 +34,7 @@ jobs:
     steps:
     - uses: actions/download-artifact@v2
       with:
-        name: frontend-ssr
-        path: artifact/ssr
-    - uses: actions/download-artifact@v2
-      with:
-        name: frontend-client
+        name: frontend
         path: artifact/wwwroot
     - uses: actions/download-artifact@v2
       with:
@@ -65,13 +57,5 @@ jobs:
       run: |
         echo "$DEPLOY_KEY" > /tmp/tmp_id_rsa
         chmod 600 /tmp/tmp_id_rsa
-        rsync --delete -r -e "ssh -o StrictHostKeyChecking=no -i /tmp/tmp_id_rsa" artifact/ssr/ $DEPLOY_USERNAME@$DEPLOY_HOST:/data/sites/web/drentsheideschaapnl/ssr
         rsync --delete -r -e "ssh -o StrictHostKeyChecking=no -i /tmp/tmp_id_rsa" artifact/wwwroot/ $DEPLOY_USERNAME@$DEPLOY_HOST:/data/sites/web/drentsheideschaapnl/subsites/nieuw.drentsheideschaap.nl
         rm /tmp/tmp_id_rsa
-    - name: Restart SSR server
-      env:
-        DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-        DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
-        DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
-      run: |
-        wget -O - https://nieuw.drentsheideschaap.nl/?ssr=restart
