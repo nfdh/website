@@ -1,4 +1,6 @@
 RewriteEngine on
-RewriteCond %{REQUEST_URI} !^/(api|assets)/.*
+RewriteCond %{REQUEST_URI} ^/api/.*
+RewriteRule ^(.*) index.php [NC,L]
+RewriteCond %{REQUEST_URI} !^/assets/.*
 RewriteCond %{REQUEST_URI} !\.(js|css|ico)$
 RewriteRule ^(.*) index.html [NC,L]
