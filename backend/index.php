@@ -614,7 +614,6 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
             'rows' => array_map(function($row) {
                 return [
                     'id' => $row['id'],
-                    'name' => $row['name'],
                     'year' => $row['year'],
                     'region' => $row['region'],
                     'preferred_date' => $row['preferred_date'], 
