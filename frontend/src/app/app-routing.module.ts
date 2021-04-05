@@ -17,10 +17,12 @@ import { EditDekverklaringPageComponent as MemberEditDekverklaringPageComponent 
 import { HuiskeuringenPageComponent as MemberHuiskeuringenPageComponent } from './member-page/huiskeuringen-page/huiskeuringen-page.component';
 import { AddHuiskeuringPageComponent as MemberAddHuiskeuringPageComponent } from './member-page/huiskeuringen-page/add-huiskeuring-page/add-huiskeuring-page.component';
 import { EditHuiskeuringPageComponent as MemberEditHuiskeuringPageComponent } from './member-page/huiskeuringen-page/edit-huiskeuring-page/edit-huiskeuring-page.component';
+import { ContactPageComponent } from './contact-page/contact-page.component';
 
 const routes: Routes = [
   { path: "", component: HomePageComponent },
   { path: "disclaimer", component: DisclaimerPageComponent },
+  { path: "contact", component: ContactPageComponent },
   { path: "login", component: LoginPageComponent },
   { path: "ledenportaal", component: MemberPageComponent, canActivate: [AuthGuard], 
     children: [
