@@ -2,9 +2,14 @@
 namespace Lib;
 
 class Telemetry {
-    private \ApplicationInsights\Telemetry_Client $telemetryClient;
+    private ?\ApplicationInsights\Telemetry_Client $telemetryClient;
 
     function __construct($conf, ?int $userId) {
+        if(!$conf) {
+            $this->telemetryClient = null;
+            return;
+        }
+
         $this->telemetryClient = new \ApplicationInsights\Telemetry_Client();
         $context = $this->telemetryClient->getContext();
         $context->setInstrumentationKey($conf['instrumentationKey']);
@@ -47,14 +52,26 @@ class Telemetry {
     }
     
     function trackEvent($text, $properties, $measurements) {
+        if(!$this->telemetryClient) {
+            return;
+        }
+
         $this->telemetryClient->trackEvent($text, $properties, $measurements);
     }
 
     function trackException($error, $properties, $measurements) {
+        if(!$this->telemetryClient) {
+            return;
+        }
+
         $this->telemetryClient->trackException($error, $properties, $measurements);
     }
 
     function trackDependency($action, $type, $content, $time, $resultCode, $success) {
+        if(!$this->telemetryClient) {
+            return;
+        }
+
         $this->telemetryClient->trackDependency($action, $type, $content, $time, $resultCode, $success);
     }
 }
