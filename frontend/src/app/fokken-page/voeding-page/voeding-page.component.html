@@ -1,0 +1,94 @@
+<h1>Voeding</h1>
+<p>Omtrent de voeding van onze heideschapen is eigenlijk maar weinig bekend. De onderzoeken die er zijn gedaan, hebben betrekking op de Texelaar. Toch valt er een redelijke schatting van de voedselbehoefte te maken. Voordat we hier nader op ingaan, eerst even enkele vuistregels:</p>
+<ul>
+<li>Bij voldoende gras is er tijdens de weideperiode geen bijvoederen gewenst.</li>
+<li>Voer jonge dieren bij voorkeur gescheiden van de volwassen dieren.</li>
+<li>Verander nooit plotseling van rantsoen, maar doe dit geleidelijk.</li>
+<li>Schimmel in het voer is funest.</li>
+<li>Zorg altijd voor vers drinkwater.</li>
+</ul>
+
+<h2>Het voer</h2>
+<p>Veevoeding verdelen we in ruwvoeders en krachtvoeders.</p>
+<p>Ruwvoer is bijvoorbeeld grashooi, kuilgras en luzernehooi. Als krachtvoer moet u vooral denken aan biks en geconcentreerde voeders als sojaschroot en maïsgrutenmeel.</p>
+<p>Het voedermiddel verdelen we verder in droge stof, water en as (anorganische stoffen).</p>
+<p>Het is van belang te weten wat een voedermiddel aan voedingswaarde bezit. Hiervoor is alleen de samenstelling van het droge stofgehalte van belang. In plaats van vetten, eiwitten en koolhydraten, spreekt men in de veevoeding van DVE (= darm verteerbaar eiwit) en VEM (voeder eenheid melkvee, oftewel het energiegehalte). Van vrijwel alle voedingsmiddelen zijn deze getallen beschikbaar en te vinden in de voederadviezen die verschillende voederbedrijven uitgeven.</p>
+
+<h2>De voederbehoefte</h2>
+<p>De behoefte van de dieren is afhankelijk van de leeftijd en het al dan niet drachtig zijn.</p>
+<p>De vier magen van het schaap doen weinig aan de vertering mee, het zijn vooral de pensbacteriën die het werk doen. Bij elk rantsoen hoort een bepaalde bacteriestam. Op snelle veranderingen in het rantsoen kunnen de bacteriën zich niet op tijd aanpassen, vandaar dat die geleidelijk dient te gebeuren. Voor een goede werking van de pensflora moet er voldoende structuur in de voeding zitten (gras of hooi). Voorts moet ook altijd de pensvulling voldoende zijn, dus voldoende droge stofopname. Bij overmatig brok voeren, kan de penswerking verstoord raken en de pensflora afsterven (pensverzuring).</p>
+
+<p>Voor de Droge stof (Ds), de VEM en de DVE-behoefte zie onderstaande tabel.</p>
+<table mat-table [dataSource]="voederbehoefte">
+    <ng-container matColumnDef="label">
+        <th mat-header-cell *matHeaderCellDef width="280">&nbsp;</th>
+        <td mat-cell *matCellDef="let row" [class.header-row]="row.header">{{row.label}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="ds">
+        <th mat-header-cell *matHeaderCellDef width="100" class="value" matTooltip="droge stof" matTooltipClass="voeding-header-tooltip">Ds (kg)</th>
+        <td mat-cell *matCellDef="let row" class="value">{{row.ds}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="vem">
+        <th mat-header-cell *matHeaderCellDef width="100" class="value" matTooltip="darm verteerbaar eiwit" matTooltipClass="voeding-header-tooltip">VEM</th>
+        <td mat-cell *matCellDef="let row" class="value">{{row.vem}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="dve">
+        <th mat-header-cell *matHeaderCellDef width="100" class="value" matTooltip="voeder eenheid melkvee (energiegehalte)" matTooltipClass="voeding-header-tooltip">DVE</th>
+        <td mat-cell *matCellDef="let row" class="value">{{row.dve}}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+    <tr mat-row class="table-row" *matRowDef="let row; columns: columnsToDisplay"></tr>
+</table>
+
+<h2>De voederwaarde</h2>
+<p>Hieronder enkele voederwaarden van voedermiddelen die veelal in onze vereniging gebruikt worden.</p>
+<table mat-table [dataSource]="voederwaarde">
+    <ng-container matColumnDef="label">
+        <th mat-header-cell *matHeaderCellDef width="280">&nbsp;</th>
+        <td mat-cell *matCellDef="let row">{{row.label}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="ds">
+        <th mat-header-cell *matHeaderCellDef width="100" class="value" matTooltip="droge stof" matTooltipClass="voeding-header-tooltip">Ds (per kg)</th>
+        <td mat-cell *matCellDef="let row" class="value">{{row.ds}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="vem">
+        <th mat-header-cell *matHeaderCellDef width="100" class="value" matTooltip="darm verteerbaar eiwit" matTooltipClass="voeding-header-tooltip">VEM</th>
+        <td mat-cell *matCellDef="let row" class="value">{{row.vem}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="dve">
+        <th mat-header-cell *matHeaderCellDef width="100" class="value" matTooltip="voeder eenheid melkvee (energiegehalte)" matTooltipClass="voeding-header-tooltip">DVE</th>
+        <td mat-cell *matCellDef="let row" class="value">{{row.dve}}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+    <tr mat-row class="table-row" *matRowDef="let row; columns: columnsToDisplay"></tr>
+</table>  
+<p>De waarden voor VEM en DVE zijn per kg. droge stof gemeten.</p>
+<p>Lopen uw schapen op grasland, zelfs als dit wat schraler is, dan komen uw dieren ruim aan hun behoefte.</p>
+
+<h2>Rantsoenen</h2>
+<p>Hieronder enkele voorbeelden van rantsoenen die ook voor u te hanteren zijn:</p>
+<p>
+Stel, u heeft Drenten en deze komen direct na het dekken op stal.<br/>
+Per dier is de behoefte: 1,2 kg. Ds.; 570 VEM en 37 DVE.<br />
+U verstrekt nu 1,2 kg. hooi per dier, dan geeft u de dieren ruim 800 VEM en ruim 80 DVE, dus voldoende. Een zoutblok kan in de mineralenbehoefte voorzien en bijvoederen is niet nodig.
+</p>
+<p>
+In de tweede helft van de dracht is de behoefte per dier: 1,4 kg. Ds.; 910 VEM en 91 DVE.<br/>
+De opname van hooi zal niet toenemen, dus komen de dieren 100 VEM en 10 DVE te kort.<br />
+We vullen het rantsoen nu aan met 1,5 ons schapenbrok. Daarmee geven we 135 VEM en 13 DVE extra.<br />
+Omdat de brok de opname van ruwvoer verdringt, zijn we iets boven de norm gaan zitten.<br />
+</p>
+<p>Hetzelfde kunt u ook berekenen voor de Schoonebeeker.</p>
+
+<h2>Conclusie</h2>
+<p>Over het algemeen voeren we de dieren te rijk. Dit gaat ten koste van uw portemonnee en ten koste van het aflammeren. Ook zijn de rantsoenen vaak te complex. U kunt zich zonder problemen beperken tot goed ruwvoer, aangevuld met schapen- of rundveebiks.</p>
+<p><strong>Let wel op met koper!!!</strong></p>
+<p>Heideschapen hebben een veel hogere koperbehoefte dan Texelaars en schapenbiks is afgestemd op de behoefte van Texelaars. Er dreigt dus eerder een tekort aan koper. Het lijkt daarmee raadzamer om rundveebrok te voeren i.p.v. schapenbiks. Ook het zoutblok moet koper bevatten. Zelfs de drijfmest van mestvarkens vormt geen probleem voor heideschapen en kan gerust op het land aangewend worden.</p>

@@ -30,9 +30,11 @@ const routes: Routes = [
       { path: "", redirectTo: "over-de-vereniging", pathMatch: "full" },
       { path: "over-de-vereniging", component: OverDeVerenigingPageComponent },
       { path: "bestuur-en-commissies", component: BestuurEnCommissiesPageComponent },
-      { path: "calamiteitenplan", component: CalamiteitenplanPageComponent }
+      { path: "calamiteitenplan", component: CalamiteitenplanPageComponent },
+      { path: "**", component: NotFoundPageComponent }
     ]
   },
+  { path: 'fokken', loadChildren: () => import('./fokken-page/fokken-page.module').then(m => m.FokkenPageModule) },
   { path: "disclaimer", component: DisclaimerPageComponent },
   { path: "contact", component: ContactPageComponent },
   { path: "login", component: LoginPageComponent },

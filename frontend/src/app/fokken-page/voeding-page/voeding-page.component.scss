@@ -1,0 +1,26 @@
+h1 {
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2 {
+    color: #000;
+}
+
+h2 {
+    margin-bottom: 7px;
+}
+
+h1 + p,
+h2 + p {
+    margin-top: 7px;
+}
+
+.header-row {
+    font-weight: 600;
+    padding-top: 15px;
+}
+
+.value {
+    text-align: right;
+}

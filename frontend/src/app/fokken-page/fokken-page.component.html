@@ -1,0 +1,25 @@
+<app-vertical-menu class="menu">
+    <app-vertical-menu-group title="Fokken">
+        <app-vertical-menu-item routerLink="inleiding">Inleiding</app-vertical-menu-item>
+        <app-vertical-menu-item routerLink="keuringen">Keuringen</app-vertical-menu-item>
+        <app-vertical-menu-item routerLink="regelgeving">Regelgeving</app-vertical-menu-item>
+    </app-vertical-menu-group>
+    <app-vertical-menu-group title="Verzorging">
+        <app-vertical-menu-item routerLink="gezondheid">Gezondheid</app-vertical-menu-item>
+        <app-vertical-menu-item routerLink="voeding">Voeding</app-vertical-menu-item>
+        <app-vertical-menu-item routerLink="dracht-en-geboorte">Dracht en geboorte</app-vertical-menu-item>
+        <app-vertical-menu-item routerLink="wormbestrijding">Wormbestrijding</app-vertical-menu-item>
+    </app-vertical-menu-group>
+    <app-vertical-menu-group title="Drents Heideschaap">
+        <app-vertical-menu-item routerLink="drents-heideschaap-kenmerken">Kenmerken</app-vertical-menu-item>
+        <app-vertical-menu-item routerLink="drents-heideschaap-historie">Historie</app-vertical-menu-item>
+    </app-vertical-menu-group>
+    <app-vertical-menu-group title="Schoonebeeker">
+        <app-vertical-menu-item routerLink="schoonebeeker-kenmerken">Kenmerken</app-vertical-menu-item>
+        <app-vertical-menu-item routerLink="schoonebeeker-historie">Historie</app-vertical-menu-item>
+    </app-vertical-menu-group>
+</app-vertical-menu>
+
+<div class="content">
+    <router-outlet></router-outlet>
+</div>

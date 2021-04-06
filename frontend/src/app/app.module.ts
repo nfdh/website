@@ -28,6 +28,8 @@ import { MatCardModule } from '@angular/material/card'
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSelectModule } from '@angular/material/select';
 import { GalleryModule } from 'ng-gallery';
+import { LightboxModule } from  'ng-gallery/lightbox';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { AppComponent } from './app.component';
 import { HomePageComponent } from './home-page/home-page.component';
@@ -111,7 +113,9 @@ import { ErrorHandlerService } from './services/error-handler.service';
     MatDividerModule,
     MatSelectModule,
     GalleryModule,
-    
+    LightboxModule,
+    MatTooltipModule,
+
     VerticalMenuModule,
     ToolbarModule,
     FormModule
