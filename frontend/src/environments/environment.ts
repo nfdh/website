@@ -2,9 +2,14 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+interface AppInsightsEnvironment {
+  instrumentationKey: string
+}
+
 export const environment = {
   production: false,
-  apiUrl: ''
+  apiUrl: '',
+  appInsights: null as (AppInsightsEnvironment | null)
 };
 
 /*

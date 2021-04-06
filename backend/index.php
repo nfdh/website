@@ -2,31 +2,30 @@
 require 'lib/vendor/autoload.php';
 
 use Conf\Settings;
+use Lib\Telemetry;
+use Lib\Database;
 
 session_start();
 
-$user = $_SESSION['user'];
+$user = null;
+if(isset($_SESSION['user'])) {
+    $user = $_SESSION['user'];
+}
 
 $conf = Settings::get();
-$server = $conf['db_server'];
-$database = $conf['db_database'];
-$dsn = "mysql:host=$server;dbname=$database;charset=utf8mb4";
-$conn = new \PDO($dsn, $conf['db_username'], $conf['db_password'], array(
-    \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-    \PDO::ATTR_EMULATE_PREPARES => false
-));
+$telemetry = new Lib\Telemetry($conf['appInsights'], $user != null ? $user['id'] : null);
+$db = new Lib\Database($conf['db'], $telemetry);
 
-$dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) use ($conn, $user) {
-    $r->addRoute('POST', 'api/login', function($_, $values) use ($conn, $user) {
-        $stmt = $conn->prepare("
+$dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) use ($db, $user) {
+    $r->addRoute('POST', 'api/login', function($_, $values) use ($db, $user) {
+        $row = $db->querySingle("
             SELECT `id`, `name`, `email`, `password_hash`, `role_website_contributor`, `role_studbook_administrator`, `role_studbook_inspector` 
             FROM `users`
             WHERE `email` = :email
-        ");
-        $stmt->bindValue(':email', $values['email']);
-        $stmt->execute();
+        ", [
+            ":email" => $values['email']
+        ]);
 
-        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         if (!$row || !password_verify($values['password'], $row['password_hash'])) {
             return false;
         }
@@ -49,7 +48,7 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
         ];
     });
 
-    $r->addRoute('GET', 'api/users', function($_, $values) use ($conn, $user) {
+    $r->addRoute('GET', 'api/users', function($_, $values) use ($db, $user) {
         if(!$user || !$user['role_website_contributor']) {
             http_response_code(401);
             return [
@@ -73,21 +72,17 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
         }
 
         // Count total number of users
-        $stmt = $conn->prepare("
-            SELECT COUNT(1)
+        $sqlParameters = [];
+        if($filter) {
+            $sqlParameters[":nameFilter"] = "%$filter%";
+            $sqlParameters[":emailFilter"] = "%$filter%";
+        }
+        $row = $db->querySingle("
+            SELECT COUNT(1) AS `cnt`
             FROM `users`
             $filterSql
-        ");
-
-        if($filter) {
-            $stmt->bindValue(":nameFilter", "%$filter%");
-            $stmt->bindValue(":emailFilter", "%$filter%");
-        }
-
-        $stmt->execute();
-
-        $row = $stmt->fetch(\PDO::FETCH_NUM);
-        $totalCount = $row[0];
+        ", $sqlParameters);
+        $totalCount = $row['cnt'];
 
         // Fetch the users
         $page = intval($_GET['$page']);
@@ -98,23 +93,22 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
             $page = floor($totalCount / $pageSize);
         }
 
-        $stmt = $conn->prepare("
+        $sqlParameters = [
+            ":limit" => $pageSize,
+            ":skip" => $page * $pageSize
+        ];
+        if($filter) {
+            $sqlParameters[":nameFilter"] = "%$filter%";
+            $sqlParameters[":emailFilter"] = "%$filter%";
+        }
+
+        $rows = $db->queryAll("
             SELECT `id`, `name`, `email` 
             FROM `users`
             $filterSql
             LIMIT :limit
             OFFSET :skip
-        ");
-
-        $stmt->bindValue(':limit', $pageSize);
-        $stmt->bindValue(':skip', $page * $pageSize);
-
-        if($filter) {
-            $stmt->bindValue(":nameFilter", "%$filter%");
-            $stmt->bindValue(":emailFilter", "%$filter%");
-        }
-
-        $stmt->execute();
+        ", $sqlParameters);
 
         return [
             'success' => true,
@@ -126,11 +120,11 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
                     'name' => $row['name'],
                     'email' => $row['email']
                 ];
-            }, $stmt->fetchAll(\PDO::FETCH_ASSOC))
+            }, $rows)
         ];
     });
 
-    $r->addRoute('GET', 'api/users/{id:\d+}', function($para, $values) use ($conn, $user) {
+    $r->addRoute('GET', 'api/users/{id:\d+}', function($para, $values) use ($db, $user) {
         if(!$user || !$user['role_website_contributor']) {
             http_response_code(401);
             return [
@@ -142,18 +136,16 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
         $id = $para['id'];
 
         // Count total number of users
-        $stmt = $conn->prepare("
+        $user = $db->querySingle("
             SELECT 
                 `email`, `name`, `studbook_heideschaap`, `studbook_heideschaap_ko`, `studbook_schoonebeeker`, `studbook_schoonebeeker_ko`, 
                 `role_website_contributor`, `role_studbook_administrator`, `role_studbook_inspector`
             FROM `users`
             WHERE id = :id
-        ");
+        ", [
+            ':id' => intval($id)
+        ]);
 
-        $stmt->bindValue(':id', intval($id));
-        $stmt->execute();
-
-        $user = $stmt->fetch(\PDO::FETCH_ASSOC);
         if(!$user) {
             return [
                 'success' => false,
@@ -177,7 +169,7 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
         ];
     });
 
-    $r->addRoute('DELETE', 'api/users', function($_, $values) use ($conn, $user) {
+    $r->addRoute('DELETE', 'api/users', function($_, $values) use ($db, $user) {
         if(!$user || !$user['role_website_contributor']) {
             http_response_code(401);
             return [
@@ -193,43 +185,35 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
 
         $type = $values['type'];
         $items = array_values($values['items']);
-        $bindItems = false;
+        $sqlParameters = [];
 
         if($type === 'including') {
             $sql .= "WHERE `id` IN (";
             foreach($items as $k => $v) {
                 $sql .= ":i$k";
+                $sqlParameters[":i$k"] = $v;
             }
             $sql .= ")";
-            $bindItems = true;
         }
         else if($type === 'excluding') {
             if(count($items) > 0) {
                 $sql .= "WHERE `id` NOT IN (";
                 foreach($items as $k => $v) {
                     $sql .= ":i$k";
+                    $sqlParameters[":i$k"] = $v;
                 }
                 $sql .= ")";
-                $bindItems = true;
             }
         }
 
-        $stmt = $conn->prepare($sql);
-
-        if($bindItems) {
-            foreach($items as $k => $v) {
-                $stmt->bindValue(":i$k", intval($v));
-            }
-        }      
-
-        $stmt->execute();
+        $db->execute($sql, $sqlParameters);
 
         return [
             'success' => true
         ];
     });
 
-    $r->addRoute('POST', 'api/users', function($_, $values) use ($conn, $user) {
+    $r->addRoute('POST', 'api/users', function($_, $values) use ($db, $user) {
         if(!$user || !$user['role_website_contributor']) {
             http_response_code(401);
             return [
@@ -238,32 +222,31 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
             ];
         }
 
-        $stmt = $conn->prepare("
-            INSERT INTO `users` (
-                `email`, `name`, `studbook_heideschaap`, `studbook_heideschaap_ko`, `studbook_schoonebeeker`, `studbook_schoonebeeker_ko`, 
-                `role_website_contributor`, `role_studbook_administrator`, `role_studbook_inspector`
-            )
-            VALUES (
-                :email, :name, :studbook_heideschaap, :studbook_heideschaap_ko, :studbook_schoonebeeker, :studbook_schoonebeeker_ko,
-                :role_website_contributor, :role_studbook_administrator, :role_studbook_inspector
-            )
-        ");
-        $stmt->bindValue(':email', $values['email']);
-        $stmt->bindValue(':name', $values['name']);
-        $stmt->bindValue(':studbook_heideschaap', $values['studbook_heideschaap']);
-        $stmt->bindValue(':studbook_heideschaap_ko', $values['studbook_heideschaap_ko']);
-        $stmt->bindValue(':studbook_schoonebeeker', $values['studbook_schoonebeeker']);
-        $stmt->bindValue(':studbook_schoonebeeker_ko', $values['studbook_schoonebeeker_ko']);
-        $stmt->bindValue(':role_website_contributor', $values['role_website_contributor']);
-        $stmt->bindValue(':role_studbook_administrator', $values['role_studbook_administrator']);
-        $stmt->bindValue(':role_studbook_inspector', $values['role_studbook_inspector']);
-
         try {
-            $stmt->execute();
+            $db->execute("
+                INSERT INTO `users` (
+                    `email`, `name`, `studbook_heideschaap`, `studbook_heideschaap_ko`, `studbook_schoonebeeker`, `studbook_schoonebeeker_ko`, 
+                    `role_website_contributor`, `role_studbook_administrator`, `role_studbook_inspector`
+                )
+                VALUES (
+                    :email, :name, :studbook_heideschaap, :studbook_heideschaap_ko, :studbook_schoonebeeker, :studbook_schoonebeeker_ko,
+                    :role_website_contributor, :role_studbook_administrator, :role_studbook_inspector
+                )
+            ", [
+                ':email' => $values['email'],
+                ':name' => $values['name'],
+                ':studbook_heideschaap' => $values['studbook_heideschaap'],
+                ':studbook_heideschaap_ko' => $values['studbook_heideschaap_ko'],
+                ':studbook_schoonebeeker' => $values['studbook_schoonebeeker'],
+                ':studbook_schoonebeeker_ko' => $values['studbook_schoonebeeker_ko'],
+                ':role_website_contributor' => $values['role_website_contributor'],
+                ':role_studbook_administrator' => $values['role_studbook_administrator'],
+                ':role_studbook_inspector' => $values['role_studbook_inspector']
+            ]);
 
             return [
                 "success" => true,
-                "id" => $conn->lastInsertId()
+                "id" => $db->lastInsertId()
             ];
         }
         catch (\PDOException $e) {
@@ -281,7 +264,7 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
         ];
     });
 
-    $r->addRoute('PATCH', 'api/users/{id:\d+}', function($para, $values) use ($conn, $user) {
+    $r->addRoute('PATCH', 'api/users/{id:\d+}', function($para, $values) use ($db, $user) {
         if(!$user || !$user['role_website_contributor']) {
             http_response_code(401);
             return [
@@ -292,34 +275,33 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
 
         $id = $para['id'];
 
-        $stmt = $conn->prepare("
-            UPDATE `users` 
-            SET
-                `email` = :email, 
-                `name` = :name,
-                `studbook_heideschaap` = :studbook_heideschaap, 
-                `studbook_heideschaap_ko` = :studbook_heideschaap_ko, 
-                `studbook_schoonebeeker` = :studbook_schoonebeeker, 
-                `studbook_schoonebeeker_ko` = :studbook_schoonebeeker_ko, 
-                `role_website_contributor` = :role_website_contributor, 
-                `role_studbook_administrator` = :role_studbook_administrator, 
-                `role_studbook_inspector` = :role_studbook_inspector
-            WHERE
-                id = :id
-        ");
-        $stmt->bindValue(':id', intval($id));
-        $stmt->bindValue(':email', $values['email']);
-        $stmt->bindValue(':name', $values['name']);
-        $stmt->bindValue(':studbook_heideschaap', $values['studbook_heideschaap']);
-        $stmt->bindValue(':studbook_heideschaap_ko', $values['studbook_heideschaap_ko']);
-        $stmt->bindValue(':studbook_schoonebeeker', $values['studbook_schoonebeeker']);
-        $stmt->bindValue(':studbook_schoonebeeker_ko', $values['studbook_schoonebeeker_ko']);
-        $stmt->bindValue(':role_website_contributor', $values['role_website_contributor']);
-        $stmt->bindValue(':role_studbook_administrator', $values['role_studbook_administrator']);
-        $stmt->bindValue(':role_studbook_inspector', $values['role_studbook_inspector']);
-
         try {
-            $stmt->execute();
+            $db->execute("
+                UPDATE `users` 
+                SET
+                    `email` = :email, 
+                    `name` = :name,
+                    `studbook_heideschaap` = :studbook_heideschaap, 
+                    `studbook_heideschaap_ko` = :studbook_heideschaap_ko, 
+                    `studbook_schoonebeeker` = :studbook_schoonebeeker, 
+                    `studbook_schoonebeeker_ko` = :studbook_schoonebeeker_ko, 
+                    `role_website_contributor` = :role_website_contributor, 
+                    `role_studbook_administrator` = :role_studbook_administrator, 
+                    `role_studbook_inspector` = :role_studbook_inspector
+                WHERE
+                    id = :id
+            ", [
+                ':id' => intval($id),
+                ':email' => $values['email'],
+                ':name' => $values['name'],
+                ':studbook_heideschaap' => $values['studbook_heideschaap'],
+                ':studbook_heideschaap_ko' => $values['studbook_heideschaap_ko'],
+                ':studbook_schoonebeeker' => $values['studbook_schoonebeeker'],
+                ':studbook_schoonebeeker_ko' => $values['studbook_schoonebeeker_ko'],
+                ':role_website_contributor' => $values['role_website_contributor'],
+                ':role_studbook_administrator' => $values['role_studbook_administrator'],
+                ':role_studbook_inspector' => $values['role_studbook_inspector']
+            ]);
 
             return [
                 "success" => true
@@ -340,7 +322,7 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
         ];
     });
 
-    $r->addRoute('GET', 'api/dekverklaringen', function($para, $values) use ($conn, $user) {
+    $r->addRoute('GET', 'api/dekverklaringen', function($para, $values) use ($db, $user) {
         if(!$user) {
             http_response_code(401);
             return [
@@ -350,18 +332,15 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
         }
 
         // Count total number of users
-        $stmt = $conn->prepare("
-            SELECT COUNT(1)
+        $row = $db->querySingle("
+            SELECT COUNT(1) AS `cnt`
             FROM `dekverklaringen`
             WHERE
                 `user_id` = :user_id
-        ");
-
-        $stmt->bindValue(":user_id", $user['id']);
-        $stmt->execute();
-
-        $row = $stmt->fetch(\PDO::FETCH_NUM);
-        $totalCount = $row[0];
+        ", [
+            ':user_id' => $user['id']
+        ]);
+        $totalCount = $row['cnt'];
 
         // Fetch the users
         $page = intval($_GET['$page']);
@@ -372,19 +351,18 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
             $page = floor($totalCount / $pageSize);
         }
 
-        $stmt = $conn->prepare("
+        $rows = $db->queryAll("
             SELECT `id`, `season`, `studbook`, `date_sent`
             FROM `dekverklaringen`
             WHERE
                 `user_id` = :user_id
             LIMIT :limit
             OFFSET :skip
-        ");
-
-        $stmt->bindValue(':limit', $pageSize);
-        $stmt->bindValue(':skip', $page * $pageSize);
-        $stmt->bindValue(":user_id", $user['id']);
-        $stmt->execute();
+        ", [
+            ':limit' => $pageSize,
+            ':skip' => $page * $pageSize,
+            ':user_id' => $user['id']
+        ]);
 
         return [
             'success' => true,
@@ -397,11 +375,11 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
                     "studbook" => $row['studbook'],
                     "date_sent" => \DateTime::createFromFormat('Y-m-d H:i:s', $row['date_sent'])->format(\DateTime::ISO8601)
                 ];
-            }, $stmt->fetchAll(\PDO::FETCH_ASSOC))
+            }, $rows)
         ];
     });
 
-    $r->addRoute('POST', 'api/dekverklaringen', function($_, $values) use ($conn, $user) {
+    $r->addRoute('POST', 'api/dekverklaringen', function($_, $values) use ($db, $user) {
         if(!$user) {
             http_response_code(401);
             return [
@@ -410,57 +388,53 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
             ];
         }
 
-        $conn->beginTransaction();
+        $trans = $db->beginTransaction();
 
 		try {
-			$sql = '
-				INSERT INTO `dekverklaringen` (`user_id`, `season`, `studbook`, `date_sent`, `name`, `kovo`, `koe`, `kool`, `korl`, `remarks`) 
-				VALUES (:user_id, :season, :studbook, :date_sent, :name, :kovo, :koe, :kool, :korl, :remarks)
-			';
+            $date_sent = new \DateTime("now", new \DateTimeZone("UTC"));
 
-        	$stmt = $conn->prepare($sql);
-			$stmt->bindValue(':user_id', $user['id']);
-			$stmt->bindValue(':season', $values['season']);
-			$stmt->bindValue(':studbook', $values['studbook']);
+            $db->execute('
+                INSERT INTO `dekverklaringen` (`user_id`, `season`, `studbook`, `date_sent`, `name`, `kovo`, `koe`, `kool`, `korl`, `remarks`) 
+                VALUES (:user_id, :season, :studbook, :date_sent, :name, :kovo, :koe, :kool, :korl, :remarks)
+            ', [
+                ':user_id' => $user['id'],
+                ':season' => $values['season'],
+                ':studbook' => $values['studbook'],
+                ':date_sent' => $date_sent->format('Y-m-d H:i:s'),
+                ':name' => $values['name'],
+                ':kovo' => $values['kovo'],
+                ':koe' => $values['koe'],
+                ':kool' => $values['kool'],
+                ':korl' => $values['korl'],
+                ':remarks' => $values['remarks']
+            ]);
+			$dekverklaring_id = $db->lastInsertId();
 
-			$date_sent = new \DateTime("now", new \DateTimeZone("UTC"));
-			$stmt->bindValue(':date_sent', $date_sent->format('Y-m-d H:i:s'));
-			$stmt->bindValue(':name', $values['name']);
-			$stmt->bindValue(':kovo', $values['kovo']);
-			$stmt->bindValue(':koe', $values['koe']);
-			$stmt->bindValue(':kool', $values['kool']);
-			$stmt->bindValue(':korl', $values['korl']);
-			$stmt->bindValue(':remarks', $values['remarks']);
-			$stmt->execute();
-
-			$dekverklaring_id = $conn->lastInsertId();
-
-			$sql = '
+            $dg_stmt = $db->prepare('
 				INSERT INTO `dekverklaring_dekgroepen` (`dekverklaring_id`, `ewe_count`)
 				VALUES (:dekverklaring_id, :ewe_count)
-			';
-			$stmt = $conn->prepare($sql);
-
-			$sql = '
+			');
+            $ram_stmt = $db->prepare('
 				INSERT INTO `dekverklaring_dekgroep_rammen` (`dekgroep_id`, `code`)
 				VALUES (:dekgroep_id, :code)
-			';
-			$stmt2 = $conn->prepare($sql);
+			');
 
 			foreach($values['dekgroepen'] as $dekgroep) {
-				$stmt->bindValue(':dekverklaring_id', $dekverklaring_id);
-				$stmt->bindValue(':ewe_count', $dekgroep['ewe_count']);
-				$stmt->execute();
+                $dg_stmt->execute([
+                    ':dekverklaring_id' => $dekverklaring_id,
+                    ':ewe_count' => $dekgroep['ewe_count']
+                ]);
+				$dekgroep_id = $db->lastInsertId();
 
-				$dekgroep_id = $conn->lastInsertId();
 				foreach($dekgroep['rammen'] as $ram) {
-					$stmt2->bindValue(':dekgroep_id', $dekgroep_id);
-					$stmt2->bindValue(':code', $ram);
-					$stmt2->execute();
+                    $ram_stmt->execute([
+                        ':dekgroep_id' => $dekgroep_id,
+                        ':code' => $ram
+                    ]);
 				}
 			}
 
-			$conn->commit();
+			$trans->commit();
 
 			// We return the created dekverklaring
 			return [
@@ -469,12 +443,12 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
 			];
 		}
 		catch(Exception $ex) {
-			$conn->rollBack();
+			$trans->rollBack();
 			throw $ex;
 		}
     });
 
-    $r->addRoute('GET', 'api/dekverklaringen/{id:\d+}', function($para, $values) use ($conn, $user) {
+    $r->addRoute('GET', 'api/dekverklaringen/{id:\d+}', function($para, $values) use ($db, $user) {
         if(!$user) {
             http_response_code(401);
             return [
@@ -486,18 +460,15 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
         $id = $para['id'];
 
         // Get the dekverklaring
-        $stmt = $conn->prepare("
+        $dekverklaring = $db->querySingle("
             SELECT `season`, `studbook`, `name`, `kovo`, `koe`, `kool`, `korl`, `remarks`
             FROM `dekverklaringen`
             WHERE id = :id
-              AND user_id = :user_id
-        ");
-
-        $stmt->bindValue(':id', intval($id));
-        $stmt->bindValue(':user_id', $user['id']);
-        $stmt->execute();
-
-        $dekverklaring = $stmt->fetch(\PDO::FETCH_ASSOC);
+            AND user_id = :user_id
+        ", [
+            ':id' => intval($id),
+            ':user_id' => $user['id']
+        ]);
         if(!$dekverklaring) {
             return [
                 'success' => false,
@@ -506,29 +477,27 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
         }
         
         // Get dekgroepen
-        $stmt = $conn->prepare("
+        $dekgroepen = $db->queryAll("
             SELECT `id`, `ewe_count`
             FROM `dekverklaring_dekgroepen`
             WHERE `dekverklaring_id` = :id
-        ");
-        $stmt->bindValue(':id', intval($id));
-        $stmt->execute();
-        $dekgroepen = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        ", [
+            ':id' => intval($id)
+        ]);
 
         // Get rammen
-        $stmt = $conn->prepare("
+        $rammen = $db->queryAll("
             SELECT `r`.`dekgroep_id`, `r`.`code`
             FROM `dekverklaring_dekgroep_rammen` AS `r`
             INNER JOIN `dekverklaring_dekgroepen` AS `dg`
               ON `dg`.`id` = `r`.`dekgroep_id`
             WHERE `dg`.`dekverklaring_id` = :id
-        ");
-        $stmt->bindValue(':id', intval($id));
-        $stmt->execute();
+        ", [
+            ':id' => intval($id)
+        ]);
 
-        while(($row = $stmt->fetch(\PDO::FETCH_ASSOC))) {
+        foreach($rammen as $row) {
             $dekgroep_id = $row['dekgroep_id'];
-            $any = false;
 
             foreach ($dekgroepen as &$dekgroep) {
                 if($dekgroep['id'] == $dekgroep_id) {
@@ -536,7 +505,6 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
                         $dekgroep['rammen'] = [];
                     }
                     array_push($dekgroep['rammen'], $row['code']);
-                    $any = true;
                     break;
                 }
             }
@@ -563,7 +531,7 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
         ];
     });
 
-    $r->addRoute('GET', 'api/huiskeuringen', function($_, $values) use ($conn, $user) {
+    $r->addRoute('GET', 'api/huiskeuringen', function($_, $values) use ($db, $user) {
         if(!$user) {
             http_response_code(401);
             return [
@@ -573,17 +541,14 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
         }
 
         // Count total number of users
-        $stmt = $conn->prepare("
-            SELECT COUNT(1)
+        $row = $db->querySingle("
+            SELECT COUNT(1) AS `cnt`
             FROM `huiskeuringen`
             WHERE user_id = :user_id
-        ");
-
-        $stmt->bindValue(":user_id", $user['id']);
-        $stmt->execute();
-
-        $row = $stmt->fetch(\PDO::FETCH_NUM);
-        $totalCount = $row[0];
+        ", [
+            ':user_id' => $user['id']
+        ]);
+        $totalCount = $row['cnt'];
 
         // Fetch the users
         $page = intval($_GET['$page']);
@@ -594,18 +559,17 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
             $page = floor($totalCount / $pageSize);
         }
 
-        $stmt = $conn->prepare("
+        $rows = $db->queryAll("
             SELECT `id`, `year`, `region`, `preferred_date`, `date_sent`
             FROM `huiskeuringen`
             WHERE `user_id` = :user_id
             LIMIT :limit
             OFFSET :skip
-        ");
-
-        $stmt->bindValue(':limit', $pageSize);
-        $stmt->bindValue(':skip', $page * $pageSize);
-        $stmt->bindValue(":user_id", $user['id']);
-        $stmt->execute();
+        ", [
+            ':limit' => $pageSize,
+            ':skip' => $page * $pageSize,
+            ":user_id" => $user['id']
+        ]);
 
         return [
             'success' => true,
@@ -619,11 +583,11 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
                     'preferred_date' => $row['preferred_date'], 
                     "date_sent" => \DateTime::createFromFormat('Y-m-d H:i:s', $row['date_sent'])->format(\DateTime::ISO8601)
                 ];
-            }, $stmt->fetchAll(\PDO::FETCH_ASSOC))
+            }, $rows)
         ];
     });
 
-    $r->addRoute('GET', 'api/huiskeuringen/{id:\d+}', function($para, $values) use ($conn, $user) {
+    $r->addRoute('GET', 'api/huiskeuringen/{id:\d+}', function($para, $values) use ($db, $user) {
         if(!$user) {
             http_response_code(401);
             return [
@@ -634,19 +598,16 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
 
         $id = $para['id'];
 
-        // Count total number of users
-        $stmt = $conn->prepare("
+        $row = $db->querySingle("
             SELECT `name`, `region`, `preferred_date`, `rams_first`, `rams_second`, `ewes`, `locations`, `on_paper`, `remarks`
             FROM `huiskeuringen`
             WHERE id = :id
               AND user_id = :user_id
-        ");
+        ", [
+            ':id' => intval($id),
+            ':user_id' => $user['id']
+        ]);
 
-        $stmt->bindValue(':id', intval($id));
-        $stmt->bindValue(':user_id', $user['id']);
-        $stmt->execute();
-
-        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
         if(!$row) {
             return [
                 'success' => false,
@@ -670,7 +631,7 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
         ];
     });
 
-    $r->addRoute('POST', 'api/huiskeuringen', function($_, $values) use ($conn, $user) {
+    $r->addRoute('POST', 'api/huiskeuringen', function($_, $values) use ($db, $user) {
         if(!$user) {
             http_response_code(401);
             return [
@@ -679,36 +640,33 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
             ];
         }
 
-        $stmt = $conn->prepare("
+        $date_sent = new \DateTime("now", new \DateTimeZone("UTC"));       
+        
+        $db->execute("
             INSERT INTO `huiskeuringen` (
                 `user_id`, `year`, `name`, `region`, `preferred_date`, `rams_first`, `rams_second`, `ewes`, `locations`, `on_paper`, `remarks`, `date_sent`
             )
             VALUES (
                 :user_id, :year, :name, :region, :preferred_date, :rams_first, :rams_second, :ewes, :locations, :on_paper, :remarks, :date_sent
             )
-        ");
-
-        $date_sent = new \DateTime("now", new \DateTimeZone("UTC"));
-        $year = intval($date_sent->format('Y'));
-
-        $stmt->bindValue(':user_id', $user['id']);
-        $stmt->bindValue(':year', $year);
-        $stmt->bindValue(':name', $values['name']);
-        $stmt->bindValue(':region', $values['region']);
-        $stmt->bindValue(':preferred_date', $values['preferred_date']);
-        $stmt->bindValue(':rams_first', $values['rams_first']);
-        $stmt->bindValue(':rams_second', $values['rams_second']);
-        $stmt->bindValue(':ewes', $values['ewes']);
-        $stmt->bindValue(':locations', $values['locations']);
-        $stmt->bindValue(':on_paper', $values['on_paper']);
-        $stmt->bindValue(':remarks', $values['remarks']);
-        $date_sent = new \DateTime("now", new \DateTimeZone("UTC"));
-        $stmt->bindValue(':date_sent', $date_sent->format('Y-m-d H:i:s'));
-        $stmt->execute();
+        ", [
+            ':user_id' => $user['id'],
+            ':year' => intval($date_sent->format('Y')),
+            ':name' => $values['name'],
+            ':region' => $values['region'],
+            ':preferred_date' => $values['preferred_date'],
+            ':rams_first' => $values['rams_first'],
+            ':rams_second' => $values['rams_second'],
+            ':ewes' => $values['ewes'],
+            ':locations' => $values['locations'],
+            ':on_paper' => $values['on_paper'],
+            ':remarks' => $values['remarks'],
+            ':date_sent' => $date_sent->format('Y-m-d H:i:s')
+        ]);
 
         return [
             "success" => true,
-            "id" => $conn->lastInsertId()
+            "id" => $db->lastInsertId()
         ];
     });
 });
