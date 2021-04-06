@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatPaginatorIntlImpl } from './localization/MatPaginator';
@@ -57,6 +57,8 @@ import { VerenigingPageComponent } from './vereniging-page/vereniging-page.compo
 import { OverDeVerenigingPageComponent } from './vereniging-page/over-de-vereniging-page/over-de-vereniging-page.component';
 import { BestuurEnCommissiesPageComponent } from './vereniging-page/bestuur-en-commissies-page/bestuur-en-commissies-page.component';
 import { CalamiteitenplanPageComponent } from './vereniging-page/calamiteitenplan-page/calamiteitenplan-page.component';
+import { MonitoringService } from './services/monitoring.service';
+import { ErrorHandlerService } from './services/error-handler.service';
 
 @NgModule({
   declarations: [
@@ -123,7 +125,9 @@ import { CalamiteitenplanPageComponent } from './vereniging-page/calamiteitenpla
       useClass: BaseUrlInterceptor,
       multi: true,
     },
-    { provide: "BASE_API_URL", useValue: environment.apiUrl }
+    { provide: "BASE_API_URL", useValue: environment.apiUrl },
+    MonitoringService,
+    { provide: ErrorHandler, useClass: ErrorHandlerService }
   ],
   bootstrap: [AppComponent]
 })

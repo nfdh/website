@@ -8,10 +8,16 @@ if(\file_exists(__DIR__ . "/Settings.local.php")) {
 else {
     class Settings {
         static $conf  = [
-            'db_server' => '#{DB_HOST}#',
-            'db_username' => '#{DB_USERNAME}#',
-            'db_password' => '#{DB_PASSWORD}#',
-            'db_database' => '#{DB_DATABASE}#'
+            'db' => [
+                'server' => '#{DB_HOST}#',
+                'username' => '#{DB_USERNAME}#',
+                'password' => '#{DB_PASSWORD}#',
+                'database' => '#{DB_DATABASE}#',
+            ],
+            'appInsights' => [
+                'instrumentationKey' => '46da6ab2-ce36-48bf-9a04-5759a5f23d45',
+                'location' => 'nieuw.drentsheideschaap.nl'
+            ]
         ];
 
         static function get() {
