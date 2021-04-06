@@ -1,0 +1,23 @@
+:host {
+    display: flex;
+    flex-direction: row;
+    padding-top: 20px;
+}
+
+.menu {
+    flex-grow: 0;
+    flex-shrink: 0;
+    width: 300px;
+}
+
+.content {
+    flex-grow: 1;
+    flex-shrink: 1;
+    padding: 0 25px;
+}
+
+.content > h1 {
+    margin: 0;
+    padding: 0;
+    color: #000;
+}
