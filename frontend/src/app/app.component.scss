@@ -34,6 +34,22 @@
     font-weight: bold;
 }
 
+.navigation-loader {
+    position: absolute;
+    left: 0;
+    right: 0;
+    transform: scale(1, 0);
+    visibility: hidden;
+    opacity: 0;
+    transition: transform 200ms linear, visibility 200ms linear, opacity 200ms linear;
+}
+
+.navigation-loader.visible {
+    transform: scale(1, 1);
+    opacity: 1;
+    visibility: visible;
+}
+
 .header-menu {
     position: absolute;
     left: 50%;
