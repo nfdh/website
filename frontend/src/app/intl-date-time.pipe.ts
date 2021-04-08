@@ -1,23 +1,13 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { IntlDateTimeService } from './services/intl-date-time.service';
 
 @Pipe({
   name: 'intlDateTime'
 })
 export class IntlDateTimePipe implements PipeTransform {
-  intl: Intl.DateTimeFormat;
-
-  constructor() {
-    this.intl = new Intl.DateTimeFormat("nl", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-      hour12: false
-    });
-  }
+  constructor(private intlDateTimeService: IntlDateTimeService) {}
 
   transform(value: unknown, ...args: unknown[]): unknown {
-    return this.intl.format(value as Date);
+    return this.intlDateTimeService.intl.format(value as Date);
   }
 }

@@ -64,6 +64,8 @@ import { ErrorHandlerService } from './services/error-handler.service';
 import { LidWordenPageComponent } from './lid-worden-page/lid-worden-page.component';
 import { IntlDatePipe } from './intl-date.pipe';
 import { IntlDateTimePipe } from './intl-date-time.pipe';
+import { IntlDateService } from './services/intl-date.service';
+import { IntlDateTimeService } from './services/intl-date-time.service';
 
 @NgModule({
   declarations: [
@@ -138,7 +140,8 @@ import { IntlDateTimePipe } from './intl-date-time.pipe';
     { provide: "BASE_API_URL", useValue: environment.apiUrl },
     MonitoringService,
     { provide: ErrorHandler, useClass: ErrorHandlerService },
-    IntlDatePipe
+    IntlDateService,
+    IntlDateTimeService
   ],
   bootstrap: [AppComponent]
 })
