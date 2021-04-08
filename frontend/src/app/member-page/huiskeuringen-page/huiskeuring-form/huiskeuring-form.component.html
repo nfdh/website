@@ -9,39 +9,19 @@
             <mat-label>Regio</mat-label>
             <mat-select formControlName="region" (selectionChange)="onRegionChange()">
                 <!--<mat-option value="" selected="">- maak keuze -</mat-option>-->
-                <mat-option [value]="1">Noord (Drenthe / Friesland / Groningen)</mat-option>
-                <mat-option [value]="2">Oost (Gelderland / Overijssel / Flevoland)</mat-option>
-                <mat-option [value]="3">West (Utrecht / Zuid-Holland / Noord-Holland)</mat-option>
-                <mat-option [value]="4">Zuid (Limburg / Noord-Braband / Zeeland / België)</mat-option>
-                <mat-option [value]="0">Overig - Zie opmerking</mat-option>
+                <mat-option [value]="0">Noord (Drenthe / Friesland / Groningen)</mat-option>
+                <mat-option [value]="1">Oost (Gelderland / Overijssel / Flevoland)</mat-option>
+                <mat-option [value]="2">West (Utrecht / Zuid-Holland / Noord-Holland)</mat-option>
+                <mat-option [value]="3">Zuid (Limburg / Noord-Braband / Zeeland / België)</mat-option>
+                <mat-option [value]="-1">Overig - Zie opmerking</mat-option>
             </mat-select>
             <mat-error *ngIf="formGroup.get('region')!.hasError('required')">Verplicht</mat-error>
         </mat-form-field>
     </app-form-section>
-    <app-form-section *ngIf="formGroup.controls.region.value > 0" title="Voorkeur datum" [ngSwitch]="formGroup.controls.region.value">
-        <mat-radio-group *ngSwitchCase="1" class="date-selection" formControlName="preferred_date">
-            <mat-radio-button color="primary" [value]="0">vrijdag 19 juni</mat-radio-button>
-            <mat-radio-button color="primary" [value]="1">zaterdag 20 juni</mat-radio-button>
-            <mat-radio-button color="primary" [value]="2">zondag 21 juni</mat-radio-button>
-            <mat-radio-button color="primary" [value]="3">vrijdag 21 augustus</mat-radio-button>
-            <mat-radio-button color="primary" [value]="4">zaterdag 22 augustus</mat-radio-button>
-            <mat-radio-button color="primary" [value]="5">zondag 23 augustus</mat-radio-button>
-            <mat-radio-button color="primary" [value]="6">Geen voorkeur</mat-radio-button>
-        </mat-radio-group>
-        <mat-radio-group *ngSwitchCase="2" class="date-selection" formControlName="preferred_date">
-            <mat-radio-button color="primary" [value]="0">zaterdag 27 juni</mat-radio-button>
-            <mat-radio-button color="primary" [value]="1">zondag 19 juli</mat-radio-button>
-            <mat-radio-button color="primary" [value]="2">Geen voorkeur</mat-radio-button>
-        </mat-radio-group>
-        <mat-radio-group *ngSwitchCase="3" class="date-selection" formControlName="preferred_date">
-            <mat-radio-button color="primary" [value]="0">zondag 5 juli</mat-radio-button>
-            <mat-radio-button color="primary" [value]="1">zaterdag 1 augustus</mat-radio-button>
-            <mat-radio-button color="primary" [value]="2">Geen voorkeur</mat-radio-button>
-        </mat-radio-group>
-        <mat-radio-group *ngSwitchCase="4" class="date-selection" formControlName="preferred_date">
-            <mat-radio-button color="primary" [value]="0">zaterdag 11 juli</mat-radio-button>
-            <mat-radio-button color="primary" [value]="1">zondag 9 augustus</mat-radio-button>
-            <mat-radio-button color="primary" [value]="2">Geen voorkeur</mat-radio-button>
+    <app-form-section *ngIf="formGroup.controls.region.value >= 0" title="Voorkeur datum">
+        <mat-radio-group class="date-selection" formControlName="preferred_date">
+            <mat-radio-button color="primary" *ngFor="let date of availableDatesForRegion(formGroup.controls.region.value); index as i" [value]="i">{{date | intlDate}}</mat-radio-button>
+            <mat-radio-button color="primary" [value]="-1">Geen voorkeur</mat-radio-button>
         </mat-radio-group>
         <p>
             Als u geen voorkeur voor een datum aangeeft maakt u het ons gemakkelijker om een planning te maken

@@ -62,6 +62,8 @@ import { CalamiteitenplanPageComponent } from './vereniging-page/calamiteitenpla
 import { MonitoringService } from './services/monitoring.service';
 import { ErrorHandlerService } from './services/error-handler.service';
 import { LidWordenPageComponent } from './lid-worden-page/lid-worden-page.component';
+import { IntlDatePipe } from './intl-date.pipe';
+import { IntlDateTimePipe } from './intl-date-time.pipe';
 
 @NgModule({
   declarations: [
@@ -90,7 +92,9 @@ import { LidWordenPageComponent } from './lid-worden-page/lid-worden-page.compon
     OverDeVerenigingPageComponent,
     BestuurEnCommissiesPageComponent,
     CalamiteitenplanPageComponent,
-    LidWordenPageComponent
+    LidWordenPageComponent,
+    IntlDatePipe,
+    IntlDateTimePipe
   ],
   imports: [
     BrowserModule,
@@ -133,7 +137,8 @@ import { LidWordenPageComponent } from './lid-worden-page/lid-worden-page.compon
     },
     { provide: "BASE_API_URL", useValue: environment.apiUrl },
     MonitoringService,
-    { provide: ErrorHandler, useClass: ErrorHandlerService }
+    { provide: ErrorHandler, useClass: ErrorHandlerService },
+    IntlDatePipe
   ],
   bootstrap: [AppComponent]
 })

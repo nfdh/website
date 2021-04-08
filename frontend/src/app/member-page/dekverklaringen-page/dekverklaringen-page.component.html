@@ -41,7 +41,7 @@
 
     <ng-container matColumnDef="date_sent">
         <th mat-header-cell *matHeaderCellDef>Verzonden op</th>
-        <td mat-cell *matCellDef="let form">{{form.date_sent | date}}</td>
+        <td mat-cell *matCellDef="let form">{{form.date_sent | intlDateTime}}</td>
     </ng-container>
 
     <ng-container matColumnDef="paginator">
