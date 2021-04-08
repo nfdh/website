@@ -9,6 +9,7 @@ import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import preferredDates from './dates';
 import { IntlDateService } from 'src/app/services/intl-date.service';
+import { AppTitleService } from 'src/app/services/app-title.service';
 
 interface Huiskeuring {
   id: number,
@@ -36,12 +37,15 @@ export class HuiskeuringenPageComponent {
     private dialog: MatDialog,
     private router: Router,
     private route: ActivatedRoute,
-    private intlDateService: IntlDateService) {
+    private intlDateService: IntlDateService,
+    titleService: AppTitleService) {
 
     this.huiskeuringen = dataSourceFactory.create("/api/huiskeuringen", f => {
       f.date_sent = new Date(f.date_sent);
       return f;
     });
+
+    titleService.setTitle("Huiskeuringen - Ledenportaal");
   }
 
   onAddClick() {

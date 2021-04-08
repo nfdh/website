@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AppTitleService } from '../services/app-title.service';
 
 @Component({
   selector: 'app-disclaimer-page',
@@ -7,7 +8,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DisclaimerPageComponent implements OnInit {
 
-  constructor() { }
+  constructor(titleService: AppTitleService) {
+    titleService.setTitle("Disclaimer");
+  }
 
   ngOnInit(): void {
   }

@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormControl } from '@angular/forms';
 import { AuthenticationService, User } from '../services/authentication.service';
 import { Router } from '@angular/router';
+import { AppTitleService } from '../services/app-title.service';
 
 @Component({
   selector: 'app-login-page',
@@ -18,7 +19,9 @@ export class LoginPageComponent {
   isBusy: boolean = false;
   errorMessage: string | null = null;
 
-  constructor(private httpClient: HttpClient, private authenticationService: AuthenticationService, private router: Router) { }
+  constructor(private httpClient: HttpClient, private authenticationService: AuthenticationService, private router: Router, titleService: AppTitleService) { 
+    titleService.setTitle("Inloggen");
+  }
 
   onSubmit() {
     this.isBusy = true;

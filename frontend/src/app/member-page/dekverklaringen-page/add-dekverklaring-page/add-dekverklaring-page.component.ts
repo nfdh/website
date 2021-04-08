@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AppTitleService } from 'src/app/services/app-title.service';
 import { createFormGroup } from '../dekverklaring-form/dekverklaring-form.component';
 
 interface AddResult {
@@ -24,8 +25,12 @@ export class AddDekverklaringPageComponent {
     private router: Router, 
     private route: ActivatedRoute, 
     private httpClient: HttpClient, 
-    private snackBar: MatSnackBar
-  ) { }
+    private snackBar: MatSnackBar,
+    titleService: AppTitleService
+  ) { 
+
+    titleService.setTitle("Nieuwe dekverklaring indienen - Ledenportaal");
+  }
 
   onSubmit(ev: Event) {
     ev.preventDefault();

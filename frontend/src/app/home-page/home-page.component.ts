@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { GalleryItem, ImageItem } from 'ng-gallery';
+import { AppTitleService } from '../services/app-title.service';
 
 @Component({
   selector: 'app-home-page',
@@ -9,7 +10,7 @@ import { GalleryItem, ImageItem } from 'ng-gallery';
 export class HomePageComponent implements OnInit {
   images: GalleryItem[];
 
-  constructor() { 
+  constructor(titleService: AppTitleService) { 
     this.images = [
       new ImageItem({ src: "assets/slideshow/image1.jpg", thumb: "assets/slideshow/thumb.image1.jpg" }),
       new ImageItem({ src: "assets/slideshow/image2.jpg", thumb: "assets/slideshow/thumb.image2.jpg" }),
@@ -26,6 +27,8 @@ export class HomePageComponent implements OnInit {
       new ImageItem({ src: "assets/slideshow/image13.jpg", thumb: "assets/slideshow/thumb.image13.jpg" }),
       new ImageItem({ src: "assets/slideshow/image14.jpg", thumb: "assets/slideshow/thumb.image14.jpg" })
     ];
+
+    titleService.setTitle("Home");
   }
 
   ngOnInit(): void {

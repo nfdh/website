@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { createFormGroup } from '../user-form/user-form.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
+import { AppTitleService } from 'src/app/services/app-title.service';
 
 interface UpdateResult {
   success: boolean,
@@ -35,8 +36,11 @@ export class EditUserPageComponent implements OnDestroy {
     private route: ActivatedRoute,
     private httpClient: HttpClient,
     private snackBar: MatSnackBar,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    titleService: AppTitleService
   ) { 
+    titleService.setTitle("Gebruiker - Ledenportaal");
+
     this.routeSubscription = this.activatedRoute.params
       .subscribe((p) => {
         this.loading = true;
@@ -48,6 +52,8 @@ export class EditUserPageComponent implements OnDestroy {
           .subscribe((u) => {
             this.loading = false;
             if(u.success) {
+              titleService.setTitle("Gebruiker " + u.user.name + " - Ledenportaal");
+
               this.formGroup.setValue(u.user);
               this.formGroup.enable();
             }

@@ -9,6 +9,7 @@ import { SelectionMap, SelectionType } from 'src/app/services/selection';
 import { filter } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AppTitleService } from 'src/app/services/app-title.service';
 
 interface User {
   id: number,
@@ -34,9 +35,12 @@ export class UsersPageComponent {
     private httpClient: HttpClient, 
     private dialog: MatDialog,
     private router: Router,
-    private route: ActivatedRoute) {
+    private route: ActivatedRoute,
+    titleService: AppTitleService) {
 
     this.users = dataSourceFactory.create("/api/users");
+
+    titleService.setTitle("Gebruikers - Ledenportaal");
   }
 
   onAddClick() {

@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { createFormGroup } from '../user-form/user-form.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AppTitleService } from 'src/app/services/app-title.service';
 
 interface AddResult {
   success: boolean,
@@ -23,8 +24,12 @@ export class AddUserPageComponent {
     private router: Router, 
     private route: ActivatedRoute,
     private httpClient: HttpClient,
-    private snackBar: MatSnackBar
-  ) { }
+    private snackBar: MatSnackBar,
+    titleService: AppTitleService
+  ) { 
+
+    titleService.setTitle("Gebruiker toevoegen - Ledenportaal");
+  }
 
   onSubmit(ev: Event) {
     ev.preventDefault();
