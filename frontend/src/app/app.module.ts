@@ -61,6 +61,7 @@ import { BestuurEnCommissiesPageComponent } from './vereniging-page/bestuur-en-c
 import { CalamiteitenplanPageComponent } from './vereniging-page/calamiteitenplan-page/calamiteitenplan-page.component';
 import { MonitoringService } from './services/monitoring.service';
 import { ErrorHandlerService } from './services/error-handler.service';
+import { LidWordenPageComponent } from './lid-worden-page/lid-worden-page.component';
 import { IntlDatePipe } from './intl-date.pipe';
 import { IntlDateTimePipe } from './intl-date-time.pipe';
 
@@ -91,6 +92,7 @@ import { IntlDateTimePipe } from './intl-date-time.pipe';
     OverDeVerenigingPageComponent,
     BestuurEnCommissiesPageComponent,
     CalamiteitenplanPageComponent,
+    LidWordenPageComponent,
     IntlDatePipe,
     IntlDateTimePipe
   ],
