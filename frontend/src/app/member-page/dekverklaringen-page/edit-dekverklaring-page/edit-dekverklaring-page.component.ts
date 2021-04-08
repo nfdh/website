@@ -5,6 +5,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 import { createDekgroepFormGroup, createFormGroup, createRamFormControl } from '../dekverklaring-form/dekverklaring-form.component';
 import { FormArray, FormGroup } from '@angular/forms';
+import { AppTitleService } from 'src/app/services/app-title.service';
 
 interface UpdateResult {
   success: boolean,
@@ -36,7 +37,8 @@ export class EditDekverklaringPageComponent {
     private route: ActivatedRoute,
     private httpClient: HttpClient,
     private snackBar: MatSnackBar,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    titleService: AppTitleService
   ) { 
     this.routeSubscription = this.activatedRoute.params
       .subscribe((p) => {
@@ -83,7 +85,9 @@ export class EditDekverklaringPageComponent {
             this.loadErrorMessage = "De dekverklaring kon niet worden opgehaald.";
             this.loading = false;
           });
-      });
+    });
+
+    titleService.setTitle("Dekverklaring - Ledenportaal");
   }
 
   ngOnDestroy() {

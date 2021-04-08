@@ -9,6 +9,7 @@ import { SelectionMap, SelectionType } from 'src/app/services/selection';
 import { filter } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AppTitleService } from 'src/app/services/app-title.service';
 
 enum Studbook {
   DRENTS_HEIDESCHAAP,
@@ -42,12 +43,15 @@ export class DekverklaringenPageComponent {
     private httpClient: HttpClient, 
     private dialog: MatDialog,
     private router: Router,
-    private route: ActivatedRoute) {
+    private route: ActivatedRoute,
+    titleService: AppTitleService) {
 
     this.dekverklaringen = dataSourceFactory.create("/api/dekverklaringen", f => {
       f.date_sent = new Date(f.date_sent);
       return f;
     });
+
+    titleService.setTitle("Dekverklaringen  - Ledenportaal");
   }
 
   onAddClick() {

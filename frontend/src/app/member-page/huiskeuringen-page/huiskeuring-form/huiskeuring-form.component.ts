@@ -1,6 +1,7 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { AppTitleService } from 'src/app/services/app-title.service';
 
 import availableDates from "../dates";
 
@@ -15,8 +16,8 @@ export class HuiskeuringFormComponent {
 
   regionSubscription?: Subscription;
 
-  constructor() { 
-    
+  constructor(titleService: AppTitleService) { 
+    titleService.setTitle("Huiskeuring");
   }
 
   onRegionChange() {

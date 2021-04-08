@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AppTitleService } from 'src/app/services/app-title.service';
 
 @Component({
   selector: 'app-drents-heideschaap-historie',
@@ -7,7 +8,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DrentsHeideschaapHistorieComponent implements OnInit {
 
-  constructor() { }
+  constructor(titleService: AppTitleService) {
+    titleService.setTitle("Historie Drents Heideschaap - Fokken");
+  }
 
   ngOnInit(): void {
   }

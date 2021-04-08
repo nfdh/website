@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AppTitleService } from 'src/app/services/app-title.service';
 
 @Component({
   selector: 'app-drents-heideschaap-kenmerken',
@@ -7,6 +8,8 @@ import { Component } from '@angular/core';
 })
 export class DrentsHeideschaapKenmerkenComponent {
 
-  constructor() { }
+  constructor(titleService: AppTitleService) {
+    titleService.setTitle("Kenmerken Drents Heideschaap - Fokken");
+  }
 
 }

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AppTitleService } from 'src/app/services/app-title.service';
 
 @Component({
   selector: 'app-schoonebeeker-kenmerken',
@@ -7,7 +8,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SchoonebeekerKenmerkenComponent implements OnInit {
 
-  constructor() { }
+  constructor(titleService: AppTitleService) {
+    titleService.setTitle("Kenmerken Schoonebeeker - Fokken");
+  }
+
 
   ngOnInit(): void {
   }

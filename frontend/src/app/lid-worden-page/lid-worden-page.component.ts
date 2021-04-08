@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AppTitleService } from '../services/app-title.service';
 
 @Component({
   selector: 'app-lid-worden-page',
@@ -7,7 +8,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LidWordenPageComponent implements OnInit {
 
-  constructor() { }
+  constructor(titleService: AppTitleService) {
+    titleService.setTitle("Lid worden");
+  }
 
   ngOnInit(): void {
   }

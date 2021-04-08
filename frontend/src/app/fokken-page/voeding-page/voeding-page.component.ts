@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
+import { AppTitleService } from 'src/app/services/app-title.service';
 
 @Component({
   selector: 'app-voeding-page',
@@ -36,7 +37,9 @@ export class VoedingPageComponent implements OnInit {
     { label: "Vers gras", ds: "160", vem: "980", dve: "98" }
   ]);
 
-  constructor() { }
+  constructor(titleService: AppTitleService) {
+    titleService.setTitle("Voeding - Fokken");
+  }
 
   ngOnInit(): void {
   }
