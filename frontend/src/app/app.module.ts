@@ -61,6 +61,8 @@ import { BestuurEnCommissiesPageComponent } from './vereniging-page/bestuur-en-c
 import { CalamiteitenplanPageComponent } from './vereniging-page/calamiteitenplan-page/calamiteitenplan-page.component';
 import { MonitoringService } from './services/monitoring.service';
 import { ErrorHandlerService } from './services/error-handler.service';
+import { IntlDatePipe } from './intl-date.pipe';
+import { IntlDateTimePipe } from './intl-date-time.pipe';
 
 @NgModule({
   declarations: [
@@ -88,7 +90,9 @@ import { ErrorHandlerService } from './services/error-handler.service';
     VerenigingPageComponent,
     OverDeVerenigingPageComponent,
     BestuurEnCommissiesPageComponent,
-    CalamiteitenplanPageComponent
+    CalamiteitenplanPageComponent,
+    IntlDatePipe,
+    IntlDateTimePipe
   ],
   imports: [
     BrowserModule,
@@ -131,7 +135,8 @@ import { ErrorHandlerService } from './services/error-handler.service';
     },
     { provide: "BASE_API_URL", useValue: environment.apiUrl },
     MonitoringService,
-    { provide: ErrorHandler, useClass: ErrorHandlerService }
+    { provide: ErrorHandler, useClass: ErrorHandlerService },
+    IntlDatePipe
   ],
   bootstrap: [AppComponent]
 })

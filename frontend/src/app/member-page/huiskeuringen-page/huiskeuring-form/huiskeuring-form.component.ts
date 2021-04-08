@@ -2,6 +2,8 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
+import availableDates from "../dates";
+
 @Component({
   selector: 'app-huiskeuring-form',
   templateUrl: './huiskeuring-form.component.html',
@@ -18,8 +20,11 @@ export class HuiskeuringFormComponent {
   }
 
   onRegionChange() {
-    console.log('reset region');
     this.formGroup.controls.preferred_date.setValue('');
+  }
+
+  availableDatesForRegion(region: number) {
+    return availableDates[region];
   }
 }
 
