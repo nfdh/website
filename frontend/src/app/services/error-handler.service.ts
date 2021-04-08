@@ -12,6 +12,5 @@ export class ErrorHandlerService extends ErrorHandler {
 
   handleError(error: Error) {
       this.monitoringService.logException(error);
-      console.error(error);
   }
 }
