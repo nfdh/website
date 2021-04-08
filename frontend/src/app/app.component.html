@@ -30,6 +30,9 @@
 </div>
 
 <div class="center-content">
+    <div class="navigation-loader" [class.visible]="loading">
+        <mat-progress-bar [value]="loadProgress"></mat-progress-bar>
+    </div>
     <router-outlet></router-outlet>
 </div>
 
