@@ -23,6 +23,7 @@ import { OverDeVerenigingPageComponent } from './vereniging-page/over-de-verenig
 import { BestuurEnCommissiesPageComponent } from './vereniging-page/bestuur-en-commissies-page/bestuur-en-commissies-page.component';
 import { CalamiteitenplanPageComponent } from './vereniging-page/calamiteitenplan-page/calamiteitenplan-page.component';
 import { LidWordenPageComponent } from './lid-worden-page/lid-worden-page.component';
+import { ScrollRestorationService } from './services/scroll-restoration.service';
 
 const routes: Routes = [
   { path: "", component: HomePageComponent },
@@ -59,7 +60,10 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  imports: [RouterModule.forRoot(routes, { scrollPositionRestoration: "disabled", anchorScrolling: "enabled" })],
+  exports: [RouterModule],
+  providers: [ScrollRestorationService]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {
+  constructor(private scrollRestorationService: ScrollRestorationService) {}
+}
