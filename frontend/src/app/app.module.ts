@@ -61,6 +61,7 @@ import { BestuurEnCommissiesPageComponent } from './vereniging-page/bestuur-en-c
 import { CalamiteitenplanPageComponent } from './vereniging-page/calamiteitenplan-page/calamiteitenplan-page.component';
 import { MonitoringService } from './services/monitoring.service';
 import { ErrorHandlerService } from './services/error-handler.service';
+import { LidWordenPageComponent } from './lid-worden-page/lid-worden-page.component';
 
 @NgModule({
   declarations: [
@@ -88,7 +89,8 @@ import { ErrorHandlerService } from './services/error-handler.service';
     VerenigingPageComponent,
     OverDeVerenigingPageComponent,
     BestuurEnCommissiesPageComponent,
-    CalamiteitenplanPageComponent
+    CalamiteitenplanPageComponent,
+    LidWordenPageComponent
   ],
   imports: [
     BrowserModule,

@@ -22,6 +22,7 @@ import { VerenigingPageComponent } from './vereniging-page/vereniging-page.compo
 import { OverDeVerenigingPageComponent } from './vereniging-page/over-de-vereniging-page/over-de-vereniging-page.component';
 import { BestuurEnCommissiesPageComponent } from './vereniging-page/bestuur-en-commissies-page/bestuur-en-commissies-page.component';
 import { CalamiteitenplanPageComponent } from './vereniging-page/calamiteitenplan-page/calamiteitenplan-page.component';
+import { LidWordenPageComponent } from './lid-worden-page/lid-worden-page.component';
 
 const routes: Routes = [
   { path: "", component: HomePageComponent },
@@ -37,6 +38,7 @@ const routes: Routes = [
   { path: 'fokken', loadChildren: () => import('./fokken-page/fokken-page.module').then(m => m.FokkenPageModule) },
   { path: "disclaimer", component: DisclaimerPageComponent },
   { path: "contact", component: ContactPageComponent },
+  { path: "lid-worden", component: LidWordenPageComponent },
   { path: "login", component: LoginPageComponent },
   { path: "ledenportaal", component: MemberPageComponent, canActivate: [AuthGuard], 
     children: [

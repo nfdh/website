@@ -1,0 +1,76 @@
+h1 {
+    color: #000;
+    margin-bottom: 0;
+}
+
+.pros-table,
+.responsibilities-table {
+    border-spacing: 0;
+    table-layout: fixed;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.label-header {
+    width: 40%;
+    text-align: left;
+    vertical-align: bottom;
+}
+
+.check-header {
+    width: 15%;
+}
+
+.check-column {
+    text-align: center;
+    vertical-align: center;
+}
+
+.label-column,
+.check-column {
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.subtitle .label-column,
+.subtitle .check-column {
+    border-top: none;
+}
+
+.check-header,
+.check-column {
+    border-left: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.label-column,
+.check-column {
+    padding: 20px;
+}
+
+.join-buttons th {
+    padding: 0 20px 20px 20px;
+}
+
+.role-infos th {
+    padding: 0 20px 0 20px;
+}
+
+.prices th {
+    padding-top: 15px;
+}
+
+.check-header button {
+    display: inline-block;
+    width: 100%;
+    margin-top: 15px;
+}
+
+.role-infos th,
+.prices .sub {
+    font-weight: normal;
+    color: dimgray;
+    font-size: 90%;
+}
+
+mat-icon {
+    display: inline;
+}
