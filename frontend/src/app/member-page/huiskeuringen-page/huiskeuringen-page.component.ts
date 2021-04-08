@@ -4,13 +4,11 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { TableDataSource, TableDataSourceFactory } from 'src/app/services/table-data-source.service';
 import { PageEvent } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
-import { DeleteConfirmationDialogComponent } from 'src/app/delete-confirmation-dialog/delete-confirmation-dialog.component';
 import { SelectionMap, SelectionType } from 'src/app/services/selection';
-import { filter } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import preferredDates from './dates';
-import { IntlDatePipe } from 'src/app/intl-date.pipe';
+import { IntlDateService } from 'src/app/services/intl-date.service';
 
 interface Huiskeuring {
   id: number,
@@ -38,7 +36,7 @@ export class HuiskeuringenPageComponent {
     private dialog: MatDialog,
     private router: Router,
     private route: ActivatedRoute,
-    private intlDatePipe: IntlDatePipe) {
+    private intlDateService: IntlDateService) {
 
     this.huiskeuringen = dataSourceFactory.create("/api/huiskeuringen", f => {
       f.date_sent = new Date(f.date_sent);
@@ -72,6 +70,6 @@ export class HuiskeuringenPageComponent {
       return "Geen voorkeur";
     }
 
-    return this.intlDatePipe.transform(preferredDates[region][preferredDate]);
+    return this.intlDateService.intl.format(preferredDates[region][preferredDate]);
   }
 }

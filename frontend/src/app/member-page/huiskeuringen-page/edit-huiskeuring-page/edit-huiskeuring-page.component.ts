@@ -51,7 +51,6 @@ export class EditHuiskeuringPageComponent {
             if(u.success) {
               this.formGroup.setValue(u.huiskeuring);
               this.formGroup.controls.preferred_date.setValue(u.huiskeuring.preferred_date); // Reset preferred date
-              console.log('set prefferred date');
               this.formGroup.enable();
             }
             else {
