@@ -66,6 +66,7 @@ import { IntlDatePipe } from './intl-date.pipe';
 import { IntlDateTimePipe } from './intl-date-time.pipe';
 import { IntlDateService } from './services/intl-date.service';
 import { IntlDateTimeService } from './services/intl-date-time.service';
+import { AppTitleService } from './services/app-title.service';
 
 @NgModule({
   declarations: [
@@ -142,7 +143,8 @@ import { IntlDateTimeService } from './services/intl-date-time.service';
     { provide: ErrorHandler, useClass: ErrorHandlerService },
     IntlDateService,
     IntlDateTimeService,
-    Title
+    Title,
+    AppTitleService
   ],
   bootstrap: [AppComponent]
 })
