@@ -1,5 +1,5 @@
 import { ErrorHandler, NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, Title } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatPaginatorIntlImpl } from './localization/MatPaginator';
 
@@ -141,7 +141,8 @@ import { IntlDateTimeService } from './services/intl-date-time.service';
     MonitoringService,
     { provide: ErrorHandler, useClass: ErrorHandlerService },
     IntlDateService,
-    IntlDateTimeService
+    IntlDateTimeService,
+    Title
   ],
   bootstrap: [AppComponent]
 })
