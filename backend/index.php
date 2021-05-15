@@ -24,6 +24,9 @@ $url = $conf['url'];
 $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) use ($db, $user, $mailer_factory, $url) {
     $r->addRoute('POST', 'api/login', function($_, $values) use ($db, $user) {
         $user = Auth::login($db, $values['email'], $values['password']);
+        if(!$user) {
+            return false;
+        }
 
         return [
 			"name" => $user['name'],
