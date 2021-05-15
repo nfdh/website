@@ -4,6 +4,9 @@ require 'lib/vendor/autoload.php';
 use Conf\Settings;
 use Lib\Telemetry;
 use Lib\Database;
+use Lib\Uuid;
+use Lib\Auth;
+use Lib\MailerFactory;
 
 session_start();
 
@@ -15,36 +18,175 @@ if(isset($_SESSION['user'])) {
 $conf = Settings::get();
 $telemetry = new Lib\Telemetry($conf['appInsights'], $user != null ? $user['id'] : null);
 $db = new Lib\Database($conf['db'], $telemetry);
+$mailer_factory = new Lib\MailerFactory($conf['mail']);
+$url = $conf['url'];
 
-$dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) use ($db, $user) {
+$dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) use ($db, $user, $mailer_factory, $url) {
     $r->addRoute('POST', 'api/login', function($_, $values) use ($db, $user) {
+        $user = Auth::login($db, $values['email'], $values['password']);
+
+        return [
+			"name" => $user['name'],
+            "email" => $user['email'],
+			"role_website_contributor" => $user['role_website_contributor'],
+			"role_studbook_administrator" => $user['role_studbook_administrator'],
+			"role_studbook_inspector" => $user['role_studbook_inspector']
+        ];
+    });
+
+    $r->addRoute('POST', 'api/request-password-reset', function($_, $values) use ($db, $user, $mailer_factory, $url) {
+        if($user) {
+            http_response_code(401);
+            return [
+                "success" => false,
+                "reason" => "UNAUTHORIZED"
+            ];
+        }
+
+        $email = $values['email'];
+
+        // Check if there is a user with this e-mail address
         $row = $db->querySingle("
-            SELECT `id`, `name`, `email`, `password_hash`, `role_website_contributor`, `role_studbook_administrator`, `role_studbook_inspector` 
+            SELECT `id`, `name`
             FROM `users`
             WHERE `email` = :email
         ", [
             ":email" => $values['email']
         ]);
 
-        if (!$row || !password_verify($values['password'], $row['password_hash'])) {
-            return false;
+        if(!$row) {
+            return [
+                "success" => true
+            ];
         }
 
-        $_SESSION['user'] = $user = [
-            "id" => $row["id"],
-            "name" => $row['name'],
-            "email" => $row['email'],
-			"role_website_contributor" => boolval($row['role_website_contributor']),
-			"role_studbook_administrator" => boolval($row['role_studbook_administrator']),
-			"role_studbook_inspector" => boolval($row['role_studbook_inspector'])
-        ];
+        // Generate a reset code and store it
+        $token = Uuid::generate();
+        $generated_at = new \DateTime("now", new \DateTimeZone("UTC"));
+        $user_id = $row['id'];
+        $db->execute("
+            INSERT INTO `reset_password_tokens` (`user_id`, `token`, `generated_on`)
+            VALUES (:user_id, :token, :generated_on)
+        ", [
+            ":user_id" => $user_id,
+            ":token" => $token,
+            ":generated_on" => $generated_at->format('Y-m-d H:i:s')
+        ]);
+
+        // Send the code via mail
+        $escaped_name = htmlspecialchars($row['name']);
+
+        $body = "<p>Hallo $escaped_name,</p>";
+        $body .= "<p>U heeft via de website aangegeven uw wachtwoord opnieuw in te willen stellen. Klik op de link hieronder om verder te gaan.</p>";
+        $body .= "<p><a href=\"$url/wachtwoord-vergeten/opnieuw-instellen?code=$token\">Wachtwoord opnieuw instellen</a></p>";
+        $body .= "<p>Met vriendelijke groeten,<br/>Nederlandse Fokkersvereniging Het Drentse Heideschaap</p>";
+
+        $mailer = $mailer_factory->create();
+        $mailer->Subject   = 'Wachtwoord opnieuw instellen';
+        $mailer->Body      = $body;
+        $mailer->IsHTML(true);
+        $mailer->AddAddress($values['email']);
+        $mailer->Send();
 
         return [
-			"name" => $row['name'],
-            "email" => $row['email'],
-			"role_website_contributor" => boolval($row['role_website_contributor']),
-			"role_studbook_administrator" => boolval($row['role_studbook_administrator']),
-			"role_studbook_inspector" => boolval($row['role_studbook_inspector'])
+            "success" => true
+        ];
+    });
+
+    $r->addRoute('GET', 'api/check-password-reset-token', function($_, $values) use ($db, $user) {
+        if($user) {
+            http_response_code(401);
+            return [
+                "success" => false,
+                "reason" => "UNAUTHORIZED"
+            ];
+        }
+
+        $token = $values['token'];
+
+        $row = $db->querySingle("
+            SELECT 1 AS `exists`
+            FROM `reset_password_tokens`
+            WHERE `token` = :token
+        ", [
+            ":token" => $token
+        ]);
+
+        return [
+            "success" => true,
+            "valid" => !!$row
+        ];
+    });
+
+    $r->addRoute('POST', 'api/reset-password', function($_, $values) use($db, $user, $mailer_factory) {
+        if($user) {
+            http_response_code(401);
+            return [
+                "success" => false,
+                "reason" => "UNAUTHORIZED"
+            ];
+        }
+
+        $token = $values['token'];
+        
+        $row = $db->querySingle("
+            SELECT `user_id`, `generated_on`
+            FROM `reset_password_tokens`
+            WHERE `token` = :token
+        ", [
+            ":token" => $token
+        ]);
+
+        if(!$row) {
+            return [
+                "success" => false
+            ];
+        }
+
+        // Update the user password
+        $new_hash = password_hash($values['new_password'], PASSWORD_DEFAULT);
+
+        $db->execute("
+            UPDATE `users`
+            SET `password_hash` = :new_hash
+            WHERE `id` = :user_id
+        ", [
+            ":user_id" => $row['user_id'],
+            ":new_hash" => $new_hash
+        ]);
+
+        // Delete the reset token
+        $db->execute("
+            DELETE
+            FROM `reset_password_tokens`
+            WHERE `token` = :token
+        ", [
+            ":token" => $token
+        ]);
+
+        // Log the user in automatically
+        $user = Auth::login_direct($db, $row['user_id']);
+
+        // Notify the user their password has changed
+        $escaped_name = htmlspecialchars($user['name']);
+
+        $body = "<p>Hallo $escaped_name,</p>";
+        $body .= "<p>U heeft uw wachtwoord gewijzigd waarmee u inlogd op de website.</p>";
+        $body .= "<p>Met vriendelijke groeten,<br/>Nederlandse Fokkersvereniging Het Drentse Heideschaap</p>";
+
+        $mailer = $mailer_factory->create();
+        $mailer->Subject   = 'Wachtwoord gewijzigd';
+        $mailer->Body      = $body;
+        $mailer->IsHTML(true);
+        $mailer->AddAddress($user['email']);
+        $mailer->Send();
+
+        return [
+			"name" => $user['name'],
+            "email" => $user['email'],
+			"role_website_contributor" => $user['role_website_contributor'],
+			"role_studbook_administrator" => $user['role_studbook_administrator'],
+			"role_studbook_inspector" => $user['role_studbook_inspector']
         ];
     });
 

@@ -20,6 +20,8 @@ use Composer\Semver\VersionParser;
 
 
 
+
+
 class InstalledVersions
 {
 private static $installed = array (
@@ -30,7 +32,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '4ab2a264ccf1dea021df9fee0bac1f037bd2c46b',
+    'reference' => '26cb7f1f2222c82c1e757ebc1de0902884e8791e',
     'name' => '__root__',
   ),
   'versions' => 
@@ -42,7 +44,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '4ab2a264ccf1dea021df9fee0bac1f037bd2c46b',
+      'reference' => '26cb7f1f2222c82c1e757ebc1de0902884e8791e',
     ),
     'guzzlehttp/guzzle' => 
     array (
@@ -89,6 +91,15 @@ private static $installed = array (
       ),
       'reference' => '181d480e08d9476e61381e04a71b34dc0432e812',
     ),
+    'phpmailer/phpmailer' => 
+    array (
+      'pretty_version' => 'v6.4.1',
+      'version' => '6.4.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '9256f12d8fb0cd0500f93b19e18c356906cbed3d',
+    ),
     'psr/http-message' => 
     array (
       'pretty_version' => '1.0.1',
@@ -131,7 +142,6 @@ $packages = array();
 foreach (self::getInstalled() as $installed) {
 $packages[] = array_keys($installed['versions']);
 }
-
 
 if (1 === \count($packages)) {
 return $packages[0];
@@ -324,6 +334,7 @@ public static function reload($data)
 self::$installed = $data;
 self::$installedByVendor = array();
 }
+
 
 
 

@@ -24,6 +24,9 @@ import { BestuurEnCommissiesPageComponent } from './vereniging-page/bestuur-en-c
 import { CalamiteitenplanPageComponent } from './vereniging-page/calamiteitenplan-page/calamiteitenplan-page.component';
 import { LidWordenPageComponent } from './lid-worden-page/lid-worden-page.component';
 import { ScrollRestorationService } from './services/scroll-restoration.service';
+import { WachtwoordVergetenPageComponent } from './wachtwoord-vergeten-page/wachtwoord-vergeten-page.component';
+import { VerzondenPageComponent as WachtwoordVergetenVerzondenPageComponent } from './wachtwoord-vergeten-page/verzonden-page/verzonden-page.component';
+import { OpnieuwInstellenPageComponent as WachtwoordVergetenOpnieuwInstellenPageComponent } from './wachtwoord-vergeten-page/opnieuw-instellen-page/opnieuw-instellen-page.component';
 
 const routes: Routes = [
   { path: "", component: HomePageComponent },
@@ -41,6 +44,9 @@ const routes: Routes = [
   { path: "contact", component: ContactPageComponent },
   { path: "lid-worden", component: LidWordenPageComponent },
   { path: "login", component: LoginPageComponent },
+  { path: "wachtwoord-vergeten/verzonden", component: WachtwoordVergetenVerzondenPageComponent },
+  { path: "wachtwoord-vergeten/opnieuw-instellen", component: WachtwoordVergetenOpnieuwInstellenPageComponent },
+  { path: "wachtwoord-vergeten", component: WachtwoordVergetenPageComponent },
   { path: "ledenportaal", component: MemberPageComponent, canActivate: [AuthGuard], 
     children: [
       { path: "", component: MemberHomePageComponent },

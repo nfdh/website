@@ -67,6 +67,9 @@ import { IntlDateTimePipe } from './intl-date-time.pipe';
 import { IntlDateService } from './services/intl-date.service';
 import { IntlDateTimeService } from './services/intl-date-time.service';
 import { AppTitleService } from './services/app-title.service';
+import { WachtwoordVergetenPageComponent } from './wachtwoord-vergeten-page/wachtwoord-vergeten-page.component';
+import { VerzondenPageComponent } from './wachtwoord-vergeten-page/verzonden-page/verzonden-page.component';
+import { OpnieuwInstellenPageComponent } from './wachtwoord-vergeten-page/opnieuw-instellen-page/opnieuw-instellen-page.component';
 
 @NgModule({
   declarations: [
@@ -97,7 +100,10 @@ import { AppTitleService } from './services/app-title.service';
     CalamiteitenplanPageComponent,
     LidWordenPageComponent,
     IntlDatePipe,
-    IntlDateTimePipe
+    IntlDateTimePipe,
+    WachtwoordVergetenPageComponent,
+    VerzondenPageComponent,
+    OpnieuwInstellenPageComponent
   ],
   imports: [
     BrowserModule,
