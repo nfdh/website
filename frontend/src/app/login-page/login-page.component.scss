@@ -34,6 +34,20 @@ h1 {
     margin: 0 6px 0 0;
 }
 
+.forgot-password-link-container {
+    text-align: right;
+    margin-bottom: 15px;
+}
+
+.forgot-password-link-container a {
+    color: rgba(0, 0, 255, 0.8);
+    text-decoration: none;
+}
+
+.forgot-password-link-container a:hover {
+    text-decoration: underline;
+}
+
 .login-button {
     width: 100%;
     margin-top: 5px;

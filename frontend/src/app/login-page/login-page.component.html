@@ -26,6 +26,9 @@
                 <mat-icon matSuffix>lock</mat-icon>
                 <input matInput type="password" formControlName="password">
             </mat-form-field>
+            <div class="forgot-password-link-container">
+                <a routerLink="../wachtwoord-vergeten" [queryParams]="{ email: loginForm.controls.email.value }">Wachtwoord vergeten?</a>
+            </div>
             <button mat-raised-button color="primary" class="login-button" type="submit" [disabled]="isBusy">
                 <ng-container *ngIf="isBusy"><mat-spinner class="login-button-spinner" diameter="25"></mat-spinner></ng-container> 
                 <ng-container *ngIf="!isBusy">INLOGGEN</ng-container>

@@ -1,0 +1,24 @@
+<h1>Wachtwoord vergeten?</h1>
+<p>
+    Geen probleem! Vul hieronder uw e-mail adres in en dan sturen wij u een link waarmee u een nieuw wachtwoord kunt instellen.
+</p>
+
+<app-message type="error" *ngIf="errorMessage !== null"> 
+    {{errorMessage}}
+</app-message>
+
+<form class="login-form" [formGroup]="resetForm" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="fill" class="email-input">
+        <mat-label>E-mailadres</mat-label>
+        <mat-icon matSuffix>email</mat-icon>
+        <input matInput formControlName="email">
+        <mat-error *ngIf="resetForm.get('email')!.hasError('required')">Verplicht</mat-error>
+    </mat-form-field>
+
+    <br />
+
+    <button mat-raised-button color="primary" class="reset-button" type="submit" [disabled]="isBusy">
+        <ng-container *ngIf="isBusy"><mat-spinner class="reset-button-spinner" diameter="25"></mat-spinner></ng-container> 
+        <ng-container *ngIf="!isBusy">WACHTWOORD OPNIEUW INSTELLEN</ng-container>
+    </button>
+</form>

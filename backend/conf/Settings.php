@@ -17,7 +17,12 @@ else {
             'appInsights' => [
                 'instrumentationKey' => '46da6ab2-ce36-48bf-9a04-5759a5f23d45',
                 'location' => 'nieuw.drentsheideschaap.nl'
-            ]
+            ],
+            'mail' => [
+                'from_address' => 'noreply@drentsheideschaap.nl',
+                'from_name' => 'Nederlandse Fokkersvereniging Het Drentse Heideschaap'
+            ],
+            'url' => 'https://nieuw.drentsheideschaap.nl'
         ];
 
         static function get() {
