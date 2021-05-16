@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, ComponentRef, ViewChild } from '@angular/core';
 import { AuthenticationService } from './services/authentication.service';
 import { map } from "rxjs/operators";
 import { Event, NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
+import { MatSidenav } from '@angular/material/sidenav';
 
 @Component({
   selector: 'app-root',
@@ -15,6 +16,13 @@ export class AppComponent {
   loading: boolean;
   loadProgress: number;
   loadInterval: number | null;
+
+  isWebsiteContributor$ = this.authenticationService.user$
+    .pipe(
+      map(u => u?.role_website_contributor)
+    );
+
+  @ViewChild('sidenav') sidenav!: MatSidenav;
 
   constructor(private authenticationService: AuthenticationService, private router: Router) {
     this.loading = false;
@@ -38,6 +46,7 @@ export class AppComponent {
         || event instanceof NavigationCancel
         || event instanceof NavigationError) {
           
+        this.sidenav.close();
         this.loading = false;
         if(this.loadInterval) {
           window.clearInterval(this.loadInterval!);

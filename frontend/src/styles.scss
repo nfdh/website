@@ -92,3 +92,9 @@ mat-form-field.small .mat-form-field-infix {
     left: 30px;
     top: -20px;
 }
+
+/* Allow sticky header */
+.mat-drawer-container,
+.mat-drawer-content {
+    overflow: initial !important;
+}
