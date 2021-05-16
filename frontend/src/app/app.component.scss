@@ -9,6 +9,78 @@
     position: relative;
 }
 
+
+@media only screen and (min-width: 901px) {
+    .mobile-header {
+        display: none;
+    }
+}
+
+.mobile-header {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+.mobile-spacer {
+    flex: 1 1 auto;
+}
+
+.mobile-sidenav {
+    overflow-y: auto;
+    padding: 15px;
+}
+
+.mobile-sidenav-header {
+    width: 250px;
+    line-height: 40px;
+}
+
+.mobile-sidenav-header > h2 {
+    margin: 0;
+    padding: 0;
+}
+
+.mobile-sidenav-header > button {
+    float: right;
+}
+
+.mobile-menu-segment {
+    margin-bottom: 20px;
+}
+
+.mobile-menu-link {
+    display: block;
+    border-bottom: 1px solid lightgray;
+    color: black;
+    padding: 15px 0;
+    text-decoration: none;
+}
+
+.mobile-menu-link:last-child {
+    border-bottom: none;
+}
+
+.mobile-menu-sub {
+    padding-left: 20px;
+}
+
+.mobile-menu-group {
+    padding-top: 10px;
+}
+
+.mobile-menu-group > span {
+    display: block;
+    font-size: 80%;
+    font-weight: bold;
+}
+
+.mobile-menu-group > .mobile-menu-link {
+    padding: 10px 0;
+    color: #333;
+    font-size: 90%;
+}
+
 .title {
     position: absolute;
     left: 50%;
@@ -120,15 +192,17 @@
     width: 80%;
 	max-width: 1536px;
     margin: 0 auto;
-    padding: 25px;
+    padding: 25px 25px 10px 25px;
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
 }
 
 .footer-column {
     width: 400px;
-    flex-grow: 0;
-    flex-shrink: 0;
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin-bottom: 15px;
 }
 
 .footer-column > h4 {
@@ -158,11 +232,6 @@
     text-decoration: underline;
 }
 
-.footer-column:last-child {
-    flex-grow: 1;
-    width: auto;
-}
-
 .copyright-notice {
     font-size: 80%;
 }
@@ -173,3 +242,37 @@
     min-height: 45%;
 	max-width: 1536px;
 }
+
+@media only screen and (max-width: 1100px) {
+    .title,
+    .header-menu,
+    .center-content,
+    .footer-center {
+        width: 100%;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .header {
+        height: 400px;
+    }
+
+    .title > h1 {
+        font-size: 50px;
+    }
+
+    .title > h2 {
+        font-size: 20px;
+    }
+}  
+
+@media only screen and (max-width: 900px) {
+    
+    .header-menu {
+        display: none;
+    }
+
+    .header {
+        display: none;
+    }
+}  

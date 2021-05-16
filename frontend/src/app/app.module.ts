@@ -30,6 +30,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { GalleryModule } from 'ng-gallery';
 import { LightboxModule } from  'ng-gallery/lightbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatToolbarModule } from "@angular/material/toolbar"
+import { MatSidenavModule } from "@angular/material/sidenav"
 
 import { AppComponent } from './app.component';
 import { HomePageComponent } from './home-page/home-page.component';
@@ -130,7 +132,9 @@ import { OpnieuwInstellenPageComponent } from './wachtwoord-vergeten-page/opnieu
     GalleryModule,
     LightboxModule,
     MatTooltipModule,
-
+    MatToolbarModule,
+    MatSidenavModule,
+    
     VerticalMenuModule,
     ToolbarModule,
     FormModule
