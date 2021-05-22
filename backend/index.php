@@ -204,7 +204,7 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
 
         $filter = null;
         
-        if(isset($_GET['filter'])) {
+        if(isset($_GET['$filter'])) {
             $filterSql = "
                 WHERE `name` LIKE :nameFilter
                 OR `email` LIKE :emailFilter
