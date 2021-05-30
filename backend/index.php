@@ -503,6 +503,7 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
             FROM `dekverklaringen`
             WHERE
                 `user_id` = :user_id
+            ORDER BY `date_sent` DESC
             LIMIT :limit
             OFFSET :skip
         ", [
@@ -741,6 +742,7 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
             SELECT `id`, `year`, `studbook`, `region`, `preferred_date`, `date_sent`
             FROM `huiskeuringen`
             WHERE `user_id` = :user_id
+            ORDER BY `date_sent` DESC
             LIMIT :limit
             OFFSET :skip
         ", [
