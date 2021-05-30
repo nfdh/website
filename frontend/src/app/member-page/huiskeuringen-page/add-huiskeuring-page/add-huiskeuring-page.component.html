@@ -1,6 +1,83 @@
 <h2 class="title">Inschrijven voor huiskeuring</h2>
-<form (submit)="onSubmit($event)">
-    <app-huiskeuring-form [formGroup]="formGroup"></app-huiskeuring-form>
+<form (ngSubmit)="onSubmit()" [formGroup]="formGroup">
+    <app-form-section>
+        <mat-form-field appearance="fill">
+            <mat-label>Naam</mat-label>
+            <input matInput formControlName="name" />
+            <mat-error *ngIf="formGroup.get('name')!.hasError('required')">Verplicht</mat-error>
+        </mat-form-field>
+    </app-form-section>
+    <app-form-section title="Stamboek">
+        <mat-radio-group aria-label="Selecteer een stamboek" formControlName="studbook">
+            <mat-radio-button class="studbook_radio" color="primary" value="0">Drents Heideschaap</mat-radio-button>
+            <mat-radio-button class="studbook_radio" color="primary" value="1">Schoonebeeker</mat-radio-button>
+        </mat-radio-group>
+        <p class="notice">
+            Heeft u meerdere rassen? Dien dan voor ieder ras een aparte aanmelding in.
+        </p>
+    </app-form-section>
+    <app-form-section title="Regio & datum voorkeur">
+        <mat-form-field appearance="fill">
+            <mat-label>Regio</mat-label>
+            <mat-select formControlName="region" (selectionChange)="onRegionChange()">
+                <!--<mat-option value="" selected="">- maak keuze -</mat-option>-->
+                <mat-option [value]="0">Noord (Drenthe / Friesland / Groningen)</mat-option>
+                <mat-option [value]="1">Oost (Gelderland / Overijssel / Flevoland)</mat-option>
+                <mat-option [value]="2">West (Utrecht / Zuid-Holland / Noord-Holland)</mat-option>
+                <mat-option [value]="3">Zuid (Limburg / Noord-Braband / Zeeland / België)</mat-option>
+                <mat-option [value]="-1">Overig - Zie opmerking</mat-option>
+            </mat-select>
+            <mat-error *ngIf="formGroup.get('region')!.hasError('required')">Verplicht</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+            <mat-label>Locatie, indien afwijkend van thuisadres</mat-label>
+            <input matInput formControlName="location" />
+        </mat-form-field>
+        <ng-container *ngIf="formGroup.controls.region.value !== '' && formGroup.controls.region.value >= 0">
+            <mat-radio-group class="date-selection" formControlName="preferred_date">
+                <mat-radio-button color="primary" *ngFor="let date of availableDatesForRegion(formGroup.controls.region.value); index as i" [value]="i">{{date | intlDateTime:{ day: "numeric", month: "long" } }}</mat-radio-button>
+                <mat-radio-button color="primary" [value]="-1">Geen voorkeur</mat-radio-button>
+            </mat-radio-group>
+            <p class="notice">
+                Als u geen voorkeur voor een datum aangeeft maakt u het ons gemakkelijker om een planning te maken
+            </p>
+        </ng-container>
+    </app-form-section>
+    <app-form-section title="Aantallen">
+        <mat-form-field appearance="fill" class="count-input">
+            <mat-label>Aantal rammen eerste keuring</mat-label>
+            <input matInput type="number" formControlName="rams_first" />
+            <mat-error *ngIf="formGroup.get('rams_first')!.hasError('required')">Verplicht</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="count-input">
+            <mat-label>Aantal rammen herkeuring</mat-label>
+            <input matInput type="number" formControlName="rams_second" />
+            <mat-error *ngIf="formGroup.get('rams_second')!.hasError('required')">Verplicht</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="count-input">
+            <mat-label>Aantal ooien</mat-label>
+            <input matInput type="number" formControlName="ewes" />
+            <mat-error *ngIf="formGroup.get('ewes')!.hasError('required')">Verplicht</mat-error>
+        </mat-form-field>
+    </app-form-section>
+    <app-form-section title="Locaties">
+        <mat-radio-group class="location-selection" formControlName="num_locations">
+            <mat-radio-button color="primary" [value]="1">1</mat-radio-button>
+            <mat-radio-button color="primary" [value]="2">2</mat-radio-button>
+            <mat-radio-button color="primary" [value]="3">3</mat-radio-button>
+        </mat-radio-group>
+        <p class="location-text">
+            Het aantal verschillende locaties waar gekeurd moet worden. Vermeld afwijkende locaties bij opmerking.
+        </p>
+    </app-form-section>
+    <app-form-section title="Stamboekbewijzen">
+        <mat-checkbox class="paper-check" formControlName="on_paper" color="primary">Ik wil de officiële stamboekbewijzen graag op papier ontvangen</mat-checkbox>
+    </app-form-section>
+    <app-form-section title="Opmerking">
+        <mat-form-field appearance="fill" class="remarks-input">
+            <textarea matInput type="number" formControlName="remarks" rows="7"></textarea>
+        </mat-form-field>
+    </app-form-section>
     <app-form-actions>
         <button mat-raised-button color="primary" type="submit">Versturen</button>
         <button mat-button (click)="onCancelClick()">Annuleren</button>

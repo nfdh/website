@@ -3,3 +3,40 @@
     margin: 0;
 	padding: 0;
 }
+
+.studbook_radio {
+    margin-right: 15px;
+}
+
+.notice {
+    color: dimgray;
+    font-size: 90%;
+    margin: 15px 0;
+    padding: 0;
+}
+
+.date-selection {
+    display: flex;
+    flex-direction: column;
+}
+
+.date-selection > mat-radio-button {
+    margin-bottom: 5px;
+}
+
+.location-selection > mat-radio-button {
+    margin-right: 10px;
+}
+
+.location-text {
+    margin: 10px 0 10px 0;
+    padding: 0;
+}
+
+.paper-check {
+    margin-bottom: 10px;
+}
+
+.count-input {
+    max-width: 500px;
+}

@@ -7,7 +7,7 @@ import { IntlDateTimeService } from './services/intl-date-time.service';
 export class IntlDateTimePipe implements PipeTransform {
   constructor(private intlDateTimeService: IntlDateTimeService) {}
 
-  transform(value: unknown, ...args: unknown[]): unknown {
-    return this.intlDateTimeService.intl.format(value as Date);
+  transform(value: Date, options: Intl.DateTimeFormatOptions): unknown {
+    return this.intlDateTimeService.format(value as Date, options);
   }
 }

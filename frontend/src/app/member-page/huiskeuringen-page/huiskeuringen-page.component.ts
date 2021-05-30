@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
-import { SelectionModel } from '@angular/cdk/collections';
 import { TableDataSource, TableDataSourceFactory } from 'src/app/services/table-data-source.service';
 import { PageEvent } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
@@ -8,8 +6,9 @@ import { SelectionMap, SelectionType } from 'src/app/services/selection';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import preferredDates from './dates';
-import { IntlDateService } from 'src/app/services/intl-date.service';
 import { AppTitleService } from 'src/app/services/app-title.service';
+import { IntlDateTimeService } from 'src/app/services/intl-date-time.service';
+import { supportsPDFs } from "pdfobject";
 
 interface Huiskeuring {
   id: number,
@@ -25,11 +24,13 @@ interface Huiskeuring {
 })
 export class HuiskeuringenPageComponent {
   huiskeuringen: TableDataSource<Huiskeuring>;
-  columnsToDisplay = ['select', 'year', 'preferred_date', 'date_sent'];
+  columnsToDisplay = ['select', 'year', 'studbook', 'preferred_date', 'date_sent'];
   selection = new SelectionMap<number>();
 
   lastSearchTimer: number | null = null;
   pendingSearch = "";
+
+  supportsPDFs = supportsPDFs;
 
   constructor(
     private dataSourceFactory: TableDataSourceFactory,
@@ -37,11 +38,12 @@ export class HuiskeuringenPageComponent {
     private dialog: MatDialog,
     private router: Router,
     private route: ActivatedRoute,
-    private intlDateService: IntlDateService,
+    private intlDateTimeService: IntlDateTimeService,
     titleService: AppTitleService) {
 
     this.huiskeuringen = dataSourceFactory.create("/api/huiskeuringen", f => {
       f.date_sent = new Date(f.date_sent);
+      f.preferred_date = new Date(f.preferred_date);
       return f;
     });
 
@@ -54,11 +56,29 @@ export class HuiskeuringenPageComponent {
 
   onUpdateClick() {
     const key = this.selection.items.values().next().value;
-    this.router.navigate([key], { relativeTo: this.route });
+    this.openDetail(key);
   }
 
   onDoubleClick(id: number) {
-    this.router.navigate([id], { relativeTo: this.route });
+    this.openDetail(id);
+  }
+
+  openDetail(id: number) {
+    if(this.supportsPDFs) {
+      this.router.navigate([id], { relativeTo: this.route });
+    }
+    else {
+      var element = document.createElement('a');
+      element.setAttribute('href', '/api/huiskeuringen/' + id + "?download");
+      element.setAttribute('download', "");
+    
+      element.style.display = 'none';
+      document.body.appendChild(element);
+    
+      element.click();
+    
+      document.body.removeChild(element);
+    }
   }
 
   onPage(ev: PageEvent) {
@@ -66,14 +86,19 @@ export class HuiskeuringenPageComponent {
     this.huiskeuringen.pageSize = ev.pageSize;
   }
 
-  getPreferredDate(region: number, preferredDate: number) {
+  getPreferredDate(region: number, preferredDate: Date | null) {
     if(region === -1) {
       return "Afwijkend";
     }
-    else if(preferredDate === -1) {
+    else if(preferredDate === null) {
       return "Geen voorkeur";
     }
 
-    return this.intlDateService.intl.format(preferredDates[region][preferredDate]);
+    console.log(preferredDate);
+
+    return this.intlDateTimeService.format(preferredDate, {
+      day: "numeric",
+      month: "long"
+    });
   }
 }

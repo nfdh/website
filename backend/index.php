@@ -7,6 +7,7 @@ use Lib\Database;
 use Lib\Uuid;
 use Lib\Auth;
 use Lib\MailerFactory;
+use Lib\Utils;
 
 session_start();
 
@@ -20,8 +21,9 @@ $telemetry = new Lib\Telemetry($conf['appInsights'], $user != null ? $user['id']
 $db = new Lib\Database($conf['db'], $telemetry);
 $mailer_factory = new Lib\MailerFactory($conf['mail']);
 $url = $conf['url'];
+$file_storage = $conf['file_storage'];
 
-$dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) use ($db, $user, $mailer_factory, $url) {
+$dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) use ($db, $user, $mailer_factory, $url, $file_storage) {
     $r->addRoute('POST', 'api/login', function($_, $values) use ($db, $user) {
         $user = Auth::login($db, $values['email'], $values['password']);
         if(!$user) {
@@ -65,7 +67,7 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
 
         // Generate a reset code and store it
         $token = Uuid::generate();
-        $generated_at = new \DateTime("now", new \DateTimeZone("UTC"));
+        $generated_at = Utils::now_utc();
         $user_id = $row['id'];
         $db->execute("
             INSERT INTO `reset_password_tokens` (`user_id`, `token`, `generated_on`)
@@ -73,7 +75,7 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
         ", [
             ":user_id" => $user_id,
             ":token" => $token,
-            ":generated_on" => $generated_at->format('Y-m-d H:i:s')
+            ":generated_on" => Utils::format_datetime_for_mysql($generated_at)
         ]);
 
         // Send the code via mail
@@ -518,13 +520,13 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
                     "id" => $row['id'],
                     "season" => $row['season'],
                     "studbook" => $row['studbook'],
-                    "date_sent" => \DateTime::createFromFormat('Y-m-d H:i:s', $row['date_sent'])->format(\DateTime::ISO8601)
+                    "date_sent" => Utils::format_datetime_for_json(Utils::parse_datetime_from_mysql($row['date_sent']))
                 ];
             }, $rows)
         ];
     });
 
-    $r->addRoute('POST', 'api/dekverklaringen', function($_, $values) use ($db, $user) {
+    $r->addRoute('POST', 'api/dekverklaringen', function($_, $values) use ($db, $user, $file_storage) {
         if(!$user) {
             http_response_code(401);
             return [
@@ -533,67 +535,139 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
             ];
         }
 
-        $trans = $db->beginTransaction();
+        // TODO: Properly validate input json
 
-		try {
-            $date_sent = new \DateTime("now", new \DateTimeZone("UTC"));
+        // Create PDF
+        $lh = 6;
+        $cl = 40;
+        $cl2 = 100;
 
-            $db->execute('
-                INSERT INTO `dekverklaringen` (`user_id`, `season`, `studbook`, `date_sent`, `name`, `kovo`, `koe`, `kool`, `korl`, `remarks`) 
-                VALUES (:user_id, :season, :studbook, :date_sent, :name, :kovo, :koe, :kool, :korl, :remarks)
-            ', [
-                ':user_id' => $user['id'],
-                ':season' => $values['season'],
-                ':studbook' => $values['studbook'],
-                ':date_sent' => $date_sent->format('Y-m-d H:i:s'),
-                ':name' => $values['name'],
-                ':kovo' => $values['kovo'],
-                ':koe' => $values['koe'],
-                ':kool' => $values['kool'],
-                ':korl' => $values['korl'],
-                ':remarks' => $values['remarks']
-            ]);
-			$dekverklaring_id = $db->lastInsertId();
+        $pdf = new FPDF();
 
-            $dg_stmt = $db->prepare('
-				INSERT INTO `dekverklaring_dekgroepen` (`dekverklaring_id`, `ewe_count`)
-				VALUES (:dekverklaring_id, :ewe_count)
-			');
-            $ram_stmt = $db->prepare('
-				INSERT INTO `dekverklaring_dekgroep_rammen` (`dekgroep_id`, `code`)
-				VALUES (:dekgroep_id, :code)
-			');
+        $pdf->SetMargins(15, 15, 15);
+        $pdf->AddPage();
+        $pdf->SetFont('Arial','B',16);
+      
+        $x = $pdf->GetX();
+        $y = $pdf->GetY();
+        $pdf->SetXY(-40, 15);
+        $pdf->Image("./lib/nfdh_logo.png");
+        $pdf->SetXY($x, $y);
 
-			foreach($values['dekgroepen'] as $dekgroep) {
-                $dg_stmt->execute([
-                    ':dekverklaring_id' => $dekverklaring_id,
-                    ':ewe_count' => $dekgroep['ewe_count']
-                ]);
-				$dekgroep_id = $db->lastInsertId();
+        $pdf->Write($lh, 'Dekverklaring');
+        $pdf->Ln($lh);
+        $pdf->SetFont('Arial','I', 11);
+        $pdf->Write($lh, Utils::format_date(new \DateTime("now"), "%A %e %B %Y %H:%M"));
+        $pdf->Ln($lh * 2);
+        $pdf->SetFont('Arial','',12);
+        $pdf->Cell($cl, $lh, "Dekseizoen:");
+        $pdf->Write($lh, $values['season']);
+        $pdf->Ln($lh);
+        $pdf->Cell($cl, $lh, "Naam:");
+        $pdf->Write($lh, $values['name']);
+        $pdf->Ln($lh);
+        $pdf->Cell($cl, $lh, "KO kudde:");
+        $pdf->Write($lh, true ? "Ja" : "Nee");
+        $pdf->Ln($lh);
 
-				foreach($dekgroep['rammen'] as $ram) {
-                    $ram_stmt->execute([
-                        ':dekgroep_id' => $dekgroep_id,
-                        ':code' => $ram
-                    ]);
-				}
-			}
+        $pdf->Cell($cl, $lh, "Ras:");
+        $pdf->Write($lh, Utils::ras_num_to_str($values['studbook']));
 
-			$trans->commit();
+        if(true) {
+            $pdf->Ln($lh * 2);
+            $pdf->SetFont('Arial', 'B', 12);
+            $pdf->Write($lh, "Kuddeovereenkomst");
+            $pdf->SetFont('Arial','',12);
+            $pdf->Ln($lh);
 
-			// We return the created dekverklaring
-			return [
-				'success' => true,
-                'id' => $dekverklaring_id
-			];
-		}
-		catch(Exception $ex) {
-			$trans->rollBack();
-			throw $ex;
-		}
+            $seasonMinus2 = $values['season'] - 2;
+            $pdf->Cell($cl2, $lh, "Aantal aanwezige volwassen ooien ($seasonMinus2 en ouder):");
+            $pdf->Write($lh, $values['kovo']);
+            $pdf->Ln($lh);
+
+            $seasonMinus1 = $values['season'] - 1;
+            $pdf->Cell($cl2, $lh, "Aantal aanwezige enters (geb. $seasonMinus1):");
+            $pdf->Write($lh, $values['koe']);
+            $pdf->Ln($lh);
+
+            $season = $values['season'];
+            $pdf->Cell($cl2, $lh, "Aantal ooilammeren (geb. $season):");
+            $pdf->Write($lh, $values['kool']);
+            $pdf->Ln($lh);
+            $pdf->Cell($cl2, $lh, "Aantal ramlammeren (geb. $season):");
+            $pdf->Write($lh, $values['korl']);
+        }
+      
+        foreach ($values['dekgroepen'] as $groep_idx => $groep) {
+            $aantal_ooien = $groep["ewe_count"];    
+            $rammen = $groep["rammen"];
+            $dekgroep_no = $groep_idx + 1;
+
+            $pdf->Ln($lh * 2);
+            $pdf->SetFont('Arial', 'B', 12);
+            $pdf->Write($lh, "Dekgroep $dekgroep_no");
+            $pdf->SetFont('Arial','',12);
+            $pdf->Ln($lh);
+            $pdf->Cell($cl, $lh, "Aantal ooien:");
+            $pdf->write($lh, $aantal_ooien);
+            foreach ($rammen as $ram_idx => $ram) {
+                $ram_no = $ram_idx + 1;
+
+                $pdf->Ln($lh);
+                $pdf->Cell($cl, $lh, "Ram $ram_no:");
+                $pdf->Write($lh, $ram);
+            }
+        }
+      
+        $pdf->Ln($lh * 2);
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->Write($lh, "Opmerking");
+        $pdf->SetFont('Arial','',12);
+        $pdf->Ln($lh);
+        $pdf->Write($lh, $values['remarks']);
+      
+        $uuid = Uuid::generate();
+        $pdf_path = $file_storage . DIRECTORY_SEPARATOR . $uuid . ".pdf";
+
+        $pdf->Output('F', $pdf_path);
+            
+        $json = json_encode([
+            'season' => $values['season'],
+            'studbook' => $values['studbook'],
+            'name' => $values['name'],
+            'kovo' => $values['kovo'],
+            'koe' => $values['koe'],
+            'kool' => $values['kool'],
+            'korl' => $values['korl'],
+            'dekgroepen' => array_map(function($dekgroep) {
+                return [
+                    ':ewe_count' => $dekgroep['ewe_count'],
+                    ':rammen' => $dekgroep['rammen']
+                ];
+            }, $values['dekgroepen']),
+            'remarks' => $values['remarks']
+        ]);
+
+        $date_sent = Utils::now_utc();
+        $db->execute('
+            INSERT INTO `dekverklaringen` (`user_id`, `season`, `studbook`, `date_sent`, `pdf_uuid`, `json`) 
+            VALUES (:user_id, :season, :studbook, :date_sent, :pdf_uuid, :json)
+        ', [
+            ':user_id' => $user['id'],
+            ':season' => $values['season'],
+            ':studbook' => $values['studbook'],
+            ':date_sent' => Utils::format_datetime_for_mysql($date_sent),
+            ':pdf_uuid' => $uuid,
+            ':json' => $json
+        ]);
+
+        return [
+            'success' => true,
+            'id' => $db->lastInsertId()
+        ];
     });
 
-    $r->addRoute('GET', 'api/dekverklaringen/{id:\d+}', function($para, $values) use ($db, $user) {
+    $r->addRoute('GET', 'api/dekverklaringen/{id:\d+}', function($para, $values) use ($db, $user, $file_storage) {
         if(!$user) {
             http_response_code(401);
             return [
@@ -605,8 +679,8 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
         $id = $para['id'];
 
         // Get the dekverklaring
-        $dekverklaring = $db->querySingle("
-            SELECT `season`, `studbook`, `name`, `kovo`, `koe`, `kool`, `korl`, `remarks`
+        $row = $db->querySingle("
+            SELECT `season`, `studbook`, `pdf_uuid`
             FROM `dekverklaringen`
             WHERE id = :id
             AND user_id = :user_id
@@ -614,66 +688,25 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
             ':id' => intval($id),
             ':user_id' => $user['id']
         ]);
-        if(!$dekverklaring) {
+        if(!$row) {
             return [
                 'success' => false,
                 'reason' => 'DEKVERKLARING_NOT_FOUND'
             ];
         }
         
-        // Get dekgroepen
-        $dekgroepen = $db->queryAll("
-            SELECT `id`, `ewe_count`
-            FROM `dekverklaring_dekgroepen`
-            WHERE `dekverklaring_id` = :id
-        ", [
-            ':id' => intval($id)
-        ]);
+        $pdf_uuid = $row['pdf_uuid'];
+        $path = $file_storage . DIRECTORY_SEPARATOR . $pdf_uuid . ".pdf";
 
-        // Get rammen
-        $rammen = $db->queryAll("
-            SELECT `r`.`dekgroep_id`, `r`.`code`
-            FROM `dekverklaring_dekgroep_rammen` AS `r`
-            INNER JOIN `dekverklaring_dekgroepen` AS `dg`
-              ON `dg`.`id` = `r`.`dekgroep_id`
-            WHERE `dg`.`dekverklaring_id` = :id
-        ", [
-            ':id' => intval($id)
-        ]);
+        header('Content-Type: application/pdf');
+        header('Content-Length: ' . filesize($path));
 
-        foreach($rammen as $row) {
-            $dekgroep_id = $row['dekgroep_id'];
-
-            foreach ($dekgroepen as &$dekgroep) {
-                if($dekgroep['id'] == $dekgroep_id) {
-                    if(!isset($dekgroep['rammen'])) {
-                        $dekgroep['rammen'] = [];
-                    }
-                    array_push($dekgroep['rammen'], $row['code']);
-                    break;
-                }
-            }
+        if(isset($_GET['download'])) {
+            header('Content-Disposition: attachment; filename="Dekverklaring ' . $row['season'] . ' ' . Utils::ras_num_to_str($row['studbook']) . '.pdf"');
         }
 
-        return [
-            'success' => true,
-            'dekverklaring' => [
-                'season' => $dekverklaring['season'], 
-                'studbook' => $dekverklaring['studbook'],
-                'name' => $dekverklaring['name'], 
-                'kovo' => $dekverklaring['kovo'],
-                'koe' => $dekverklaring['koe'], 
-                'kool' => $dekverklaring['kool'], 
-                'korl' => $dekverklaring['korl'], 
-                'dekgroepen' => array_map(function($dekgroep) {
-                    return [
-                        'ewe_count' => $dekgroep['ewe_count'],
-                        'rammen' => $dekgroep['rammen']
-                    ];
-                }, $dekgroepen),
-                'remarks' => $dekverklaring['remarks']
-            ]
-        ];
+        readfile($path);
+        return null;
     });
 
     $r->addRoute('GET', 'api/huiskeuringen', function($_, $values) use ($db, $user) {
@@ -705,7 +738,7 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
         }
 
         $rows = $db->queryAll("
-            SELECT `id`, `year`, `region`, `preferred_date`, `date_sent`
+            SELECT `id`, `year`, `studbook`, `region`, `preferred_date`, `date_sent`
             FROM `huiskeuringen`
             WHERE `user_id` = :user_id
             LIMIT :limit
@@ -724,15 +757,18 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
                 return [
                     'id' => $row['id'],
                     'year' => $row['year'],
+                    'studbook' => $row['studbook'],
                     'region' => $row['region'],
-                    'preferred_date' => $row['preferred_date'], 
-                    "date_sent" => \DateTime::createFromFormat('Y-m-d H:i:s', $row['date_sent'])->format(\DateTime::ISO8601)
+                    'preferred_date' => $row['preferred_date'] == null 
+                        ? null
+                        : Utils::format_datetime_for_json(Utils::parse_date_from_mysql($row['preferred_date'])),
+                    "date_sent" => Utils::format_datetime_for_json(Utils::parse_datetime_from_mysql($row['date_sent']))
                 ];
             }, $rows)
         ];
     });
 
-    $r->addRoute('GET', 'api/huiskeuringen/{id:\d+}', function($para, $values) use ($db, $user) {
+    $r->addRoute('GET', 'api/huiskeuringen/{id:\d+}', function($para, $values) use ($db, $user, $file_storage) {
         if(!$user) {
             http_response_code(401);
             return [
@@ -744,7 +780,7 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
         $id = $para['id'];
 
         $row = $db->querySingle("
-            SELECT `name`, `region`, `preferred_date`, `rams_first`, `rams_second`, `ewes`, `locations`, `on_paper`, `remarks`
+            SELECT `year`, `studbook`, `pdf_uuid`
             FROM `huiskeuringen`
             WHERE id = :id
               AND user_id = :user_id
@@ -760,23 +796,21 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
             ];
         }
 
-        return [
-            'success' => true,
-            'huiskeuring' => [
-                'name' => $row['name'],
-                'region' => $row['region'],
-                'preferred_date' => $row['preferred_date'], 
-                'rams_first' => $row['rams_first'], 
-                'rams_second' => $row['rams_second'],
-                'ewes' => $row['ewes'], 
-                'locations' => $row['locations'], 
-                'on_paper' => $row['on_paper'], 
-                'remarks' => $row['remarks']
-            ]
-        ];
+        $pdf_uuid = $row['pdf_uuid'];
+        $path = $file_storage . DIRECTORY_SEPARATOR . $pdf_uuid . ".pdf";
+
+        header('Content-Type: application/pdf');
+        header('Content-Length: ' . filesize($path));
+
+        if(isset($_GET['download'])) {
+            header('Content-Disposition: attachment; filename="Huiskeuring ' . $row['year'] . ' ' . Utils::ras_num_to_str($row['studbook']) . '.pdf"');
+        }
+
+        readfile($path);
+        return null;
     });
 
-    $r->addRoute('POST', 'api/huiskeuringen', function($_, $values) use ($db, $user) {
+    $r->addRoute('POST', 'api/huiskeuringen', function($_, $values) use ($db, $user, $file_storage) {
         if(!$user) {
             http_response_code(401);
             return [
@@ -785,28 +819,155 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) u
             ];
         }
 
-        $date_sent = new \DateTime("now", new \DateTimeZone("UTC"));       
-        
+        function parse_region($region) {
+            switch($region) {
+                case 0: return "Noord (Drenthe / Friesland / Groningen)";
+                case 1: return "Oost (Gelderland / Overijssel / Flevoland)";
+                case 2: return "West (Utrecht / Zuid-Holland / Noord-Holland)";
+                case 3: return "Zuid (Limburg / Noord-Braband / Zeeland / België)";
+                case -1: return "Overig - Zie opmerking";
+            }
+        }
+
+        function parse_preferred_date($region, $num) {
+            if($region == -1 || $num == -1) 
+                return null;
+
+            $dates = array(
+                array(
+                    date_date_set(new \DateTime(), 2021, 6, 18),
+                    date_date_set(new \DateTime(), 2021, 6, 19),
+                    date_date_set(new \DateTime(), 2021, 6, 20),
+                    date_date_set(new \DateTime(), 2021, 8, 20),
+                    date_date_set(new \DateTime(), 2021, 8, 21),
+                    date_date_set(new \DateTime(), 2021, 8, 22)
+                ),
+                array(
+                    date_date_set(new \DateTime(), 2021, 6, 26),
+                    date_date_set(new \DateTime(), 2021, 7, 25)
+                ),
+                array(
+                    date_date_set(new \DateTime(), 2021, 7, 4),
+                    date_date_set(new \DateTime(), 2021, 7, 31)
+                ),
+                array(
+                    date_date_set(new \DateTime(), 2021, 7, 10),
+                    date_date_set(new \DateTime(), 2021, 8, 8)
+                )
+            );
+
+            return $dates[$region][$num];
+        }
+
+        // TODO: validate input json
+
+        $preferred_date = parse_preferred_date($values['region'], $values['preferred_date']);
+
+        $lh = 6;
+        $cl = 70;
+      
+        $pdf = new FPDF();
+        $pdf->SetMargins(15, 15, 15);
+        $pdf->AddPage();
+        $pdf->SetFont('Arial','B',16);
+      
+        $x = $pdf->GetX();
+        $y = $pdf->GetY();
+        $pdf->SetXY(-40, 15);
+        $pdf->Image("./lib/nfdh_logo.png");
+        $pdf->SetXY($x, $y);
+      
+        $pdf->Write($lh, 'Aanmelding huiskeuring');
+        $pdf->Ln($lh);
+        $pdf->SetFont('Arial','I', 11);
+        setlocale(LC_TIME, "nl_NL");
+        $pdf->Write($lh, Utils::format_date(Utils::now_utc(), "%A %e %B %Y %H:%M"));
+        $pdf->Ln($lh * 2);
+        $pdf->SetFont('Arial','',12);
+        $pdf->Cell($cl, $lh, "Naam:");
+        $pdf->Write($lh, $values['name']);
+
+        $pdf->Ln($lh);
+        $pdf->Cell($cl, $lh, "Stamboek:");
+        $pdf->Write($lh, Utils::ras_num_to_str($values['studbook']));
+        $pdf->Ln($lh);
+        $pdf->Cell($cl, $lh, "Regio:");
+        $pdf->Write($lh, parse_region($values['region']));
+        $pdf->Ln($lh);
+        $pdf->Cell($cl, $lh, "Locatie, indien afwijkend:");
+        $pdf->Write($lh, $values['location']);
+        $pdf->Ln($lh);
+      
+        if($values['region'] != -1) {
+          $pdf->Cell($cl, $lh, "Datum:");
+          if($preferred_date == null) {
+            $pdf->Write($lh, "Geen voorkeur");
+          }
+          else {
+            $pdf->Write($lh, Utils::format_date($preferred_date, "%e %B"));
+          }
+          $pdf->Ln($lh);
+        }
+        $pdf->Ln($lh);
+        $pdf->Cell($cl, $lh, "Aantal rammen eerste keuring:");
+        $pdf->Write($lh, $values['rams_first']);
+        $pdf->Ln($lh);
+        $pdf->Cell($cl, $lh, "Aantal rammen herkeuring:");
+        $pdf->Write($lh, $values['rams_second']);
+        $pdf->Ln($lh);
+        $pdf->Cell($cl, $lh, "Aantal ooien:");
+        $pdf->Write($lh, $values['ewes']);
+        $pdf->Ln($lh);
+        $pdf->Cell($cl, $lh, "Aantal locaties:");
+        $pdf->Write($lh, $values['num_locations']);
+        $pdf->Ln($lh);
+        $pdf->Cell($cl, $lh, "Stamboekbewijs:");
+        $pdf->Write($lh, $values['on_paper'] ? "Ja" : "Nee");
+      
+        $pdf->Ln($lh * 2);
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->Write($lh, "Opmerking");
+        $pdf->SetFont('Arial','',12);
+        $pdf->Ln($lh);
+        $pdf->Write($lh, $opmerking);
+
+        $uuid = Uuid::generate();
+        $pdf_path = $file_storage . DIRECTORY_SEPARATOR . $uuid . ".pdf";
+        $pdf->Output('F', $pdf_path);
+
+        $date_sent = Utils::now_utc();  
+
+        $json = json_encode([
+            'year' => intval($date_sent->format('Y')),
+            'name' => $values['name'],
+            'studbook' => $values['studbook'],
+            'region' => $values['region'],
+            'location' => $values['location'],
+            'preferred_date' => $preferred_date == null ? null : Utils::format_date_for_mysql($preferred_date),
+            'rams_first' => $values['rams_first'],
+            'rams_second' => $values['rams_second'],
+            'ewes' => $values['ewes'],
+            'num_locations' => $values['num_locations'],
+            'on_paper' => $values['on_paper'],
+            'remarks' => $values['remarks']
+        ]);
+     
         $db->execute("
             INSERT INTO `huiskeuringen` (
-                `user_id`, `year`, `name`, `region`, `preferred_date`, `rams_first`, `rams_second`, `ewes`, `locations`, `on_paper`, `remarks`, `date_sent`
+                `user_id`, `year`, `studbook`, `region`, `preferred_date`, `date_sent`, `pdf_uuid`, `json`
             )
             VALUES (
-                :user_id, :year, :name, :region, :preferred_date, :rams_first, :rams_second, :ewes, :locations, :on_paper, :remarks, :date_sent
+                :user_id, :year, :studbook, :region, :preferred_date, :date_sent, :pdf_uuid, :json
             )
         ", [
             ':user_id' => $user['id'],
             ':year' => intval($date_sent->format('Y')),
-            ':name' => $values['name'],
+            ':studbook' => $values['studbook'],
             ':region' => $values['region'],
-            ':preferred_date' => $values['preferred_date'],
-            ':rams_first' => $values['rams_first'],
-            ':rams_second' => $values['rams_second'],
-            ':ewes' => $values['ewes'],
-            ':locations' => $values['locations'],
-            ':on_paper' => $values['on_paper'],
-            ':remarks' => $values['remarks'],
-            ':date_sent' => $date_sent->format('Y-m-d H:i:s')
+            ':preferred_date' => $preferred_date == null ? null : Utils::format_date_for_mysql($preferred_date),
+            ':date_sent' => Utils::format_datetime_for_mysql($date_sent),
+            ':pdf_uuid' => $uuid,
+            ':json' => $json
         ]);
 
         return [
@@ -848,7 +1009,11 @@ switch ($routeInfo[0]) {
         $handler = $routeInfo[1];
         $vars = $routeInfo[2];
         
-        header('Content-type: application/json');
-        echo json_encode($handler($vars, $input));
+        $result = $handler($vars, $input);
+
+        if($result != null) {
+            header('Content-type: application/json');
+            echo json_encode($result);
+        }
         break;
 }

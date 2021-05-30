@@ -32,7 +32,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '26cb7f1f2222c82c1e757ebc1de0902884e8791e',
+    'reference' => 'a88bf25951ec172709accca269786e8d502dc6fb',
     'name' => '__root__',
   ),
   'versions' => 
@@ -44,7 +44,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '26cb7f1f2222c82c1e757ebc1de0902884e8791e',
+      'reference' => 'a88bf25951ec172709accca269786e8d502dc6fb',
     ),
     'guzzlehttp/guzzle' => 
     array (
@@ -124,6 +124,15 @@ private static $installed = array (
       array (
       ),
       'reference' => '120b605dfeb996808c31b6477290a714d356e822',
+    ),
+    'setasign/fpdf' => 
+    array (
+      'pretty_version' => '1.8.2',
+      'version' => '1.8.2.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'd77904018090c17dc9f3ab6e944679a7a47e710a',
     ),
   ),
 );
@@ -306,9 +315,23 @@ return $installed[0]['root'];
 
 
 
+
 public static function getRawData()
 {
+@trigger_error('getRawData only returns the first dataset loaded, which may not be what you expect. Use getAllRawData() instead which returns all datasets for all autoloaders present in the process.', E_USER_DEPRECATED);
+
 return self::$installed;
+}
+
+
+
+
+
+
+
+public static function getAllRawData()
+{
+return self::getInstalled();
 }
 
 

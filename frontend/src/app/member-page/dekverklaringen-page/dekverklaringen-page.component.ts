@@ -10,16 +10,12 @@ import { filter } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppTitleService } from 'src/app/services/app-title.service';
-
-enum Studbook {
-  DRENTS_HEIDESCHAAP,
-  SCHOONEBEEKER
-}
+import { supportsPDFs } from "pdfobject";
 
 interface Dekverklaring {
   id: number,
   season: number,
-  studbook: Studbook,
+  studbook: number,
   date_sent: Date
 }
 
@@ -29,14 +25,14 @@ interface Dekverklaring {
   styleUrls: ['./dekverklaringen-page.component.scss']
 })
 export class DekverklaringenPageComponent {
-  Studbook = Studbook;
-
   dekverklaringen: TableDataSource<Dekverklaring>;
   columnsToDisplay = ['select', 'season', 'studbook', 'date_sent'];
   selection = new SelectionMap<number>();
 
   lastSearchTimer: number | null = null;
   pendingSearch = "";
+
+  supportsPDFs = supportsPDFs;
 
   constructor(
     private dataSourceFactory: TableDataSourceFactory,
@@ -60,11 +56,29 @@ export class DekverklaringenPageComponent {
 
   onUpdateClick() {
     const key = this.selection.items.values().next().value;
-    this.router.navigate([key], { relativeTo: this.route });
+    this.openDetail(key);
   }
 
   onDoubleClick(id: number) {
-    this.router.navigate([id], { relativeTo: this.route });
+    this.openDetail(id);
+  }
+
+  openDetail(id: number) {
+    if(this.supportsPDFs) {
+      this.router.navigate([id], { relativeTo: this.route });
+    }
+    else {
+      var element = document.createElement('a');
+      element.setAttribute('href', '/api/dekverklaringen/' + id + "?download");
+      element.setAttribute('download', "");
+    
+      element.style.display = 'none';
+      document.body.appendChild(element);
+    
+      element.click();
+    
+      document.body.removeChild(element);
+    }
   }
 
   onPage(ev: PageEvent) {
