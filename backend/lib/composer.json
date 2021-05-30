@@ -8,7 +8,14 @@
     "autoload": {
         "psr-4": {
             "Conf\\": "../conf/",
+            "Lib\\Results\\": "./results/",
             "Lib\\": "./"
-        }
+        },
+        "files": [
+            "./routes/auth.php",
+            "./routes/users.php",
+            "./routes/dekverklaringen.php",
+            "./routes/huiskeuringen.php"
+        ]
     }
 }
