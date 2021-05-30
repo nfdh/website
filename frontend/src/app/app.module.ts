@@ -49,12 +49,10 @@ import { TableDataSourceFactory } from './services/table-data-source.service';
 import { MessageComponent } from './message/message.component';
 import { DekverklaringenPageComponent } from './member-page/dekverklaringen-page/dekverklaringen-page.component';
 import { AddDekverklaringPageComponent } from './member-page/dekverklaringen-page/add-dekverklaring-page/add-dekverklaring-page.component';
-import { DekverklaringFormComponent } from './member-page/dekverklaringen-page/dekverklaring-form/dekverklaring-form.component';
-import { EditDekverklaringPageComponent } from './member-page/dekverklaringen-page/edit-dekverklaring-page/edit-dekverklaring-page.component';
+import { ViewDekverklaringPageComponent } from './member-page/dekverklaringen-page/view-dekverklaring-page/view-dekverklaring-page.component';
 import { HuiskeuringenPageComponent } from './member-page/huiskeuringen-page/huiskeuringen-page.component';
 import { AddHuiskeuringPageComponent } from './member-page/huiskeuringen-page/add-huiskeuring-page/add-huiskeuring-page.component';
-import { HuiskeuringFormComponent } from './member-page/huiskeuringen-page/huiskeuring-form/huiskeuring-form.component';
-import { EditHuiskeuringPageComponent } from './member-page/huiskeuringen-page/edit-huiskeuring-page/edit-huiskeuring-page.component';
+import { ViewHuiskeuringPageComponent } from './member-page/huiskeuringen-page/view-huiskeuring-page/view-huiskeuring-page.component';
 import { BaseUrlInterceptor } from './base-url.interceptor';
 import { ContactPageComponent } from './contact-page/contact-page.component';
 import { VerenigingPageComponent } from './vereniging-page/vereniging-page.component';
@@ -64,9 +62,7 @@ import { CalamiteitenplanPageComponent } from './vereniging-page/calamiteitenpla
 import { MonitoringService } from './services/monitoring.service';
 import { ErrorHandlerService } from './services/error-handler.service';
 import { LidWordenPageComponent } from './lid-worden-page/lid-worden-page.component';
-import { IntlDatePipe } from './intl-date.pipe';
 import { IntlDateTimePipe } from './intl-date-time.pipe';
-import { IntlDateService } from './services/intl-date.service';
 import { IntlDateTimeService } from './services/intl-date-time.service';
 import { AppTitleService } from './services/app-title.service';
 import { WachtwoordVergetenPageComponent } from './wachtwoord-vergeten-page/wachtwoord-vergeten-page.component';
@@ -89,19 +85,16 @@ import { OpnieuwInstellenPageComponent } from './wachtwoord-vergeten-page/opnieu
     MessageComponent,
     DekverklaringenPageComponent,
     AddDekverklaringPageComponent,
-    DekverklaringFormComponent,
-    EditDekverklaringPageComponent,
+    ViewDekverklaringPageComponent,
     HuiskeuringenPageComponent,
     AddHuiskeuringPageComponent,
-    HuiskeuringFormComponent,
-    EditHuiskeuringPageComponent,
+    ViewHuiskeuringPageComponent,
     ContactPageComponent,
     VerenigingPageComponent,
     OverDeVerenigingPageComponent,
     BestuurEnCommissiesPageComponent,
     CalamiteitenplanPageComponent,
     LidWordenPageComponent,
-    IntlDatePipe,
     IntlDateTimePipe,
     WachtwoordVergetenPageComponent,
     VerzondenPageComponent,
@@ -151,7 +144,6 @@ import { OpnieuwInstellenPageComponent } from './wachtwoord-vergeten-page/opnieu
     { provide: "BASE_API_URL", useValue: environment.apiUrl },
     MonitoringService,
     { provide: ErrorHandler, useClass: ErrorHandlerService },
-    IntlDateService,
     IntlDateTimeService,
     Title,
     AppTitleService

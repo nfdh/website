@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '26cb7f1f2222c82c1e757ebc1de0902884e8791e',
+    'reference' => 'a88bf25951ec172709accca269786e8d502dc6fb',
     'name' => '__root__',
   ),
   'versions' => 
@@ -18,7 +18,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '26cb7f1f2222c82c1e757ebc1de0902884e8791e',
+      'reference' => 'a88bf25951ec172709accca269786e8d502dc6fb',
     ),
     'guzzlehttp/guzzle' => 
     array (
@@ -98,6 +98,15 @@
       array (
       ),
       'reference' => '120b605dfeb996808c31b6477290a714d356e822',
+    ),
+    'setasign/fpdf' => 
+    array (
+      'pretty_version' => '1.8.2',
+      'version' => '1.8.2.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'd77904018090c17dc9f3ab6e944679a7a47e710a',
     ),
   ),
 );

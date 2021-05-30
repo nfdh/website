@@ -1,6 +1,93 @@
 <h2 class="title">Nieuwe dekverklaring indienen</h2>
-<form (submit)="onSubmit($event)">
-    <app-dekverklaring-form [formGroup]="formGroup"></app-dekverklaring-form>
+<form (ngSubmit)="onSubmit()" [formGroup]="formGroup">
+    <app-form-section>
+        <mat-form-field appearance="fill" class="season-input">
+            <mat-label>Dekseizoen</mat-label>
+            <input matInput type="number" formControlName="season" />
+            <mat-error *ngIf="formGroup.get('season')!.hasError('required')">Verplicht</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+            <mat-label>Naam stamboeklid</mat-label>
+            <input matInput formControlName="name" />
+            <mat-error *ngIf="formGroup.get('name')!.hasError('required')">Verplicht</mat-error>
+        </mat-form-field>
+    </app-form-section>
+    <app-form-section title="Stamboek">
+        <mat-radio-group aria-label="Selecteer een stamboek" formControlName="studbook">
+            <mat-radio-button class="studbook_radio" color="primary" value="0">Drents Heideschaap</mat-radio-button>
+            <mat-radio-button class="studbook_radio" color="primary" value="1">Schoonebeeker</mat-radio-button>
+        </mat-radio-group>
+        <p class="notice">
+            Heeft u meerdere rassen? Dien dan voor ieder ras een aparte aanmelding in.
+        </p>
+    </app-form-section>
+    <app-form-section title="Aantal dieren in kudde (Kuddeovereenkomst)">
+        <mat-form-field appearance="fill" class="ko-input">
+            <mat-label>Aanwezige volwassen ooien (Geboren in {{seasonOffset(-2)}} en eerder)</mat-label>
+            <input matInput type="number" formControlName="kovo" />
+            <mat-error *ngIf="formGroup.get('kovo')!.hasError('required')">Verplicht</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="ko-input">
+            <mat-label>Aanwezige enters (Geboren in {{seasonOffset(-1)}})</mat-label>
+            <input matInput type="number" formControlName="koe" />
+            <mat-error *ngIf="formGroup.get('koe')!.hasError('required')">Verplicht</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="ko-input">
+            <mat-label>Geboren ooilammeren (Geboren in {{seasonOffset(0)}})</mat-label>
+            <input matInput type="number" formControlName="kool" />
+            <mat-error *ngIf="formGroup.get('kool')!.hasError('required')">Verplicht</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="ko-input">
+            <mat-label>Geboren ramlammeren (Geboren in {{seasonOffset(0)}})</mat-label>
+            <input matInput type="number" formControlName="korl" />
+            <mat-error *ngIf="formGroup.get('korl')!.hasError('required')">Verplicht</mat-error>
+        </mat-form-field>
+    </app-form-section>
+    <app-form-section title="Dekgroepen">
+        <p class="section-text">
+            Geef hieronder van alle rammen (in eigendom of gehuurd) op die u op uw eigen ooien heeft ingezet.<br />
+            Een dekgroep is een groep ooien waarop een of meerdere rammen voor de dekkerij is ingezet.<br />
+            Voeg rammen toe aan een dekgroep als er meerdere rammen in de dekgroep zijn ingezet.<br />
+            Vul Aantal ooien = 0 en Ram 1 = 0 in als er niet gefokt wordt.
+        </p>
+        <button mat-stroked-button type="button" (click)="addDekgroep()" class="add-dekgroep-button"><mat-icon>playlist_add</mat-icon> Dekgroep toevoegen</button>
+        <div class="dekgroepen">
+            <mat-card *ngFor="let dekgroep of dekgroepenFormGroups(); index as i" class="dekgroep mat-elevation-z2" [formGroup]="dekgroep">
+                <h4 class="dekgroep-title">Dekgroep {{i + 1}}</h4>
+                <mat-form-field appearance="fill" class="dkao-input">
+                    <mat-label>Aantal ooien</mat-label>
+                    <input matInput type="number" formControlName="ewe_count" />
+                    <mat-error *ngIf="dekgroep.get('ewe_count')!.hasError('required')">Verplicht</mat-error>
+                </mat-form-field>
+                <ng-container formArrayName="rammen">
+                    <div *ngFor="let ram of rammen(i).controls; index as ri" class="ram">
+                        <mat-form-field appearance="fill" class="ram-input">
+                            <mat-label>Ram {{ri + 1}}</mat-label>
+                            <input matInput [formControlName]="ri" placeholder="Levensnummer (12 cijfers)" />
+                            <mat-error *ngIf="ram.hasError('required')">Verplicht</mat-error>
+                            <mat-error *ngIf="ram.hasError('pattern')">Ongeldig levensnummer</mat-error>
+                        </mat-form-field>
+                        <button mat-icon-button type="button" *ngIf="i > 0 || ri > 0" (click)="removeRam(i, ri)">
+                            <mat-icon>remove_circle_outline</mat-icon>
+                        </button>
+                    </div>
+                </ng-container>
+                <button mat-button type="button" (click)="addRam(i)"><mat-icon>add</mat-icon> Ram toevoegen</button>
+            </mat-card>
+        </div>
+    </app-form-section>
+    <app-form-section title="Opmerking">
+        <p class="section-text">
+            Alle goedgekeurde fokrammen in eigendom dienen verantwoord te worden, dus of hierboven als eigen inzet en/of hier beneden als verhuurde of niet ingezette ram.<br />
+            Een niet verantwoorde fokram krijgt 40 dekkingen op zijn conto bijgeteld.
+            Indien eenzelfde fokram meerdere keren per dekseizoen wordt verhuurd: iedere verhuur = vermelden op nieuwe regel.<br />
+            Indien een fokram die u zelf inzet, ook wordt verhuurd, dan de fokram zowel hierboven als hieronder vermelden.<br />
+            Levensnummer fokram + vermelding: naam huurder / buiten vereniging / niet ingezet				
+        </p>
+        <mat-form-field appearance="fill" class="remarks-input">
+            <textarea matInput type="number" formControlName="remarks" rows="7"></textarea>
+        </mat-form-field>
+    </app-form-section>
     <app-form-actions>
         <button mat-raised-button color="primary" type="submit">Versturen</button>
         <button mat-button (click)="onCancelClick()">Annuleren</button>

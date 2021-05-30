@@ -4,7 +4,7 @@
         <button mat-raised-button (click)="onAddClick()" color="primary"><mat-icon>add</mat-icon> Nieuwe dekverklaring indienen</button>
     </ng-container>
     <ng-container *ngIf="selection.size > 0">
-        <button mat-raised-button (click)="onUpdateClick()" color="primary" [disabled]="selection.size >= 2"><mat-icon>wysiwyg</mat-icon> Tonen</button>
+        <button mat-raised-button (click)="onUpdateClick()" color="primary" [disabled]="selection.size >= 2"><mat-icon>wysiwyg</mat-icon> <ng-container *ngIf="supportsPDFs">Tonen</ng-container><ng-container *ngIf="!supportsPDFs">Downloaden</ng-container></button>
     </ng-container>
 </app-toolbar>
 
@@ -34,14 +34,14 @@
     <ng-container matColumnDef="studbook">
         <th mat-header-cell *matHeaderCellDef>Stamboek</th>
         <td mat-cell *matCellDef="let form" [ngSwitch]="form.studbook">
-            <ng-container *ngSwitchCase="Studbook.DRENTS_HEIDESCHAAP">Drents Heideschaap</ng-container>
-            <ng-container *ngSwitchCase="Studbook.SCHOONEBEEKER">Schoonebeeker</ng-container>
+            <ng-container *ngSwitchCase="0">Drents Heideschaap</ng-container>
+            <ng-container *ngSwitchCase="1">Schoonebeeker</ng-container>
         </td>
     </ng-container>
 
     <ng-container matColumnDef="date_sent">
         <th mat-header-cell *matHeaderCellDef>Verzonden op</th>
-        <td mat-cell *matCellDef="let form">{{form.date_sent | intlDateTime}}</td>
+        <td mat-cell *matCellDef="let form">{{form.date_sent | intlDateTime:{ day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' } }}</td>
     </ng-container>
 
     <ng-container matColumnDef="paginator">
