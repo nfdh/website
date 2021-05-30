@@ -23,7 +23,7 @@ else {
                 'from_name' => 'Nederlandse Fokkersvereniging Het Drentse Heideschaap'
             ],
             'url' => 'https://nieuw.drentsheideschaap.nl',
-            'file_storage' => './files'
+            'file_storage' => '/site/files'
         ];
 
         static function get() {
