@@ -3,5 +3,6 @@
 /frontend/node_modules/
 /backend/conf/Settings.local.php
 /backend/files
+/backend/lib/vendor/
 
 dev-proxy.json
