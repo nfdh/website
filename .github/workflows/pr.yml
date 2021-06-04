@@ -23,7 +23,7 @@ jobs:
           ${{ runner.os }}-composer-
     - run: composer install --dev
       working-directory: backend/lib
-    - run: ./lib/vendor/bin/phplint ./ --exclude=./lib/vendor
+    - run: ./lib/vendor/bin/phplint ./ --exclude=lib/vendor
       working-directory: backend
   build-frontned:
     runs-on: ubuntu-latest
