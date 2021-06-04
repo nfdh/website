@@ -18,10 +18,11 @@ jobs:
       uses: actions/cache@v2
       with:
         path: /tmp/composer-cache
-        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+        key: ${{ runner.os }}-composer-prod-${{ hashFiles('**/composer.lock') }}
         restore-keys: |
+          ${{ runner.os }}-composer-prod-
           ${{ runner.os }}-composer-
-    - run: composer install
+    - run: composer install --no-dev
       working-directory: backend/lib
     - uses: actions/upload-artifact@v2
       with:

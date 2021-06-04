@@ -6,9 +6,28 @@ on:
       - master
 
 jobs:
-  build:
+  build-backend:
     runs-on: ubuntu-latest
-
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: 7.4
+    - name: Cache Composer dependencies
+      uses: actions/cache@v2
+      with:
+        path: /tmp/composer-cache
+        key: ${{ runner.os }}-composer-dev-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-composer-dev-
+          ${{ runner.os }}-composer-
+    - run: composer install --dev
+      working-directory: backend/lib
+    - run: ./lib/vendor/bin/phplint ./ --exclude=lib/vendor
+      working-directory: backend
+  build-frontend:
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Setup node.js
