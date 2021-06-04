@@ -25,7 +25,7 @@ jobs:
       working-directory: backend/lib
     - run: ./lib/vendor/bin/phplint ./ --exclude=lib/vendor
       working-directory: backend
-  build-frontned:
+  build-frontend:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
