@@ -17,5 +17,8 @@
             "./routes/dekverklaringen.php",
             "./routes/huiskeuringen.php"
         ]
+    },
+    "require-dev": {
+        "overtrue/phplint": "^2.0"
     }
 }
