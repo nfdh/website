@@ -94,8 +94,6 @@ export class HuiskeuringenPageComponent {
       return "Geen voorkeur";
     }
 
-    console.log(preferredDate);
-
     return this.intlDateTimeService.format(preferredDate, {
       day: "numeric",
       month: "long"
