@@ -13,7 +13,7 @@ class MailerFactory {
         $this->from_name = $conf['from_name'];
     }
 
-    function create(): PHPMailer {
+    function create($replyTo = false): PHPMailer {
         $mailer = new PHPMailer(true);
         $mailer->SetFrom($this->from_address, $this->from_name);
         return $mailer;

@@ -17,20 +17,20 @@ function orderedProps(obj: any) {
 @Injectable({
   providedIn: 'root'
 })
-export class IntlDateTimeService {
+export class IntlNumberService {
   private cache: {
-    [k: string]: Intl.DateTimeFormat | undefined
+    [k: string]: Intl.NumberFormat | undefined
   } = {};
 
   constructor() { }
 
-  format(date: Date, options: Intl.DateTimeFormatOptions) {
+  format(value: number, options: Intl.NumberFormatOptions) {
     const key = getCacheId([options]);
     let intlFormat = this.cache[key];
     if(!intlFormat) {
-      intlFormat = new Intl.DateTimeFormat("nl-NL", options);
+      intlFormat = new Intl.NumberFormat("nl-NL", options);
       this.cache[key] = intlFormat;
     }
-    return intlFormat.format(date);
+    return intlFormat.format(value);
   }
 }

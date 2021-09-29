@@ -1,0 +1,22 @@
+<div class="title-row">
+    <button class="back-button" matTooltip="Terug naar vorig scherm" (click)="onBackClick()"><mat-icon>arrow_back</mat-icon></button>
+    <h1>Tarieven</h1>
+</div>
+
+<table mat-table [dataSource]="prices" class="prices">
+    <ng-container matColumnDef="label">
+        <th mat-header-cell *matHeaderCellDef width="280">Omschrijving</th>
+        <td mat-cell *matCellDef="let row">{{row.label}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="price">
+        <th mat-header-cell *matHeaderCellDef width="100" class="value" matTooltip="Prijs per jaar of per stuk">Prijs</th>
+        <td mat-cell *matCellDef="let row" class="value">
+            <ng-container *ngIf="row.price == 0">gratis</ng-container>
+            <ng-container *ngIf="row.price != 0">{{row.price | intlNumber:{ style: 'currency', currency: 'EUR' } }}</ng-container>
+        </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+    <tr mat-row class="table-row" *matRowDef="let row; columns: columnsToDisplay"></tr>
+</table>

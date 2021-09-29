@@ -1,0 +1,122 @@
+.sheep-input {
+    width: 100%;
+    height: 100%;
+}
+
+.sheep-table-text {
+    margin: 0 0 15px 0;
+    padding: 0;
+}
+
+.sheep-table {
+    table-layout: fixed;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.sheep-fields {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.sheep-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.sheep-fields > div {
+    margin-right: 5px;
+}
+
+.sheep-fields > div:last-child {
+    margin-right: 0;
+}
+
+.sheep-no {
+    width: 30px;
+    flex-shrink: 0;
+    padding-top: 20px;
+}
+
+.sheep-number,
+.sheep-seller-ubn {
+    min-width: 130px;
+}
+
+.sheep-gender {
+    width: 120px;
+    flex-shrink: 0;
+}
+
+.sheep-registered {
+    width: 200px;
+    flex-shrink: 0;
+}
+
+.sheep-birthdate,
+.sheep-purchase {
+    min-width: 180px;
+}
+
+.sheep-number,
+.sheep-birthdate,
+.sheep-purchase,
+.sheep-seller-ubn {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.sheep-actions {
+    flex-shrink: 0;
+    flex-grow: 0;
+    width: 64px;
+}
+
+.sheep-action-text {
+    display: none;
+}
+
+.add-button {
+    align-self: flex-start;
+}
+
+.familyMembership {
+    margin-bottom: 5px;
+}
+
+@media only screen and (max-width: 1320px) {
+    .sheep-fields {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .sheep-number,
+    .sheep-purchase,
+    .sheep-birthdate,
+    .sheep-seller-ubn {
+        max-width: 400px;
+    }
+
+    .sheep-actions {
+        width: auto;
+    }
+
+    .sheep-action-text {
+        display: inline;
+    }
+
+    .sheep-row {
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid lightgray;
+    }
+
+    .sheep-row:last-child {
+        border-bottom: none;
+    }
+}

@@ -15,7 +15,7 @@
                 <th class="check-header">U steunt de vereniging zonder lid te worden.</th> 
                 <th class="check-header">U wordt lid van de vereniging, maar uw dieren worden niet ingeschreven in het stamboek.</th> 
                 <th class="check-header">U wordt lid van de vereniging en uw dieren worden ingeschreven in het stamboek.</th> 
-                <th class="check-header">Uw dieren worden ingeschreven in het stamboek. Voor kuddes met minimaal 100 ooien gelden aparte regels</th> 
+                <th class="check-header">Voor kuddes met minimaal 100 ooien gelden aparte regels. Uw dieren worden ingeschreven in het stamboek.</th> 
             </tr>
             <tr class="prices">
                 <th class="label-header">&nbsp;</th>
@@ -24,24 +24,24 @@
                     <span class="sub">per jaar</span>
                 </th>
                 <th class="check-header">
-                    € 30<br/>
+                    € 30 <a class="price-hint" routerLink="prijslijst" matTooltip="€ 10 voor een gezinslidmaatschap, in het geval een familielid al lid is van de vereniging">*</a><br/>
                     <span class="sub">per jaar</span>
                 </th>
                 <th class="check-header">
-                    € 30 + € 20<br/>
+                    € 30 + € 20 <a class="price-hint" routerLink="prijslijst" matTooltip="Plus extra kosten voor bijvoorbeeld huiskeuringen">*</a><br/>
                     <span class="sub">per jaar + eenmalig</span>
                 </th>
                 <th class="check-header">
-                    € 60<br />
+                    € 60 <a class="price-hint" routerLink="prijslijst" matTooltip="Plus extra kosten voor bijvoorbeeld huiskeuringen">*</a><br />
                     <span class="sub">per jaar</span>
                 </th>
             </tr>
             <tr class="join-buttons">
                 <th class="label-header">Voordelen</th>
-                <th class="check-header"><button mat-stroked-button routerLink="inschrijven">Inschrijven</button></th>
-                <th class="check-header"><button mat-stroked-button routerLink="inschrijven">Inschrijven</button></th>
-                <th class="check-header"><button mat-raised-button color="primary" routerLink="inschrijven">Inschrijven</button></th>
-                <th class="check-header"><button mat-stroked-button routerLink="inschrijven">Inschrijven</button></th>
+                <th class="check-header"><button mat-stroked-button routerLink="inschrijven" [queryParams]="{ 'soort': 'donateur' }">Inschrijven</button></th>
+                <th class="check-header"><button mat-stroked-button routerLink="inschrijven" [queryParams]="{ 'soort': 'basislidmaatschap' }">Inschrijven</button></th>
+                <th class="check-header"><button mat-raised-button color="primary" routerLink="inschrijven" [queryParams]="{ 'soort': 'stamboeklidmaatschap' }">Inschrijven</button></th>
+                <th class="check-header"><button mat-stroked-button routerLink="inschrijven" [queryParams]="{ 'soort': 'kudde' }">Inschrijven</button></th>
             </tr>
         </thead>
         <tbody>
@@ -132,3 +132,6 @@
         </tbody>
     </table>
 </div>
+<p>
+    Een compleet <a routerLink="prijslijst">overzicht van de tarieven</a> is beschikbaar.
+</p>

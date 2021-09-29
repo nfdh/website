@@ -27,6 +27,8 @@ import { ScrollRestorationService } from './services/scroll-restoration.service'
 import { WachtwoordVergetenPageComponent } from './wachtwoord-vergeten-page/wachtwoord-vergeten-page.component';
 import { VerzondenPageComponent as WachtwoordVergetenVerzondenPageComponent } from './wachtwoord-vergeten-page/verzonden-page/verzonden-page.component';
 import { OpnieuwInstellenPageComponent as WachtwoordVergetenOpnieuwInstellenPageComponent } from './wachtwoord-vergeten-page/opnieuw-instellen-page/opnieuw-instellen-page.component';
+import { PrijslijstPageComponent } from './lid-worden-page/prijslijst-page/prijslijst-page.component';
+import { InschrijvenPageComponent } from './lid-worden-page/inschrijven-page/inschrijven-page.component';
 
 const routes: Routes = [
   { path: "", component: HomePageComponent },
@@ -43,6 +45,8 @@ const routes: Routes = [
   { path: "disclaimer", component: DisclaimerPageComponent },
   { path: "contact", component: ContactPageComponent },
   { path: "lid-worden", component: LidWordenPageComponent },
+  { path: "lid-worden/prijslijst", component: PrijslijstPageComponent },
+  { path: "lid-worden/inschrijven", component: InschrijvenPageComponent },
   { path: "login", component: LoginPageComponent },
   { path: "wachtwoord-vergeten/verzonden", component: WachtwoordVergetenVerzondenPageComponent },
   { path: "wachtwoord-vergeten/opnieuw-instellen", component: WachtwoordVergetenOpnieuwInstellenPageComponent },

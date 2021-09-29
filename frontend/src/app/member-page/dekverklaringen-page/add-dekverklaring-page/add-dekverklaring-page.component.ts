@@ -58,13 +58,6 @@ export class AddDekverklaringPageComponent {
       });
   }
 
-  onCancelClick() {
-    this.router.navigate([".."], {
-      relativeTo: this.route
-    });
-  }
-
-
   seasonOffset(offset: number) {
     const filledIn = this.formGroup.controls.season.value;
     const seasonNumber = parseInt(filledIn, 10);

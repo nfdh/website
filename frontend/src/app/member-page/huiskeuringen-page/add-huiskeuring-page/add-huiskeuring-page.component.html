@@ -1,4 +1,5 @@
 <h2 class="title">Inschrijven voor huiskeuring</h2>
+<app-message type="error" *ngIf="!!errorMessage">{{errorMessage}}</app-message>
 <form (ngSubmit)="onSubmit()" [formGroup]="formGroup">
     <app-form-section>
         <mat-form-field appearance="fill">
@@ -80,6 +81,6 @@
     </app-form-section>
     <app-form-actions>
         <button mat-raised-button color="primary" type="submit">Versturen</button>
-        <button mat-button (click)="onCancelClick()">Annuleren</button>
+        <button mat-button routerLink="..">Annuleren</button>
     </app-form-actions>
 </form>

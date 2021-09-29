@@ -15,7 +15,8 @@
             "./routes/auth.php",
             "./routes/users.php",
             "./routes/dekverklaringen.php",
-            "./routes/huiskeuringen.php"
+            "./routes/huiskeuringen.php",
+            "./routes/signup.php"
         ]
     },
     "require-dev": {
