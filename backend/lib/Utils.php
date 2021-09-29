@@ -25,6 +25,11 @@ class Utils {
         return $date->format(\DateTime::ISO8601);
     }
 
+    public static function parse_datetime_from_json(string $date) {
+        echo "Parsing $date as " . \DateTime::ATOM;
+        return \DateTime::createFromFormat("Y-m-d\TH:i:s.v\Z", $date, new \DateTimeZone("UTC"));
+    }
+
     public static function format_datetime_for_mysql(\DateTime $date) {
         return $date->format('Y-m-d H:i:s');
     }

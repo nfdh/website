@@ -59,12 +59,6 @@ export class AddHuiskeuringPageComponent {
       });
   }
 
-  onCancelClick() {
-    this.router.navigate([".."], {
-      relativeTo: this.route
-    });
-  }
-
   onRegionChange() {
     this.formGroup.controls.preferred_date.setValue('');
   }

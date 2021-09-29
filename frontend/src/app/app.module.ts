@@ -32,6 +32,7 @@ import { LightboxModule } from  'ng-gallery/lightbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatToolbarModule } from "@angular/material/toolbar"
 import { MatSidenavModule } from "@angular/material/sidenav"
+import { MatDatepickerModule } from '@angular/material/datepicker';
 
 import { AppComponent } from './app.component';
 import { HomePageComponent } from './home-page/home-page.component';
@@ -68,6 +69,12 @@ import { AppTitleService } from './services/app-title.service';
 import { WachtwoordVergetenPageComponent } from './wachtwoord-vergeten-page/wachtwoord-vergeten-page.component';
 import { VerzondenPageComponent } from './wachtwoord-vergeten-page/verzonden-page/verzonden-page.component';
 import { OpnieuwInstellenPageComponent } from './wachtwoord-vergeten-page/opnieuw-instellen-page/opnieuw-instellen-page.component';
+import { PrijslijstPageComponent } from './lid-worden-page/prijslijst-page/prijslijst-page.component';
+import { IntlNumberPipe } from './intl-number.pipe';
+import { IntlNumberService } from './services/intl-number.service';
+import { InschrijvenPageComponent } from './lid-worden-page/inschrijven-page/inschrijven-page.component';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_NATIVE_DATE_FORMATS } from '@angular/material/core';
+import { IntlDateAdapterService } from './services/intl-date-adapter.service';
 
 @NgModule({
   declarations: [
@@ -98,7 +105,10 @@ import { OpnieuwInstellenPageComponent } from './wachtwoord-vergeten-page/opnieu
     IntlDateTimePipe,
     WachtwoordVergetenPageComponent,
     VerzondenPageComponent,
-    OpnieuwInstellenPageComponent
+    OpnieuwInstellenPageComponent,
+    PrijslijstPageComponent,
+    IntlNumberPipe,
+    InschrijvenPageComponent
   ],
   imports: [
     BrowserModule,
@@ -127,6 +137,7 @@ import { OpnieuwInstellenPageComponent } from './wachtwoord-vergeten-page/opnieu
     MatTooltipModule,
     MatToolbarModule,
     MatSidenavModule,
+    MatDatepickerModule,
     
     VerticalMenuModule,
     ToolbarModule,
@@ -145,8 +156,11 @@ import { OpnieuwInstellenPageComponent } from './wachtwoord-vergeten-page/opnieu
     MonitoringService,
     { provide: ErrorHandler, useClass: ErrorHandlerService },
     IntlDateTimeService,
+    IntlNumberService,
     Title,
-    AppTitleService
+    AppTitleService,
+    { provide: DateAdapter, useClass: IntlDateAdapterService },
+    { provide: MAT_DATE_FORMATS, useValue: MAT_NATIVE_DATE_FORMATS }
   ],
   bootstrap: [AppComponent]
 })

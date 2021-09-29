@@ -102,3 +102,8 @@ mat-form-field.small .mat-form-field-infix {
 .mat-drawer-container {
     background-color: #FFF;
 }
+
+/* Wrap checkbox labels */
+.mat-checkbox-label {
+    white-space: normal;
+}

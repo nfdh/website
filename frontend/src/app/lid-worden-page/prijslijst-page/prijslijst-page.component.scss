@@ -1,0 +1,26 @@
+.title-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.back-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #333;
+    margin-right: 10px;
+}
+
+.back-button:hover {
+    color: #000;
+}
+
+.back-button > mat-icon {
+    vertical-align: middle;
+}
+
+.prices {
+    width: 800px;
+    max-width: 100%;
+}
