@@ -48,7 +48,7 @@ class Auth {
     }
 
     static function get_select_list() {
-        return "`id`, `name`, `email`, `role_website_contributor`, `role_member_administrator`, `role_studbook_administrator`, `role_studbook_inspector`";
+        return "`id`, `name`, `email`, `studbook_heideschaap`, `studbook_heideschaap_ko`, `studbook_schoonebeeker`, `studbook_schoonebeeker_ko`, `role_website_contributor`, `role_member_administrator`, `role_studbook_administrator`, `role_studbook_inspector`";
     }
 
     static function create_user_obj($row) {
@@ -56,6 +56,10 @@ class Auth {
             "id" => $row["id"],
             "name" => $row['name'],
             "email" => $row['email'],
+            "studbook_heideschaap" => boolval($row['studbook_heideschaap']),
+            "studbook_heideschaap_ko" => boolval($row['studbook_heideschaap_ko']),
+            "studbook_schoonebeeker" => boolval($row['studbook_schoonebeeker']),
+            "studbook_schoonebeeker_ko" => boolval($row['studbook_schoonebeeker_ko']),
 			"role_website_contributor" => boolval($row['role_website_contributor']),
             "role_member_administrator" => boolval($row['role_member_administrator']),
 			"role_studbook_administrator" => boolval($row['role_studbook_administrator']),

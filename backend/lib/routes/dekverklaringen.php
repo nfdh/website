@@ -1,6 +1,7 @@
 <?php
 
 use Lib\Utils;
+use Lib\Uuid;
 use Lib\Results\JSON;
 use Lib\Results\File;
 
@@ -103,14 +104,21 @@ function register_dekverklaringen_routes(FastRoute\RouteCollector $r, \Lib\Datab
         $pdf->Cell($cl, $lh, "Naam:");
         $pdf->Write($lh, $values['name']);
         $pdf->Ln($lh);
+
+        $has_ko = false;
+        switch($values['studbook']) {
+            case 0: $has_ko = $user['studbook_heideschaap_ko']; break;
+            case 1: $has_ko = $user['studbook_schoonebeeker_ko']; break;
+        }
+
         $pdf->Cell($cl, $lh, "KO kudde:");
-        $pdf->Write($lh, true ? "Ja" : "Nee");
+        $pdf->Write($lh, $has_ko ? "Ja" : "Nee");
         $pdf->Ln($lh);
 
         $pdf->Cell($cl, $lh, "Ras:");
         $pdf->Write($lh, Utils::ras_num_to_str($values['studbook']));
 
-        if(true) {
+        if($has_ko) {
             $pdf->Ln($lh * 2);
             $pdf->SetFont('Arial', 'B', 12);
             $pdf->Write($lh, "Kuddeovereenkomst");
