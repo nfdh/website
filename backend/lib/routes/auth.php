@@ -14,6 +14,10 @@ function register_auth_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $u
         return new JSON([
 			"name" => $user['name'],
             "email" => $user['email'],
+            "studbook_heideschaap" => $user['studbook_heideschaap'],
+            "studbook_heideschaap_ko" => $user['studbook_heideschaap_ko'],
+            "studbook_schoonebeeker" => $user['studbook_schoonebeeker'],
+            "studbook_schoonebeeker_ko" => $user['studbook_schoonebeeker_ko'],
 			"role_website_contributor" => $user['role_website_contributor'],
             "role_member_administrator" => $user['role_member_administrator'],
 			"role_studbook_administrator" => $user['role_studbook_administrator'],
