@@ -26,7 +26,6 @@ class Utils {
     }
 
     public static function parse_datetime_from_json(string $date) {
-        echo "Parsing $date as " . \DateTime::ATOM;
         return \DateTime::createFromFormat("Y-m-d\TH:i:s.v\Z", $date, new \DateTimeZone("UTC"));
     }
 

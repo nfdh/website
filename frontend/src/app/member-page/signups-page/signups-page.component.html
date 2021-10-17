@@ -1,0 +1,58 @@
+<h2 class="title">Inschrijvingen</h2>
+<app-toolbar>
+    <ng-container *ngIf="selection.size > 0">
+        <button mat-raised-button (click)="onUpdateClick()" color="primary" [disabled]="selection.size >= 2"><mat-icon>wysiwyg</mat-icon> <ng-container *ngIf="supportsPDFs">Tonen</ng-container><ng-container *ngIf="!supportsPDFs">Downloaden</ng-container></button>
+    </ng-container>
+</app-toolbar>
+
+<table class="signup-list" mat-table [dataSource]="signups">
+    <ng-container matColumnDef="select">
+        <th mat-header-cell *matHeaderCellDef width="65">
+            <mat-checkbox (change)="selection.toggleMaster()"
+                [checked]="selection.allSelected"
+                [indeterminate]="selection.partialSelection"
+                color="primary">
+            </mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let row">
+            <mat-checkbox (click)="$event.stopPropagation()"
+                        (change)="selection.toggle(row.id)"
+                        [checked]="selection.isSelected(row.id)"
+                        color="primary">
+            </mat-checkbox>
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Naam</th>
+        <td mat-cell *matCellDef="let form">{{form.name}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef>Email</th>
+        <td mat-cell *matCellDef="let form">{{form.email}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="membershipType">
+        <th mat-header-cell *matHeaderCellDef>Lidmaatschap</th>
+        <td mat-cell *matCellDef="let form">{{formatMembershipType(form.membershipType)}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="date_sent">
+        <th mat-header-cell *matHeaderCellDef>Verzonden op</th>
+        <td mat-cell *matCellDef="let form">{{form.date_sent | intlDateTime:{ day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' } }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="paginator">
+        <td mat-footer-cell *matFooterCellDef colspan="99" class="paginator">
+            <mat-paginator [pageIndex]="signups.pageIndex" [pageSize]="signups.pageSize" [length]="signups.totalRowCount" [pageSizeOptions]="[50]" (page)="onPage($event)" showFirstLastButtons></mat-paginator>
+        </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+    <tr mat-row class="table-row" *matRowDef="let row; columns: columnsToDisplay" 
+        (click)="selection.selectSingle(row.id)"
+        (dblclick)="onDoubleClick(row.id)"
+    ></tr>
+    <tr mat-footer-row *matFooterRowDef="['paginator']"></tr>
+</table>

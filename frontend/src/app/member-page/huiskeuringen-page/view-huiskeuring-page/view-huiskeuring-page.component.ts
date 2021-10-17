@@ -14,8 +14,7 @@ export class ViewHuiskeuringPageComponent implements AfterViewInit, OnDestroy {
   private embedded?: HTMLElement;
 
   constructor(
-    private router: Router, 
-    private route: ActivatedRoute,
+    private router: Router,
     private activatedRoute: ActivatedRoute
   ) { }
   
@@ -36,7 +35,7 @@ export class ViewHuiskeuringPageComponent implements AfterViewInit, OnDestroy {
   
   onCancelClick() {
     this.router.navigate([".."], {
-      relativeTo: this.route
+      relativeTo: this.activatedRoute
     });
   }
 }

@@ -67,7 +67,7 @@ import { IntlDateTimePipe } from './intl-date-time.pipe';
 import { IntlDateTimeService } from './services/intl-date-time.service';
 import { AppTitleService } from './services/app-title.service';
 import { WachtwoordVergetenPageComponent } from './wachtwoord-vergeten-page/wachtwoord-vergeten-page.component';
-import { VerzondenPageComponent } from './wachtwoord-vergeten-page/verzonden-page/verzonden-page.component';
+import { VerzondenPageComponent as WachtwoordVergetenVerzondenPageComponent } from './wachtwoord-vergeten-page/verzonden-page/verzonden-page.component';
 import { OpnieuwInstellenPageComponent } from './wachtwoord-vergeten-page/opnieuw-instellen-page/opnieuw-instellen-page.component';
 import { PrijslijstPageComponent } from './lid-worden-page/prijslijst-page/prijslijst-page.component';
 import { IntlNumberPipe } from './intl-number.pipe';
@@ -75,6 +75,9 @@ import { IntlNumberService } from './services/intl-number.service';
 import { InschrijvenPageComponent } from './lid-worden-page/inschrijven-page/inschrijven-page.component';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_NATIVE_DATE_FORMATS } from '@angular/material/core';
 import { IntlDateAdapterService } from './services/intl-date-adapter.service';
+import { SignupsPageComponent } from './member-page/signups-page/signups-page.component';
+import { ViewSignupPageComponent } from './member-page/signups-page/view-signup-page/view-signup-page.component';
+import { VerzondenPageComponent as InschrijvenVerzondenPageComponent } from './lid-worden-page/inschrijven-page/verzonden-page/verzonden-page.component';
 
 @NgModule({
   declarations: [
@@ -104,11 +107,14 @@ import { IntlDateAdapterService } from './services/intl-date-adapter.service';
     LidWordenPageComponent,
     IntlDateTimePipe,
     WachtwoordVergetenPageComponent,
-    VerzondenPageComponent,
+    WachtwoordVergetenVerzondenPageComponent,
     OpnieuwInstellenPageComponent,
     PrijslijstPageComponent,
     IntlNumberPipe,
-    InschrijvenPageComponent
+    InschrijvenPageComponent,
+    InschrijvenVerzondenPageComponent,
+    SignupsPageComponent,
+    ViewSignupPageComponent,
   ],
   imports: [
     BrowserModule,
