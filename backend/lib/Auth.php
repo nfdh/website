@@ -43,6 +43,10 @@ class Auth {
         return $user_obj;
     }
 
+    public static function logout() {
+        unset($_SESSION['user']);
+    }
+
     static function get_select_list() {
         return "`id`, `name`, `email`, `role_website_contributor`, `role_member_administrator`, `role_studbook_administrator`, `role_studbook_inspector`";
     }

@@ -21,6 +21,16 @@ function register_auth_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $u
         ]);
     });
 
+    $r->addRoute('POST', 'api/logout', function($_, $values) use ($user) {
+        if($user) {
+            Auth::logout();
+        }
+
+        return new JSON([
+            "success" => true
+        ]);
+    });
+
     $r->addRoute('POST', 'api/request-password-reset', function($_, $values) use ($db, $user, $mailer_factory, $url) {
         if($user) {
             http_response_code(401);

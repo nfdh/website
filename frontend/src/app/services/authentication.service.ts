@@ -31,5 +31,6 @@ export class AuthenticationService {
 
   notifyLogout() {
     this.userSubject$.next(null);
+    sessionStorage.removeItem("user");
   }
 }
