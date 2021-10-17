@@ -8,10 +8,8 @@ import { map } from "rxjs/operators";
   styleUrls: ['./member-page.component.scss']
 })
 export class MemberPageComponent implements OnInit {
-  isWebsiteContributor$ = this.authenticationService.user$
-    .pipe(
-      map(u => u?.role_website_contributor)
-    );
+  isWebsiteContributor$ = this.authenticationService.user$.pipe(map(u => u?.role_website_contributor));
+  isMemberAdministrator$ = this.authenticationService.user$.pipe(map(u => u?.role_member_administrator));
 
   constructor(private authenticationService: AuthenticationService) {}
 

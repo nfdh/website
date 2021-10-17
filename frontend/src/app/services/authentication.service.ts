@@ -5,6 +5,7 @@ export interface User {
   email: string,
   name: string,
   role_website_contributor: boolean,
+  role_member_administrator: boolean,
   role_studbook_administrator: boolean,
   role_studbook_inspector: boolean
 }
@@ -30,5 +31,6 @@ export class AuthenticationService {
 
   notifyLogout() {
     this.userSubject$.next(null);
+    sessionStorage.removeItem("user");
   }
 }

@@ -32,6 +32,7 @@ export function createFormGroup(): FormGroup {
     studbook_schoonebeeker_ko: new FormControl(false),
 
     role_website_contributor: new FormControl(false),
+    role_member_administrator: new FormControl(false),
     role_studbook_administrator: new FormControl(false),
     role_studbook_inspector: new FormControl(false)
   });

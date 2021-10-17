@@ -8,5 +8,7 @@ import { Component, Input } from '@angular/core';
 export class MessageComponent {
   @Input() type!: string;
 
-  constructor() { }
+  constructor() { 
+    
+  }
 }

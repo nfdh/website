@@ -3,6 +3,7 @@ import { AuthenticationService } from './services/authentication.service';
 import { map } from "rxjs/operators";
 import { Event, NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
 import { MatSidenav } from '@angular/material/sidenav';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -24,7 +25,7 @@ export class AppComponent {
 
   @ViewChild('sidenav') sidenav!: MatSidenav;
 
-  constructor(private authenticationService: AuthenticationService, private router: Router) {
+  constructor(private authenticationService: AuthenticationService, private router: Router, private httpClient: HttpClient) {
     this.loading = false;
     this.loadProgress = 0;
     this.loadInterval = null;
@@ -57,9 +58,12 @@ export class AppComponent {
   }
 
   logout(event: MouseEvent) {
-    this.authenticationService.notifyLogout();
-    this.router.navigate([""])
-
     event.preventDefault();
+
+    this.httpClient.post<any>("/api/logout", {})
+      .subscribe(() => {
+        this.authenticationService.notifyLogout();
+        this.router.navigate([""]);
+      });
   }
 }

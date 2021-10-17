@@ -2,6 +2,7 @@
 
 use Lib\Utils;
 use Lib\Results\JSON;
+use Lib\Results\File;
 
 function register_signup_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $user, \Lib\MailerFactory $mailer_factory, string $file_storage, $mail_targets) {
     $r->addRoute('POST', 'api/signup', function($_, $values) use ($db, $user, $mailer_factory, $file_storage, $mail_targets) {
@@ -99,21 +100,38 @@ function register_signup_routes(FastRoute\RouteCollector $r, \Lib\Database $db, 
         $membershipType = $values['membershipType'];
         $pdf->Write($lh, parse_membershipType($membershipType));
 
+        $jsonObj = [
+            'fullName' => $values['fullName'],
+            'firstName' => $values['firstName'],
+            'address' => $values['address'],
+            'postalCode' => $values['postalCode'],
+            'city' => $values['city'],
+            'email' => $values['email'],
+            'phoneNumber' => $values['phoneNumber'],
+            'membershipType' => $values['membershipType']
+        ];
+
         if($membershipType == 0) {
             $pdf->Ln($lh);
             $pdf->Cell($cl, $lh, "Bedrag:");
-            $pdf->Write($lh, '€' . number_format($values['amount'], 2));
+            $pdf->Write($lh, chr(128) . number_format($values['amount'], 2));
+
+            $jsonObj['amount'] = $values['amount'];
         }
         else if($membershipType == 1) {
             $pdf->Ln($lh);
             $pdf->Cell($cl, $lh, "Familielid:");
             $pdf->Write($lh, $values['familyMembership'] == true ? "Ja" : "Nee");
+
+            $jsonObj['familyMembership'] = $values['familyMembership'];
         }
 
         if($membershipType >= 2) {
             $pdf->Ln($lh);
             $pdf->Cell($cl, $lh, "UBN nummer:");
             $pdf->Write($lh, $values['ubn']);
+
+            $jsonObj['ubn'] = $values['ubn'];
         }
 
         if($membershipType == 3) {
@@ -123,6 +141,9 @@ function register_signup_routes(FastRoute\RouteCollector $r, \Lib\Database $db, 
             $pdf->Ln($lh);
             $pdf->Cell($cl, $lh, "Gemotiveerd verzoek:");
             $pdf->Write($lh, $values['herdDscription']);
+
+            $jsonObj['zwoegerVrij'] = $values['zwoegerVrij'];
+            $jsonObj['herdDscription'] = $values['herdDscription'];
         }
 
         $pdf->Ln($lh);
@@ -139,7 +160,9 @@ function register_signup_routes(FastRoute\RouteCollector $r, \Lib\Database $db, 
         if($membershipType == 2) {
             $csv_path = $file_storage . DIRECTORY_SEPARATOR . $uuid . ".csv";
             $csv = fopen($csv_path, "w");
-            fputcsv($csv, ['Ram/ooi', 'Levensnummer', 'Geboortedatum', 'Aankoopdatum', 'UBN verkoper', 'Reeds stamboek geregistreerd']);
+            fputcsv($csv, ['Ram/ooi', 'Levensnummer', 'Geboortedatum', 'Aankoopdatum', 'UBN verkoper', 'Reeds stamboek geregistreerd'], ";");
+
+            $sheepJsonObj = [];
 
             foreach($values['sheep'] as $sheep) {
                 $birthDate = Utils::parse_datetime_from_json($sheep['birthdate']);
@@ -152,8 +175,19 @@ function register_signup_routes(FastRoute\RouteCollector $r, \Lib\Database $db, 
                     $dateOfPurchase == null ? '' : Utils::format_date($dateOfPurchase, "%d-%m-%Y"),
                     $sheep['ubnOfSeller'] == null ? '' : $sheep['ubnOfSeller'],
                     parse_registered($sheep['registeredInStudbook'])
-                ]);
+                ], ";");
+
+                $sheepJsonObj[] = [
+                    "gender" => $sheep['gender'],
+                    "number" => $sheep['number'],
+                    "birthDate" => Utils::format_datetime_for_json($birthDate),
+                    "registeredInStudbook" => $sheep['registeredInStudbook'],
+                    "dateOfPurchase" => $dateOfPurchase == null ? null : Utils::format_datetime_for_json($dateOfPurchase),
+                    "ubnOfSeller" => $sheep['ubnOfSeller']
+                ];
             }
+
+            $jsonObj['sheep'] = $sheepJsonObj;
 
             fclose($csv);
         }
@@ -178,6 +212,26 @@ function register_signup_routes(FastRoute\RouteCollector $r, \Lib\Database $db, 
         }
         $mailer->Send();
 
+        // Add to signups table
+        $json = json_encode($jsonObj);
+        $date_sent = Utils::now_utc();  
+
+        $db->execute("
+            INSERT INTO `signups` (
+                `name`, `email`, `membership_type`, `date_sent`, `pdf_uuid`, `json`
+            )
+            VALUES (
+                :name, :email, :membership_type, :date_sent, :pdf_uuid, :json
+            )
+        ", [
+            ':name' => $values['fullName'],
+            ':email' => $values['email'],
+            ':membership_type' => $values['membershipType'],
+            ':date_sent' => Utils::format_datetime_for_mysql($date_sent),
+            ':pdf_uuid' => $uuid,
+            ':json' => $json
+        ]);
+
         // Send mail to user itself
         $escaped_name = htmlspecialchars($values['firstName']);
         $body = "<p>Hallo $escaped_name,</p>";
@@ -201,5 +255,168 @@ function register_signup_routes(FastRoute\RouteCollector $r, \Lib\Database $db, 
         return new JSON([
             "success" => true
         ]);
+    });
+
+    $r->addRoute('GET', 'api/signups', function($para, $values) use ($db, $user) {
+        if(!$user || !$user['role_member_administrator']) {
+            http_response_code(401);
+            return new JSON([
+                "success" => false,
+                "reason" => "UNAUTHORIZED"
+            ]);
+        }
+
+        // Count total number of users
+        $row = $db->querySingle("
+            SELECT COUNT(1) AS `cnt`
+            FROM `signups`
+        ", []);
+        $totalCount = $row['cnt'];
+
+        // Fetch the users
+        $page = intval($_GET['$page']);
+        $pageSize = intval($_GET['$pageSize']);
+
+        // Fix-up the page if it goes beyond the count
+        if($page * $pageSize > $totalCount) {
+            $page = floor($totalCount / $pageSize);
+        }
+
+        $rows = $db->queryAll("
+            SELECT `id`, `name`, `email`, `membership_type`, `date_sent`
+            FROM `signups`
+            ORDER BY `date_sent` DESC
+            LIMIT :limit
+            OFFSET :skip
+        ", [
+            ':limit' => $pageSize,
+            ':skip' => $page * $pageSize
+        ]);
+
+        return new JSON([
+            'success' => true,
+            'totalCount' => $totalCount,
+            'pageIndex' => $page,
+            'rows' => array_map(function($row) {
+                return [
+                    "id" => $row['id'],
+                    "name" => $row['name'],
+                    "email" => $row['email'],
+                    "membershipType" => $row['membership_type'],
+                    "date_sent" => Utils::format_datetime_for_json(Utils::parse_datetime_from_mysql($row['date_sent']))
+                ];
+            }, $rows)
+        ]);
+    });
+
+    $r->addRoute('GET', 'api/signups/{id:\d+}', function($para, $values) use ($db, $user, $file_storage) {
+        if(!$user || !$user['role_member_administrator']) {
+            http_response_code(401);
+            return new JSON([
+                "success" => false,
+                "reason" => "UNAUTHORIZED"
+            ]);
+        }
+
+        $id = $para['id'];
+
+        $row = $db->querySingle("
+            SELECT `name`, `email`, `membership_type`, `date_sent`
+            FROM `signups`
+            WHERE id = :id
+        ", [
+            ':id' => intval($id)
+        ]);
+
+        if(!$row) {
+            return new JSON([
+                'success' => false,
+                'reason' => 'SIGNUP_NOT_FOUND'
+            ]);
+        }
+
+        return new JSON([
+            'success' => true,
+            'signup' => [
+                "name" => $row['name'],
+                "email" => $row['email'],
+                "membershipType" => $row['membership_type'],
+                "date_sent" => Utils::format_datetime_for_json(Utils::parse_datetime_from_mysql($row['date_sent']))
+            ]
+        ]);
+    });
+
+    $r->addRoute('GET', 'api/signups/{id:\d+}/form', function($para, $values) use ($db, $user, $file_storage) {
+        if(!$user || !$user['role_member_administrator']) {
+            http_response_code(401);
+            return new JSON([
+                "success" => false,
+                "reason" => "UNAUTHORIZED"
+            ]);
+        }
+
+        $id = $para['id'];
+
+        $row = $db->querySingle("
+            SELECT `name`, `pdf_uuid`
+            FROM `signups`
+            WHERE id = :id
+        ", [
+            ':id' => intval($id)
+        ]);
+
+        if(!$row) {
+            return new JSON([
+                'success' => false,
+                'reason' => 'SIGNUP_NOT_FOUND'
+            ]);
+        }
+
+        $pdf_uuid = $row['pdf_uuid'];
+        $path = $file_storage . DIRECTORY_SEPARATOR . $pdf_uuid . ".pdf";
+
+        $downloadName = null;
+        if(isset($_GET['download'])) {
+            $downloadName = 'Aanmelding ' . $row['name'] . ".pdf";
+        }
+
+        return new File($path, "application/pdf", $downloadName);
+    });
+
+    $r->addRoute('GET', 'api/signups/{id:\d+}/sheeplist', function($para, $values) use ($db, $user, $file_storage) {
+        if(!$user || !$user['role_member_administrator']) {
+            http_response_code(401);
+            return new JSON([
+                "success" => false,
+                "reason" => "UNAUTHORIZED"
+            ]);
+        }
+
+        $id = $para['id'];
+
+        $row = $db->querySingle("
+            SELECT `name`, `pdf_uuid`
+            FROM `signups`
+            WHERE id = :id
+        ", [
+            ':id' => intval($id)
+        ]);
+
+        if(!$row) {
+            return new JSON([
+                'success' => false,
+                'reason' => 'SIGNUP_NOT_FOUND'
+            ]);
+        }
+
+        $pdf_uuid = $row['pdf_uuid'];
+        $path = $file_storage . DIRECTORY_SEPARATOR . $pdf_uuid . ".csv";
+
+        $downloadName = null;
+        if(isset($_GET['download'])) {
+            $downloadName = 'Stallijst ' . $row['name'] . ".csv";
+        }
+
+        return new File($path, "text/csv", $downloadName);
     });
 }

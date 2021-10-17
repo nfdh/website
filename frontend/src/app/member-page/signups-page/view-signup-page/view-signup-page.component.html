@@ -1,0 +1,11 @@
+<h2 class="title">Inschrijving</h2>
+<div class="embed-container" #embedContainer>
+
+</div>
+<div class="sheeplist-link" *ngIf="hasSheepList">
+    <button mat-button (click)="downloadSheepList()" color="primary">Download stallijst</button>
+</div>
+<app-form-actions>
+    <!--<button mat-raised-button color="primary" type="submit" [disabled]="loading">Correctie versturen</button>-->
+    <button mat-raised-button color="primary" (click)="onCancelClick()">Sluiten</button>
+</app-form-actions>
