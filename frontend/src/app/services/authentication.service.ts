@@ -4,6 +4,10 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export interface User {
   email: string,
   name: string,
+  studbook_heideschaap: boolean,
+  studbook_heideschaap_ko: boolean,
+  studbook_schoonebeeker: boolean,
+  studbook_schoonebeeker_ko: boolean,
   role_website_contributor: boolean,
   role_member_administrator: boolean,
   role_studbook_administrator: boolean,
