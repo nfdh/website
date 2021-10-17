@@ -29,6 +29,9 @@ import { VerzondenPageComponent as WachtwoordVergetenVerzondenPageComponent } fr
 import { OpnieuwInstellenPageComponent as WachtwoordVergetenOpnieuwInstellenPageComponent } from './wachtwoord-vergeten-page/opnieuw-instellen-page/opnieuw-instellen-page.component';
 import { PrijslijstPageComponent } from './lid-worden-page/prijslijst-page/prijslijst-page.component';
 import { InschrijvenPageComponent } from './lid-worden-page/inschrijven-page/inschrijven-page.component';
+import { SignupsPageComponent as MemberSignupsPageComponent } from './member-page/signups-page/signups-page.component';
+import { ViewSignupPageComponent as MemberViewSignupPageComponent } from './member-page/signups-page/view-signup-page/view-signup-page.component';
+import { VerzondenPageComponent as InschrijvenVerzondenPageComponent } from './lid-worden-page/inschrijven-page/verzonden-page/verzonden-page.component';
 
 const routes: Routes = [
   { path: "", component: HomePageComponent },
@@ -47,6 +50,7 @@ const routes: Routes = [
   { path: "lid-worden", component: LidWordenPageComponent },
   { path: "lid-worden/prijslijst", component: PrijslijstPageComponent },
   { path: "lid-worden/inschrijven", component: InschrijvenPageComponent },
+  { path: "lid-worden/inschrijven/verzonden", component: InschrijvenVerzondenPageComponent },
   { path: "login", component: LoginPageComponent },
   { path: "wachtwoord-vergeten/verzonden", component: WachtwoordVergetenVerzondenPageComponent },
   { path: "wachtwoord-vergeten/opnieuw-instellen", component: WachtwoordVergetenOpnieuwInstellenPageComponent },
@@ -60,6 +64,8 @@ const routes: Routes = [
       { path: "formulier-huiskeuring", component: MemberHuiskeuringenPageComponent },
       { path: "formulier-huiskeuring/toevoegen", component: MemberAddHuiskeuringPageComponent },
       { path: "formulier-huiskeuring/:id", component: MemberViewHuiskeuringPageComponent },
+      { path: "inschrijvingen", component: MemberSignupsPageComponent },
+      { path: "inschrijvingen/:id", component: MemberViewSignupPageComponent },
       { path: "gebruikers", component: MemberUsersPageComponent },
       { path: "gebruikers/toevoegen", component: MemberAddUserPageComponent },
       { path: "gebruikers/:id", component: MemberEditUserPageComponent },

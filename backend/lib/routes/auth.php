@@ -15,6 +15,7 @@ function register_auth_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $u
 			"name" => $user['name'],
             "email" => $user['email'],
 			"role_website_contributor" => $user['role_website_contributor'],
+            "role_member_administrator" => $user['role_member_administrator'],
 			"role_studbook_administrator" => $user['role_studbook_administrator'],
 			"role_studbook_inspector" => $user['role_studbook_inspector']
         ]);
@@ -171,6 +172,7 @@ function register_auth_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $u
 			"name" => $user['name'],
             "email" => $user['email'],
 			"role_website_contributor" => $user['role_website_contributor'],
+            "role_member_administrator" => $user['role_member_administrator'],
 			"role_studbook_administrator" => $user['role_studbook_administrator'],
 			"role_studbook_inspector" => $user['role_studbook_inspector']
         ]);

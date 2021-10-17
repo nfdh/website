@@ -6,6 +6,9 @@
         <app-vertical-menu-item routerLink="formulier-dekverklaring">Dekverklaring</app-vertical-menu-item>
         <app-vertical-menu-item routerLink="formulier-huiskeuring">Inschrijven huiskeuring</app-vertical-menu-item>
     </app-vertical-menu-group>
+    <app-vertical-menu-group title="Ledenadministratie" *ngIf="isMemberAdministrator$ | async">
+        <app-vertical-menu-item routerLink="inschrijvingen">Inschrijvingen</app-vertical-menu-item>
+    </app-vertical-menu-group>
     <app-vertical-menu-group title="Website beheer" *ngIf="isWebsiteContributor$ | async">
         <app-vertical-menu-item routerLink="gebruikers">Gebruikers</app-vertical-menu-item>
     </app-vertical-menu-group>

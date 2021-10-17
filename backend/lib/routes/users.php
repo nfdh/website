@@ -94,7 +94,7 @@ function register_users_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $
         $user = $db->querySingle("
             SELECT 
                 `email`, `name`, `studbook_heideschaap`, `studbook_heideschaap_ko`, `studbook_schoonebeeker`, `studbook_schoonebeeker_ko`, 
-                `role_website_contributor`, `role_studbook_administrator`, `role_studbook_inspector`
+                `role_website_contributor`, `role_member_administrator`, `role_studbook_administrator`, `role_studbook_inspector`
             FROM `users`
             WHERE id = :id
         ", [
@@ -118,6 +118,7 @@ function register_users_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $
                 'studbook_schoonebeeker' => $user['studbook_schoonebeeker'],
                 'studbook_schoonebeeker_ko' => $user['studbook_schoonebeeker_ko'], 
                 'role_website_contributor' => $user['role_website_contributor'],
+                'role_member_administrator' => $user['role_member_administrator'],
                 'role_studbook_administrator' => $user['role_studbook_administrator'], 
                 'role_studbook_inspector' => $user['role_studbook_inspector']
             ]
@@ -181,11 +182,11 @@ function register_users_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $
             $db->execute("
                 INSERT INTO `users` (
                     `email`, `name`, `studbook_heideschaap`, `studbook_heideschaap_ko`, `studbook_schoonebeeker`, `studbook_schoonebeeker_ko`, 
-                    `role_website_contributor`, `role_studbook_administrator`, `role_studbook_inspector`
+                    `role_website_contributor`, `role_member_administrator`, `role_studbook_administrator`, `role_studbook_inspector`
                 )
                 VALUES (
                     :email, :name, :studbook_heideschaap, :studbook_heideschaap_ko, :studbook_schoonebeeker, :studbook_schoonebeeker_ko,
-                    :role_website_contributor, :role_studbook_administrator, :role_studbook_inspector
+                    :role_website_contributor, :role_member_administrator, :role_studbook_administrator, :role_studbook_inspector
                 )
             ", [
                 ':email' => $values['email'],
@@ -195,6 +196,7 @@ function register_users_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $
                 ':studbook_schoonebeeker' => $values['studbook_schoonebeeker'],
                 ':studbook_schoonebeeker_ko' => $values['studbook_schoonebeeker_ko'],
                 ':role_website_contributor' => $values['role_website_contributor'],
+                ':role_member_administrator' => $values['role_member_administrator'],
                 ':role_studbook_administrator' => $values['role_studbook_administrator'],
                 ':role_studbook_inspector' => $values['role_studbook_inspector']
             ]);
@@ -241,6 +243,7 @@ function register_users_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $
                     `studbook_schoonebeeker` = :studbook_schoonebeeker, 
                     `studbook_schoonebeeker_ko` = :studbook_schoonebeeker_ko, 
                     `role_website_contributor` = :role_website_contributor, 
+                    `role_member_administrator` = :role_member_administrator,
                     `role_studbook_administrator` = :role_studbook_administrator, 
                     `role_studbook_inspector` = :role_studbook_inspector
                 WHERE
@@ -254,6 +257,7 @@ function register_users_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $
                 ':studbook_schoonebeeker' => $values['studbook_schoonebeeker'],
                 ':studbook_schoonebeeker_ko' => $values['studbook_schoonebeeker_ko'],
                 ':role_website_contributor' => $values['role_website_contributor'],
+                ':role_member_administrator' => $values['role_member_administrator'],
                 ':role_studbook_administrator' => $values['role_studbook_administrator'],
                 ':role_studbook_inspector' => $values['role_studbook_inspector']
             ]);
