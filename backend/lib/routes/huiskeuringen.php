@@ -1,10 +1,11 @@
 <?php
 
 use Lib\Utils;
+use Lib\Uuid;
 use Lib\Results\JSON;
 use Lib\Results\File;
 
-function register_huiskeuringen_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $user, \Lib\MailerFactory $mailer_factory, string $file_storage) {
+function register_huiskeuringen_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $user, \Lib\MailerFactory $mailer_factory, string $file_storage, $mail_targets) {
     $r->addRoute('GET', 'api/huiskeuringen', function($_, $values) use ($db, $user) {
         if(!$user) {
             http_response_code(401);
@@ -104,7 +105,7 @@ function register_huiskeuringen_routes(FastRoute\RouteCollector $r, \Lib\Databas
         return new File($path, "application/pdf", $downloadName);
     });
 
-    $r->addRoute('POST', 'api/huiskeuringen', function($_, $values) use ($db, $user, $file_storage) {
+    $r->addRoute('POST', 'api/huiskeuringen', function($_, $values) use ($db, $user, $mailer_factory, $file_storage, $mail_targets) {
         if(!$user) {
             http_response_code(401);
             return new JSON([
@@ -223,12 +224,30 @@ function register_huiskeuringen_routes(FastRoute\RouteCollector $r, \Lib\Databas
         $pdf->Write($lh, "Opmerking");
         $pdf->SetFont('Arial','',12);
         $pdf->Ln($lh);
-        $pdf->Write($lh, $opmerking);
+        $pdf->Write($lh, $values['remarks']);
 
         $uuid = Uuid::generate();
         $pdf_path = $file_storage . DIRECTORY_SEPARATOR . $uuid . ".pdf";
         $pdf->Output('F', $pdf_path);
 
+        // Send mail to stamboekadministratie
+        $fokker_escaped = htmlspecialchars($user['name']);
+        $body = "<p>Hallo,</p>";
+        $body .= "<p>Fokker $fokker_escaped heeft zich aangemeld voor een huiskeuring via de website <a href=\"https://drentsheideschaap.nl\">https://drentsheideschaap.nl</a>.<br/>De aanmelding is als bijlage toegevoegd aan deze e-mail.</p>";
+        $body .= "<p>Dit is een geautomatiseerd e-mail bericht, antwoorden op deze mail worden niet gelezen.</p>";
+        $body .= "<p>Met vriendelijke groeten,<br/>Nederlandse Fokkersvereniging Het Drentse Heideschaap";
+
+        $mailer = $mailer_factory->create();
+        $mailer->Subject   = 'Aanmelding huiskeuring ' . $values['name'];
+        $mailer->Body      = $body;
+        $mailer->IsHTML(true);
+        $mailer->AddAddress($mail_targets['studbook_administration']);
+
+        $safe_fullName = preg_replace("/[^a-zA-Z0-9_]/i", " ", $values['name']);
+        $mailer->AddAttachment($pdf_path, "Aanmelding $safe_fullName.pdf");
+        $mailer->Send();
+
+        // Store in huiskeuringen table
         $date_sent = Utils::now_utc();  
 
         $json = json_encode([
@@ -263,6 +282,21 @@ function register_huiskeuringen_routes(FastRoute\RouteCollector $r, \Lib\Databas
             ':pdf_uuid' => $uuid,
             ':json' => $json
         ]);
+
+        // Send mail to user themselves
+        $body = "<p>Hallo,</p>";
+        $body .= "<p>U heeft zich aangemeld voor een huiskeuring via de website <a href=\"https://drentsheideschaap.nl\">https://drentsheideschaap.nl</a>.<br/>De aanmelding is als bijlage toegevoegd aan deze e-mail.</p>";
+        $body .= "<p>Met vriendelijke groeten,<br/>Nederlandse Fokkersvereniging Het Drentse Heideschaap";
+
+        $mailer = $mailer_factory->create();
+        $mailer->Subject   = 'Aanmelding verstuurd';
+        $mailer->Body      = $body;
+        $mailer->IsHTML(true);
+        $mailer->AddAddress($user['email']);
+        $mailer->AddReplyTo($mail_targets['studbook_administration'], "Stamboekadministratie");
+
+        $mailer->AddAttachment($pdf_path, "Aanmelding $safe_fullName.pdf");
+        $mailer->Send();
 
         return new JSON([
             "success" => true,
