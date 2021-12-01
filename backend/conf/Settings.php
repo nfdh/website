@@ -25,7 +25,9 @@ else {
             'url' => 'https://nieuw.drentsheideschaap.nl',
             'file_storage' => '/data/sites/web/drentsheideschaapnl/files',
             'mail_targets' => [
-                'signup' => 'jan_007@hotmail.com'
+                // Use temporary e-mails
+                'member_administration' => 'jan_007@hotmail.com',
+                'studbook_administration' => 'jan_007@hotmail.com'
             ]
         ];
 

@@ -5,7 +5,7 @@ use Lib\Uuid;
 use Lib\Results\JSON;
 use Lib\Results\File;
 
-function register_dekverklaringen_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $user, \Lib\MailerFactory $mailer_factory, string $file_storage) {
+function register_dekverklaringen_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $user, \Lib\MailerFactory $mailer_factory, string $file_storage, $mail_targets) {
     $r->addRoute('GET', 'api/dekverklaringen', function($para, $values) use ($db, $user) {
         if(!$user) {
             http_response_code(401);
@@ -64,7 +64,7 @@ function register_dekverklaringen_routes(FastRoute\RouteCollector $r, \Lib\Datab
         ]);
     });
 
-    $r->addRoute('POST', 'api/dekverklaringen', function($_, $values) use ($db, $user, $file_storage) {
+    $r->addRoute('POST', 'api/dekverklaringen', function($_, $values) use ($db, $user, $mailer_factory, $file_storage, $mail_targets) {
         if(!$user) {
             http_response_code(401);
             return new JSON([
@@ -176,14 +176,28 @@ function register_dekverklaringen_routes(FastRoute\RouteCollector $r, \Lib\Datab
 
         $pdf->Output('F', $pdf_path);
             
-        $json = json_encode([
+        // Send mail to stamboekadministratie
+        $fokker_escaped = htmlspecialchars($user['name']);
+        $body = "<p>Hallo,</p>";
+        $body .= "<p>Fokker $fokker_escaped heeft een dekverklaring ingedient via de website <a href=\"https://drentsheideschaap.nl\">https://drentsheideschaap.nl</a>.<br/>De dekverklaring is als bijlage toegevoegd aan deze e-mail.</p>";
+        $body .= "<p>Dit is een geautomatiseerd e-mail bericht, antwoorden op deze mail worden niet gelezen.</p>";
+        $body .= "<p>Met vriendelijke groeten,<br/>Nederlandse Fokkersvereniging Het Drentse Heideschaap";
+
+        $mailer = $mailer_factory->create();
+        $mailer->Subject   = 'Dekverklaring ' . $values['name'];
+        $mailer->Body      = $body;
+        $mailer->IsHTML(true);
+        $mailer->AddAddress($mail_targets['studbook_administration']);
+
+        $safe_fullName = preg_replace("/[^a-zA-Z0-9_]/i", " ", $values['name']);
+        $mailer->AddAttachment($pdf_path, "Dekverklaring $safe_fullName.pdf");
+        $mailer->Send();
+
+        // Add to dekverklaring table
+        $json_obj = [
             'season' => $values['season'],
             'studbook' => $values['studbook'],
             'name' => $values['name'],
-            'kovo' => $values['kovo'],
-            'koe' => $values['koe'],
-            'kool' => $values['kool'],
-            'korl' => $values['korl'],
             'dekgroepen' => array_map(function($dekgroep) {
                 return [
                     ':ewe_count' => $dekgroep['ewe_count'],
@@ -191,7 +205,18 @@ function register_dekverklaringen_routes(FastRoute\RouteCollector $r, \Lib\Datab
                 ];
             }, $values['dekgroepen']),
             'remarks' => $values['remarks']
-        ]);
+        ];
+
+        if($has_ko) {
+            $json_obj = array_merge($json_obj, [
+                'kovo' => $values['kovo'],
+                'koe' => $values['koe'],
+                'kool' => $values['kool'],
+                'korl' => $values['korl']
+            ]);
+        }
+
+        $json = json_encode($json_obj);
 
         $date_sent = Utils::now_utc();
         $db->execute('
@@ -205,6 +230,21 @@ function register_dekverklaringen_routes(FastRoute\RouteCollector $r, \Lib\Datab
             ':pdf_uuid' => $uuid,
             ':json' => $json
         ]);
+
+        // Send mail to user themselves
+        $body = "<p>Hallo,</p>";
+        $body .= "<p>U heeft een dekverklaring ingedient via de website <a href=\"https://drentsheideschaap.nl\">https://drentsheideschaap.nl</a>.<br/>De dekverklaring is als bijlage toegevoegd aan deze e-mail.</p>";
+        $body .= "<p>Met vriendelijke groeten,<br/>Nederlandse Fokkersvereniging Het Drentse Heideschaap";
+
+        $mailer = $mailer_factory->create();
+        $mailer->Subject   = 'Dekverklaring verstuurd';
+        $mailer->Body      = $body;
+        $mailer->IsHTML(true);
+        $mailer->AddAddress($user['email']);
+        $mailer->AddReplyTo($mail_targets['studbook_administration'], "Stamboekadministratie");
+
+        $mailer->AddAttachment($pdf_path, "Dekverklaring $safe_fullName.pdf");
+        $mailer->Send();
 
         return new JSON([
             'success' => true,

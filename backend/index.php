@@ -27,8 +27,8 @@ $mail_targets = $conf['mail_targets'];
 $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) use ($db, $user, $mailer_factory, $url, $file_storage, $mail_targets) {
     register_auth_routes($r, $db, $user, $mailer_factory, $url);
     register_users_routes($r, $db, $user);
-    register_dekverklaringen_routes($r, $db, $user, $mailer_factory, $file_storage);
-    register_huiskeuringen_routes($r, $db, $user, $mailer_factory, $file_storage);
+    register_dekverklaringen_routes($r, $db, $user, $mailer_factory, $file_storage, $mail_targets);
+    register_huiskeuringen_routes($r, $db, $user, $mailer_factory, $file_storage, $mail_targets);
     register_signup_routes($r, $db, $user, $mailer_factory, $file_storage, $mail_targets);
 });
 

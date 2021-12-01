@@ -196,14 +196,14 @@ function register_signup_routes(FastRoute\RouteCollector $r, \Lib\Database $db, 
         $escaped_name = htmlspecialchars($values['fullName']);
         $body = "<p>Beste ledenadministratie,</p>";
         $body .= "<p>$escaped_name heeft een aanmelding verstuurd via de website. Detailgegevens zijn als bijlage toegevoegd aan deze e-mail.</p>";
+        $body .= "<p>Dit is een geautomatiseerd e-mail bericht, antwoorden op deze mail worden niet gelezen.</p>";
         $body .= "<p>Met vriendelijke groeten,<br/>Nederlandse Fokkersvereniging Het Drentse Heideschaap</p>";
 
         $mailer = $mailer_factory->create();
         $mailer->Subject   = 'Aanmelding ' . $values['fullName'];
         $mailer->Body      = $body;
         $mailer->IsHTML(true);
-        $mailer->AddAddress($values['email']);
-        $mailer->AddReplyTo($mail_targets['signup'], "Ledenadministratie");
+        $mailer->AddAddress($mail_targets['signup']);
 
         $safe_fullName = preg_replace("/[^a-zA-Z0-9_]/i", " ", $values['fullName']);
         $mailer->AddAttachment($pdf_path, "Aanmelding $safe_fullName.pdf");
@@ -232,7 +232,7 @@ function register_signup_routes(FastRoute\RouteCollector $r, \Lib\Database $db, 
             ':json' => $json
         ]);
 
-        // Send mail to user itself
+        // Send mail to user themselves
         $escaped_name = htmlspecialchars($values['firstName']);
         $body = "<p>Hallo $escaped_name,</p>";
         $body .= "<p>Wij hebben uw aanmelding ontvangen. Deze is ter referentie ook als bijlage toegevoegd aan deze e-mail.</p>";
@@ -244,7 +244,7 @@ function register_signup_routes(FastRoute\RouteCollector $r, \Lib\Database $db, 
         $mailer->Body      = $body;
         $mailer->IsHTML(true);
         $mailer->AddAddress($values['email']);
-        $mailer->AddReplyTo($mail_targets['signup'], "Ledenadministratie");
+        $mailer->AddReplyTo($mail_targets['member_administration'], "Ledenadministratie");
 
         $mailer->AddAttachment($pdf_path, "Aanmelding $safe_fullName.pdf");
         if($csv_path) {
