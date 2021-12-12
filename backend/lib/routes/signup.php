@@ -14,6 +14,7 @@ function register_signup_routes(FastRoute\RouteCollector $r, \Lib\Database $db, 
                 case 1: return 'Basislidmaatschap';
                 case 2: return 'Stamboeklidmaatschap';
                 case 3: return 'Kudde';
+                case 4: return 'Gezinslidmaatschap';
             }
         }
 
@@ -118,15 +119,15 @@ function register_signup_routes(FastRoute\RouteCollector $r, \Lib\Database $db, 
 
             $jsonObj['amount'] = $values['amount'];
         }
-        else if($membershipType == 1) {
+        else if($membershipType == 4) {
             $pdf->Ln($lh);
-            $pdf->Cell($cl, $lh, "Familielid:");
-            $pdf->Write($lh, $values['familyMembership'] == true ? "Ja" : "Nee");
+            $pdf->Cell($cl, $lh, "In hetzelfde gezin als:");
+            $pdf->Write($lh, $values['familyMember']);
 
-            $jsonObj['familyMembership'] = $values['familyMembership'];
+            $jsonObj['familyMember'] = $values['familyMember'];
         }
 
-        if($membershipType >= 2) {
+        if($membershipType >= 2 && $membershipType < 4) {
             $pdf->Ln($lh);
             $pdf->Cell($cl, $lh, "UBN nummer:");
             $pdf->Write($lh, $values['ubn']);

@@ -50,6 +50,7 @@
             <mat-label>Soort *</mat-label>
             <mat-select formControlName="membershipType">
                 <mat-option [value]="0">Donateur</mat-option>
+                <mat-option [value]="4">Gezinslidmaatschap</mat-option>
                 <mat-option [value]="1">Basislidmaatschap</mat-option>
                 <mat-option [value]="2">Stamboeklidmaatschap</mat-option>
                 <mat-option [value]="3">Kudde (min. 100 ooien)</mat-option>
@@ -66,11 +67,15 @@
             </mat-form-field>
         </ng-container>
 
-        <ng-container *ngIf="formGroup.get('membershipType')!.value === 1">
-            <mat-checkbox formControlName="familyMembership" class="familyMembership" color="primary">Gezinslid. U krijgt korting als een familielid al stamboekfokker is.</mat-checkbox>
+        <ng-container *ngIf="formGroup.get('membershipType')!.value === 4">
+            <mat-form-field appearance="fill">
+                <mat-label>Gezinslid *</mat-label>
+                <input matInput formControlName="familyMember" />
+                <mat-error *ngIf="formGroup.get('familyMember')!.hasError('required')">Verplicht</mat-error>
+            </mat-form-field>
         </ng-container>
 
-        <ng-container *ngIf="formGroup.get('membershipType')!.value >= 2">
+        <ng-container *ngIf="formGroup.get('membershipType')!.value >= 2 && formGroup.get('membershipType')!.value &lt; 4">
             <mat-form-field appearance="fill">
                 <mat-label>UBN nummer *</mat-label>
                 <input matInput formControlName="ubn" />
@@ -98,7 +103,7 @@
 
         <mat-checkbox formControlName="acceptPrivacyStatement" color="primary">	Ik ga akkoord met het privacybeleid en bevestig dat mijn persoonlijke gegevens in overeenstemming met de wet mogen worden gebruikt. *</mat-checkbox>
 
-        <ng-container *ngIf="formGroup.get('membershipType')!.value >= 2">
+        <ng-container *ngIf="formGroup.get('membershipType')!.value >= 2 && formGroup.get('membershipType')!.value &lt; 4">
             <app-message type="info" class="rvo-machtiging-message">Een RVO machtiging voor "Aanvragen informatieproducten" en "Meldingen" is verplicht voor stamboeklidmaatschap.<br/>Instructies zullen na aanmelding per e-mail naar u verstuurd worden.</app-message>
         </ng-container>
     </app-form-section>

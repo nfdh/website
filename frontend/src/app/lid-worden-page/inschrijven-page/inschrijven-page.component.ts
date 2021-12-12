@@ -43,7 +43,9 @@ export class InschrijvenPageComponent implements OnInit {
       Validators.required
     ]),
 
-    familyMembership: new FormControl(false),
+    familyMember: new FormControl('', [
+      Validators.required
+    ]),
 
     amount: new FormControl(25.00, [
       Validators.required,
@@ -78,6 +80,7 @@ export class InschrijvenPageComponent implements OnInit {
         // Donateur
         case 0:
           this.formGroup.get('amount')!.enable();
+          this.formGroup.get('familyMember')!.disable();
           this.formGroup.get('ubn')!.disable();
           this.formGroup.get('zwoegerVrij')!.disable();
           this.formGroup.get('herdDscription')!.disable();
@@ -87,6 +90,7 @@ export class InschrijvenPageComponent implements OnInit {
         // Basislidmaatschap
         case 1:
           this.formGroup.get('amount')!.disable();
+          this.formGroup.get('familyMember')!.disable();
           this.formGroup.get('ubn')!.disable();
           this.formGroup.get('zwoegerVrij')!.disable();
           this.formGroup.get('herdDscription')!.disable();
@@ -96,6 +100,7 @@ export class InschrijvenPageComponent implements OnInit {
         // Stamboeklidmaatschap
         case 2:
           this.formGroup.get('amount')!.disable();
+          this.formGroup.get('familyMember')!.disable();
           this.formGroup.get('ubn')!.enable();
           this.formGroup.get('zwoegerVrij')!.disable();
           this.formGroup.get('herdDscription')!.disable();
@@ -105,14 +110,26 @@ export class InschrijvenPageComponent implements OnInit {
         // Kudde
         case 3:
           this.formGroup.get('amount')!.disable();
+          this.formGroup.get('familyMember')!.disable();
           this.formGroup.get('ubn')!.enable();
           this.formGroup.get('zwoegerVrij')!.enable();
           this.formGroup.get('herdDscription')!.enable();
           this.formGroup.get('sheep')!.disable();
           break;
+
+        // Gezinslidmaatschap
+        case 4:
+          this.formGroup.get('amount')!.disable();
+          this.formGroup.get('familyMember')!.enable();
+          this.formGroup.get('ubn')!.disable();
+          this.formGroup.get('zwoegerVrij')!.disable();
+          this.formGroup.get('herdDscription')!.disable();
+          this.formGroup.get('sheep')!.disable();
+          break;
       }
 
       this.formGroup.get('amount')!.updateValueAndValidity();
+      this.formGroup.get('familyMember')!.updateValueAndValidity();
       this.formGroup.get('ubn')!.updateValueAndValidity();
       this.formGroup.get('zwoegerVrij')!.updateValueAndValidity();
       this.formGroup.get('herdDscription')!.updateValueAndValidity();
@@ -127,6 +144,7 @@ export class InschrijvenPageComponent implements OnInit {
         case 'basislidmaatschap': typeValue = 1; break;
         case 'stamboeklidmaatschap': typeValue = 2; break;
         case 'kudde': typeValue = 3; break;
+        case 'gezinslidmaatschap': typeValue = 4; break;
         default: return;
       }
       this.formGroup.controls.membershipType.setValue(typeValue);

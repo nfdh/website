@@ -82,6 +82,7 @@ export class SignupsPageComponent implements OnInit {
       case 1: return 'Basislidmaatschap';
       case 2: return 'Stamboeklidmaatschap';
       case 3: return 'Kudde';
+      case 4: return 'Gezinslidmaatschap';
       default: throw new Error('Unexpected membership type');
     }
   }
