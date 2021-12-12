@@ -1,6 +1,7 @@
 <?php
 
 use Lib\Utils;
+use Lib\Uuid;
 use Lib\Auth;
 use Lib\Results\JSON;
 
@@ -11,18 +12,7 @@ function register_auth_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $u
             return new JSON(false);
         }
 
-        return new JSON([
-			"name" => $user['name'],
-            "email" => $user['email'],
-            "studbook_heideschaap" => $user['studbook_heideschaap'],
-            "studbook_heideschaap_ko" => $user['studbook_heideschaap_ko'],
-            "studbook_schoonebeeker" => $user['studbook_schoonebeeker'],
-            "studbook_schoonebeeker_ko" => $user['studbook_schoonebeeker_ko'],
-			"role_website_contributor" => $user['role_website_contributor'],
-            "role_member_administrator" => $user['role_member_administrator'],
-			"role_studbook_administrator" => $user['role_studbook_administrator'],
-			"role_studbook_inspector" => $user['role_studbook_inspector']
-        ]);
+        return user_to_json($user);
     });
 
     $r->addRoute('POST', 'api/logout', function($_, $values) use ($user) {
@@ -182,13 +172,21 @@ function register_auth_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $u
         $mailer->AddAddress($user['email']);
         $mailer->Send();
 
-        return new JSON([
-			"name" => $user['name'],
-            "email" => $user['email'],
-			"role_website_contributor" => $user['role_website_contributor'],
-            "role_member_administrator" => $user['role_member_administrator'],
-			"role_studbook_administrator" => $user['role_studbook_administrator'],
-			"role_studbook_inspector" => $user['role_studbook_inspector']
-        ]);
+        return user_to_json($user);
     });
+}
+
+function user_to_json($user) {
+    return new JSON([
+        "name" => $user['name'],
+        "email" => $user['email'],
+        "studbook_heideschaap" => $user['studbook_heideschaap'],
+        "studbook_heideschaap_ko" => $user['studbook_heideschaap_ko'],
+        "studbook_schoonebeeker" => $user['studbook_schoonebeeker'],
+        "studbook_schoonebeeker_ko" => $user['studbook_schoonebeeker_ko'],
+        "role_website_contributor" => $user['role_website_contributor'],
+        "role_member_administrator" => $user['role_member_administrator'],
+        "role_studbook_administrator" => $user['role_studbook_administrator'],
+        "role_studbook_inspector" => $user['role_studbook_inspector']
+    ]);
 }
