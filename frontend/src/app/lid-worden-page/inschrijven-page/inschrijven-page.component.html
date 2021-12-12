@@ -97,6 +97,10 @@
         </ng-container>
 
         <mat-checkbox formControlName="acceptPrivacyStatement" color="primary">	Ik ga akkoord met het privacybeleid en bevestig dat mijn persoonlijke gegevens in overeenstemming met de wet mogen worden gebruikt. *</mat-checkbox>
+
+        <ng-container *ngIf="formGroup.get('membershipType')!.value >= 2">
+            <app-message type="info" class="rvo-machtiging-message">Een RVO machtiging voor "Aanvragen informatieproducten" en "Meldingen" is verplicht voor stamboeklidmaatschap.<br/>Instructies zullen na aanmelding per e-mail naar u verstuurd worden.</app-message>
+        </ng-container>
     </app-form-section>
     <app-form-section title="Stamboek registratie" *ngIf="formGroup.get('membershipType')!.value === 2">
         <p class="sheep-table-text">Wanneer u kiest voor het stamboeklidmaatschap, bent u verplicht al uw Drenten en/of Schoonebeekers op te geven.</p>
