@@ -203,7 +203,7 @@ function register_signup_routes(FastRoute\RouteCollector $r, \Lib\Database $db, 
         $mailer->Subject   = 'Aanmelding ' . $values['fullName'];
         $mailer->Body      = $body;
         $mailer->IsHTML(true);
-        $mailer->AddAddress($mail_targets['signup']);
+        $mailer->AddAddress($mail_targets['member_administration']);
 
         $safe_fullName = preg_replace("/[^a-zA-Z0-9_]/i", " ", $values['fullName']);
         $mailer->AddAttachment($pdf_path, "Aanmelding $safe_fullName.pdf");
