@@ -21,11 +21,9 @@ export class HomePageComponent implements OnInit {
       new ImageItem({ src: "assets/slideshow/image7.jpg", thumb: "assets/slideshow/thumb.image7.jpg" }),
       new ImageItem({ src: "assets/slideshow/image8.jpg", thumb: "assets/slideshow/thumb.image8.jpg" }),
       new ImageItem({ src: "assets/slideshow/image9.jpg", thumb: "assets/slideshow/thumb.image9.jpg" }),
-      new ImageItem({ src: "assets/slideshow/image10.jpg", thumb: "assets/slideshow/thumb.image10.jpg" }),
       new ImageItem({ src: "assets/slideshow/image11.jpg", thumb: "assets/slideshow/thumb.image11.jpg" }),
       new ImageItem({ src: "assets/slideshow/image12.jpg", thumb: "assets/slideshow/thumb.image12.jpg" }),
       new ImageItem({ src: "assets/slideshow/image13.jpg", thumb: "assets/slideshow/thumb.image13.jpg" }),
-      new ImageItem({ src: "assets/slideshow/image14.jpg", thumb: "assets/slideshow/thumb.image14.jpg" })
     ];
 
     titleService.setTitle("Home");
