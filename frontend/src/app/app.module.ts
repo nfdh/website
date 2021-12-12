@@ -40,6 +40,7 @@ import { DisclaimerPageComponent } from './disclaimer-page/disclaimer-page.compo
 import { NotFoundPageComponent } from './not-found-page/not-found-page.component';
 import { LoginPageComponent } from './login-page/login-page.component';
 import { MemberPageComponent } from './member-page/member-page.component';
+import { HomePageComponent as MemberHomePageComponent } from "./member-page/home-page/home-page.component";
 import { UsersPageComponent } from './member-page/users-page/users-page.component';
 import { DeleteConfirmationDialogComponent } from './delete-confirmation-dialog/delete-confirmation-dialog.component';
 import { AddUserPageComponent } from './member-page/users-page/add-user-page/add-user-page.component';
@@ -87,6 +88,7 @@ import { VerzondenPageComponent as InschrijvenVerzondenPageComponent } from './l
     NotFoundPageComponent,
     LoginPageComponent,
     MemberPageComponent,
+    MemberHomePageComponent,
     UsersPageComponent,
     DeleteConfirmationDialogComponent,
     AddUserPageComponent,

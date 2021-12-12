@@ -1,1 +1,9 @@
-Hier komt uitleg over ledenportaal
+<h2 class="title">Nieuwsbrieven</h2>
+<app-toolbar>
+    <button mat-raised-button (click)="onPreviousClick()" color="primary" class="previous-button" *ngIf="canGoPrevious"><mat-icon>arrow_back</mat-icon> {{ previous }}</button>
+    <span class="current">{{ current }}</span>
+    <button mat-raised-button (click)="onNextClick()" color="primary" class="next-button" *ngIf="canGoNext"><mat-icon>arrow_forward</mat-icon> {{ next }}</button>
+</app-toolbar>
+<div class="embed-container" #embedContainer>
+
+</div>
