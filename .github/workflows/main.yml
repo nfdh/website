@@ -82,5 +82,5 @@ jobs:
       run: |
         echo "$DEPLOY_KEY" > /tmp/tmp_id_rsa
         chmod 600 /tmp/tmp_id_rsa
-        rsync --delete -r -e "ssh -o StrictHostKeyChecking=no -i /tmp/tmp_id_rsa" artifact/wwwroot/ $DEPLOY_USERNAME@$DEPLOY_HOST:/data/sites/web/drentsheideschaapnl/subsites/nieuw.drentsheideschaap.nl
+        rsync --delete -r -e "ssh -o StrictHostKeyChecking=no -i /tmp/tmp_id_rsa" artifact/wwwroot/ $DEPLOY_USERNAME@$DEPLOY_HOST:/data/sites/web/drentsheideschaapnl/www
         rm /tmp/tmp_id_rsa
