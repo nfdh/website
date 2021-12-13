@@ -16,19 +16,19 @@ else {
             ],
             'appInsights' => [
                 'instrumentationKey' => '46da6ab2-ce36-48bf-9a04-5759a5f23d45',
-                'location' => 'nieuw.drentsheideschaap.nl'
+                'location' => 'drentsheideschaap.nl'
             ],
             'mail' => [
                 'from_address' => 'noreply@drentsheideschaap.nl',
                 'from_name' => 'Nederlandse Fokkersvereniging Het Drentse Heideschaap'
             ],
-            'url' => 'https://nieuw.drentsheideschaap.nl',
+            'url' => 'https://drentsheideschaap.nl',
             'file_storage' => '/data/sites/web/drentsheideschaapnl/files',
             'mail_targets' => [
                 // Use temporary e-mails
-                'member_administration' => 'jan_007@hotmail.com',
-                'studbook_administration' => 'jan_007@hotmail.com',
-                'website_management' => 'jan_007@hotmail.com'
+                'member_administration' => 'penningmeester@nfdh.nl',
+                'studbook_administration' => 'stamboek@nfdh.nl',
+                'website_management' => 'website@nfdh.nl'
             ]
         ];
 
