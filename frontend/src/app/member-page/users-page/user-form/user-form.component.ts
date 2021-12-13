@@ -25,6 +25,7 @@ export function createFormGroup(): FormGroup {
     name: new FormControl('', [
       Validators.required
     ]),
+    reset_password_on_login: new FormControl(false),
 
     studbook_heideschaap: new FormControl(false),
     studbook_heideschaap_ko: new FormControl(false),

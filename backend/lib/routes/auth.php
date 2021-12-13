@@ -7,9 +7,11 @@ use Lib\Results\JSON;
 
 function register_auth_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $user, \Lib\MailerFactory $mailer_factory, string $url) {
     $r->addRoute('POST', 'api/login', function($_, $values) use ($db, $user) {
-        $user = Auth::login($db, $values['email'], $values['password']);
-        if(!$user) {
-            return new JSON(false);
+        $new_pw = isset($values['new_password']) ? $values['new_password'] : null;
+
+        $user = Auth::login($db, $values['email'], $values['password'], $new_pw);
+        if(!is_object($user)) {
+            return new JSON($user);
         }
 
         return user_to_json($user);
@@ -139,7 +141,9 @@ function register_auth_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $u
 
         $db->execute("
             UPDATE `users`
-            SET `password_hash` = :new_hash
+            SET 
+                `password_hash` = :new_hash,
+                `reset_password_on_login` = 0
             WHERE `id` = :user_id
         ", [
             ":user_id" => $row['user_id'],
@@ -179,6 +183,7 @@ function register_auth_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $u
 function user_to_json($user) {
     return new JSON([
         "name" => $user['name'],
+        "selection_name" => $user['selection_name'],
         "email" => $user['email'],
         "studbook_heideschaap" => $user['studbook_heideschaap'],
         "studbook_heideschaap_ko" => $user['studbook_heideschaap_ko'],
