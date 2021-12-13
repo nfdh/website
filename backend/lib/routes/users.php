@@ -181,7 +181,7 @@ function register_users_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $
         }
 
         $random_pw = Utils::generate_random_password(16);
-        $pw_hash = password_hash($random_pw, PASSWORD_DEFAULT);;
+        $pw_hash = password_hash($random_pw, PASSWORD_DEFAULT);
 
         $user_id = null;
 
