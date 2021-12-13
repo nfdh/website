@@ -228,7 +228,9 @@ function register_users_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $
         }
 
         // Send mail to user themselves
-        $body = "<p>Hallo,</p>";
+        $escaped_name = htmlspecialchars($values['name']);
+
+        $body = "<p>Hallo $escaped_name,</p>";
         $body .= "<p>Er is een account voor u aangemaakt op de website <a href=\"https://drentsheideschaap.nl\">https://drentsheideschaap.nl</a>, hiermee kunt u inloggen op het ledenportaal.<br/>
         Via het ledenportaal kunt u onder andere nieuwsbrieven lezen, dekverklaringen opvoeren en u aanmelden voor de jaarlijkse huiskeuring. </p>";
         $body .= "<p>E-mail: " . htmlspecialchars($values['email']) . "<br />
