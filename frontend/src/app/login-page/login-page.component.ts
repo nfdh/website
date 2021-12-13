@@ -4,6 +4,7 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { AuthenticationService, User } from '../services/authentication.service';
 import { Router } from '@angular/router';
 import { AppTitleService } from '../services/app-title.service';
+import { setLastInfo } from './new-password-page/new-password-page.component';
 
 @Component({
   selector: 'app-login-page',
@@ -27,12 +28,16 @@ export class LoginPageComponent {
     this.isBusy = true;
     this.errorMessage = null;
 
-    this.httpClient.post<User | boolean>("/api/login", this.loginForm.value)
+    this.httpClient.post<User | boolean | "reset_password_on_login">("/api/login", this.loginForm.value)
       .subscribe((result) => {
-        if(result) {
+        if(typeof result === "object") {
           this.authenticationService.notifyLogin(result as User);
 
           this.router.navigate([this.router.routerState.snapshot.root.queryParams.returnUrl || "/ledenportaal"]);
+        }
+        else if(result === "reset_password_on_login") {
+          setLastInfo(this.loginForm.controls.email.value, this.loginForm.controls.password.value);
+          this.router.navigate(["/login/nieuw-wachtwoord"]);
         }
         else {
           this.isBusy = false;

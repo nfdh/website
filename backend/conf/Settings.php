@@ -27,7 +27,8 @@ else {
             'mail_targets' => [
                 // Use temporary e-mails
                 'member_administration' => 'jan_007@hotmail.com',
-                'studbook_administration' => 'jan_007@hotmail.com'
+                'studbook_administration' => 'jan_007@hotmail.com',
+                'website_management' => 'jan_007@hotmail.com'
             ]
         ];
 

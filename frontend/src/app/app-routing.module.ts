@@ -32,6 +32,7 @@ import { InschrijvenPageComponent } from './lid-worden-page/inschrijven-page/ins
 import { SignupsPageComponent as MemberSignupsPageComponent } from './member-page/signups-page/signups-page.component';
 import { ViewSignupPageComponent as MemberViewSignupPageComponent } from './member-page/signups-page/view-signup-page/view-signup-page.component';
 import { VerzondenPageComponent as InschrijvenVerzondenPageComponent } from './lid-worden-page/inschrijven-page/verzonden-page/verzonden-page.component';
+import { NewPasswordPageComponent } from './login-page/new-password-page/new-password-page.component';
 
 const routes: Routes = [
   { path: "", component: HomePageComponent },
@@ -52,6 +53,7 @@ const routes: Routes = [
   { path: "lid-worden/inschrijven", component: InschrijvenPageComponent },
   { path: "lid-worden/inschrijven/verzonden", component: InschrijvenVerzondenPageComponent },
   { path: "login", component: LoginPageComponent },
+  { path: "login/nieuw-wachtwoord", component: NewPasswordPageComponent },
   { path: "wachtwoord-vergeten/verzonden", component: WachtwoordVergetenVerzondenPageComponent },
   { path: "wachtwoord-vergeten/opnieuw-instellen", component: WachtwoordVergetenOpnieuwInstellenPageComponent },
   { path: "wachtwoord-vergeten", component: WachtwoordVergetenPageComponent },

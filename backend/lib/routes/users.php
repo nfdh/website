@@ -1,8 +1,9 @@
 <?php
 
 use Lib\Results\JSON;
+use Lib\Utils;
 
-function register_users_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $user) {
+function register_users_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $user, \Lib\MailerFactory $mailer_factory, $mail_targets) {
     $r->addRoute('GET', 'api/users', function($_, $values) use ($db, $user) {
         if(!$user || !$user['role_website_contributor']) {
             http_response_code(401);
@@ -93,7 +94,7 @@ function register_users_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $
         // Count total number of users
         $user = $db->querySingle("
             SELECT 
-                `email`, `name`, `studbook_heideschaap`, `studbook_heideschaap_ko`, `studbook_schoonebeeker`, `studbook_schoonebeeker_ko`, 
+                `email`, `name`, `reset_password_on_login`, `studbook_heideschaap`, `studbook_heideschaap_ko`, `studbook_schoonebeeker`, `studbook_schoonebeeker_ko`, 
                 `role_website_contributor`, `role_member_administrator`, `role_studbook_administrator`, `role_studbook_inspector`
             FROM `users`
             WHERE id = :id
@@ -113,6 +114,7 @@ function register_users_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $
             'user' => [
                 'name' => $user['name'],
                 'email' => $user['email'],
+                'reset_password_on_login' => $user['reset_password_on_login'],
                 'studbook_heideschaap' => $user['studbook_heideschaap'], 
                 'studbook_heideschaap_ko' => $user['studbook_heideschaap_ko'], 
                 'studbook_schoonebeeker' => $user['studbook_schoonebeeker'],
@@ -169,7 +171,7 @@ function register_users_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $
         ]);
     });
 
-    $r->addRoute('POST', 'api/users', function($_, $values) use ($db, $user) {
+    $r->addRoute('POST', 'api/users', function($_, $values) use ($db, $user, $mailer_factory, $mail_targets) {
         if(!$user || !$user['role_website_contributor']) {
             http_response_code(401);
             return new JSON([
@@ -178,19 +180,27 @@ function register_users_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $
             ]);
         }
 
+        $random_pw = Utils::generate_random_password(16);
+        $pw_hash = password_hash($random_pw, PASSWORD_DEFAULT);;
+
+        $user_id = null;
+
         try {
             $db->execute("
                 INSERT INTO `users` (
-                    `email`, `name`, `studbook_heideschaap`, `studbook_heideschaap_ko`, `studbook_schoonebeeker`, `studbook_schoonebeeker_ko`, 
+                    `email`, `name`, `password_hash`, `reset_password_on_login`,
+                    `studbook_heideschaap`, `studbook_heideschaap_ko`, `studbook_schoonebeeker`, `studbook_schoonebeeker_ko`, 
                     `role_website_contributor`, `role_member_administrator`, `role_studbook_administrator`, `role_studbook_inspector`
                 )
                 VALUES (
-                    :email, :name, :studbook_heideschaap, :studbook_heideschaap_ko, :studbook_schoonebeeker, :studbook_schoonebeeker_ko,
+                    :email, :name, :password_hash, 1,
+                    :studbook_heideschaap, :studbook_heideschaap_ko, :studbook_schoonebeeker, :studbook_schoonebeeker_ko,
                     :role_website_contributor, :role_member_administrator, :role_studbook_administrator, :role_studbook_inspector
                 )
             ", [
                 ':email' => $values['email'],
                 ':name' => $values['name'],
+                ':password_hash' => $pw_hash,
                 ':studbook_heideschaap' => $values['studbook_heideschaap'],
                 ':studbook_heideschaap_ko' => $values['studbook_heideschaap_ko'],
                 ':studbook_schoonebeeker' => $values['studbook_schoonebeeker'],
@@ -201,10 +211,7 @@ function register_users_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $
                 ':role_studbook_inspector' => $values['role_studbook_inspector']
             ]);
 
-            return new JSON([
-                "success" => true,
-                "id" => $db->lastInsertId()
-            ]);
+            $user_id = $db->lastInsertId();
         }
         catch (\PDOException $e) {
             if ($e->errorInfo[1] == 1062) {
@@ -213,11 +220,34 @@ function register_users_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $
                     "reason" => "EMAIL_ALREADY_IN_USE"
                 ]);
             }
+
+            return new JSON([
+                "success" => false,
+                "reason" => "UNKNOWN"
+            ]);
         }
 
+        // Send mail to user themselves
+        $body = "<p>Hallo,</p>";
+        $body .= "<p>Er is een account voor u aangemaakt op de website <a href=\"https://drentsheideschaap.nl\">https://drentsheideschaap.nl</a>, hiermee kunt u inloggen op het ledenportaal.<br/>
+        Via het ledenportaal kunt u onder andere nieuwsbrieven lezen, dekverklaringen opvoeren en u aanmelden voor de jaarlijkse huiskeuring. </p>";
+        $body .= "<p>E-mail: " . htmlspecialchars($values['email']) . "<br />
+                    Wachtwoord: " . htmlspecialchars($random_pw) . "<br/>
+                    Wanneer u voor de eerste keer inlogt zal u zelf een nieuw wachtwoord moeten kiezen.</p>";
+        $body .= "<p>Voor vragen met betrekking tot de website kunt u contact opnemen met Jan Emmens door een mail te sturen naar <a href=\"mailto:website@nfdh.nl\">website@nfdh.nl</a>.</p>";
+        $body .= "<p>Met vriendelijke groeten,<br/>Nederlandse Fokkersvereniging Het Drentse Heideschaap";
+
+        $mailer = $mailer_factory->create();
+        $mailer->Subject   = 'Account aangemaakt';
+        $mailer->Body      = $body;
+        $mailer->IsHTML(true);
+        $mailer->AddAddress($values['email']);
+        $mailer->AddReplyTo($mail_targets['website_management'], "Website beheerder");
+        $mailer->Send();
+
         return new JSON([
-            "success" => false,
-            "reason" => "UNKNOWN"
+            "success" => true,
+            "id" => $user_id
         ]);
     });
 
@@ -238,6 +268,7 @@ function register_users_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $
                 SET
                     `email` = :email, 
                     `name` = :name,
+                    `reset_password_on_login` = :reset_password_on_login,
                     `studbook_heideschaap` = :studbook_heideschaap, 
                     `studbook_heideschaap_ko` = :studbook_heideschaap_ko, 
                     `studbook_schoonebeeker` = :studbook_schoonebeeker, 
@@ -252,6 +283,7 @@ function register_users_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $
                 ':id' => intval($id),
                 ':email' => $values['email'],
                 ':name' => $values['name'],
+                ':reset_password_on_login' => $values['reset_password_on_login'],
                 ':studbook_heideschaap' => $values['studbook_heideschaap'],
                 ':studbook_heideschaap_ko' => $values['studbook_heideschaap_ko'],
                 ':studbook_schoonebeeker' => $values['studbook_schoonebeeker'],
@@ -259,7 +291,7 @@ function register_users_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $
                 ':role_website_contributor' => $values['role_website_contributor'],
                 ':role_member_administrator' => $values['role_member_administrator'],
                 ':role_studbook_administrator' => $values['role_studbook_administrator'],
-                ':role_studbook_inspector' => $values['role_studbook_inspector']
+                ':role_studbook_inspector' => $values['role_studbook_inspector'],
             ]);
 
             return new JSON([

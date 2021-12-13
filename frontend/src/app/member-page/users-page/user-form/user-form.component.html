@@ -9,6 +9,7 @@
             <mat-error *ngIf="formGroup.get('email')!.hasError('email')">Vul een geldig e-mail adres in</mat-error>
         </mat-form-field>
         <p *ngIf="addNew">Wachtwoord zal automatisch worden aangemaakt en verstuurd naar het bovenstaande e-mail adres</p>
+        <mat-checkbox *ngIf="!addNew" formControlName="reset_password_on_login" color="primary">Gebruiker moet een nieuw wachtwoord instellen bij de volgende login</mat-checkbox>
     </app-form-section>
     <app-form-section title="Persoonsgegevens">
         <mat-form-field appearance="fill">

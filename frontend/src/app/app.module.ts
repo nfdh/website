@@ -79,6 +79,7 @@ import { IntlDateAdapterService } from './services/intl-date-adapter.service';
 import { SignupsPageComponent } from './member-page/signups-page/signups-page.component';
 import { ViewSignupPageComponent } from './member-page/signups-page/view-signup-page/view-signup-page.component';
 import { VerzondenPageComponent as InschrijvenVerzondenPageComponent } from './lid-worden-page/inschrijven-page/verzonden-page/verzonden-page.component';
+import { NewPasswordPageComponent } from './login-page/new-password-page/new-password-page.component';
 
 @NgModule({
   declarations: [
@@ -117,6 +118,7 @@ import { VerzondenPageComponent as InschrijvenVerzondenPageComponent } from './l
     InschrijvenVerzondenPageComponent,
     SignupsPageComponent,
     ViewSignupPageComponent,
+    NewPasswordPageComponent,
   ],
   imports: [
     BrowserModule,
