@@ -3,6 +3,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 
 export interface User {
   email: string,
+  selection_name: string,
   name: string,
   studbook_heideschaap: boolean,
   studbook_heideschaap_ko: boolean,

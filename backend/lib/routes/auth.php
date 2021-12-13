@@ -183,6 +183,7 @@ function register_auth_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $u
 function user_to_json($user) {
     return new JSON([
         "name" => $user['name'],
+        "selection_name" => $user['selection_name'],
         "email" => $user['email'],
         "studbook_heideschaap" => $user['studbook_heideschaap'],
         "studbook_heideschaap_ko" => $user['studbook_heideschaap_ko'],

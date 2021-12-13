@@ -52,7 +52,7 @@ export class AddDekverklaringPageComponent {
   ) {
     this.authenticationService.user$.subscribe(u => {
       if(u) {
-        this.formGroup.controls.name.setValue(u.name);
+        this.formGroup.controls.name.setValue(u.selection_name);
 
         if(u.studbook_heideschaap && !u.studbook_schoonebeeker) {
           this.formGroup.controls.studbook.setValue('0');

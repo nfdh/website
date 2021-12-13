@@ -67,12 +67,13 @@ class Auth {
     }
 
     static function get_select_list() {
-        return "`id`, `name`, `email`, `reset_password_on_login`, `studbook_heideschaap`, `studbook_heideschaap_ko`, `studbook_schoonebeeker`, `studbook_schoonebeeker_ko`, `role_website_contributor`, `role_member_administrator`, `role_studbook_administrator`, `role_studbook_inspector`";
+        return "`id`, `selection_name`, `name`, `email`, `reset_password_on_login`, `studbook_heideschaap`, `studbook_heideschaap_ko`, `studbook_schoonebeeker`, `studbook_schoonebeeker_ko`, `role_website_contributor`, `role_member_administrator`, `role_studbook_administrator`, `role_studbook_inspector`";
     }
 
     static function create_user_obj($row) {
         return [
             "id" => $row["id"],
+            "selection_name" => $row["selection_name"],
             "name" => $row['name'],
             "email" => $row['email'],
             "studbook_heideschaap" => boolval($row['studbook_heideschaap']),
