@@ -80,12 +80,17 @@
                 <a class="mobile-menu-link" routerLink="ledenportaal" routerLinkActive="active">Ledenportaal</a>
                 <div class="mobile-menu-sub">
                     <div class="mobile-menu-group">
-                        <a class="mobile-menu-link" routerLink="ledenportaal">Startpagina</a>
+                        <a class="mobile-menu-link" routerLink="ledenportaal">Nieuwsbrieven</a>
+                        <a class="mobile-menu-link" routerLink="ledenportaal/falcoo">Falcoo</a>
                     </div>
-                    <div class="mobile-menu-group">
+                    <div class="mobile-menu-group" *ngIf="isMemberOfStudbook$ | async">
                         <span>Formulieren</span>
                         <a class="mobile-menu-link" routerLink="ledenportaal/formulier-dekverklaring">Dekverklaring</a>
                         <a class="mobile-menu-link" routerLink="ledenportaal/formulier-huiskeuring">Inschrijven huiskeuring</a>
+                    </div>
+                    <div class="mobile-menu-group" *ngIf="isMemberAdministrator$ | async">
+                        <span>Ledenadministratie</span>
+                        <a class="mobile-menu-link" routerLink="ledenportaal/inschrijvingen">Inschrijvingen</a>
                     </div>
                     <div class="mobile-menu-group" *ngIf="isWebsiteContributor$ | async">
                         <span>Website beheer</span>

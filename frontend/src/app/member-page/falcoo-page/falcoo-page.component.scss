@@ -1,0 +1,12 @@
+.falcoo-buttons {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 5px;
+    max-width: 400px;
+}
+
+.falcoo-button {
+    flex-grow: 1;
+    flex-shrink: 1;
+}

@@ -80,6 +80,7 @@ import { SignupsPageComponent } from './member-page/signups-page/signups-page.co
 import { ViewSignupPageComponent } from './member-page/signups-page/view-signup-page/view-signup-page.component';
 import { VerzondenPageComponent as InschrijvenVerzondenPageComponent } from './lid-worden-page/inschrijven-page/verzonden-page/verzonden-page.component';
 import { NewPasswordPageComponent } from './login-page/new-password-page/new-password-page.component';
+import { FalcooPageComponent } from './member-page/falcoo-page/falcoo-page.component';
 
 @NgModule({
   declarations: [
@@ -119,6 +120,7 @@ import { NewPasswordPageComponent } from './login-page/new-password-page/new-pas
     SignupsPageComponent,
     ViewSignupPageComponent,
     NewPasswordPageComponent,
+    FalcooPageComponent,
   ],
   imports: [
     BrowserModule,
