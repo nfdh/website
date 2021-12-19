@@ -14,14 +14,13 @@ export class AppComponent {
   isAuthenticated$ = this.authenticationService.user$.pipe(
     map(u => u != null)
   );
+  isWebsiteContributor$ = this.authenticationService.user$.pipe(map(u => u?.role_website_contributor));
+  isMemberAdministrator$ = this.authenticationService.user$.pipe(map(u => u?.role_member_administrator));
+  isMemberOfStudbook$ = this.authenticationService.user$.pipe(map(u => u?.studbook_heideschaap || u?.studbook_schoonebeeker));
+
   loading: boolean;
   loadProgress: number;
   loadInterval: number | null;
-
-  isWebsiteContributor$ = this.authenticationService.user$
-    .pipe(
-      map(u => u?.role_website_contributor)
-    );
 
   @ViewChild('sidenav') sidenav!: MatSidenav;
 

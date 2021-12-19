@@ -17,6 +17,7 @@ import { ViewDekverklaringPageComponent as MemberViewDekverklaringPageComponent 
 import { HuiskeuringenPageComponent as MemberHuiskeuringenPageComponent } from './member-page/huiskeuringen-page/huiskeuringen-page.component';
 import { AddHuiskeuringPageComponent as MemberAddHuiskeuringPageComponent } from './member-page/huiskeuringen-page/add-huiskeuring-page/add-huiskeuring-page.component';
 import { ViewHuiskeuringPageComponent as MemberViewHuiskeuringPageComponent } from './member-page/huiskeuringen-page/view-huiskeuring-page/view-huiskeuring-page.component';
+import { FalcooPageComponent as MemberFalcooPageComponent } from './member-page/falcoo-page/falcoo-page.component';
 import { ContactPageComponent } from './contact-page/contact-page.component';
 import { VerenigingPageComponent } from './vereniging-page/vereniging-page.component';
 import { OverDeVerenigingPageComponent } from './vereniging-page/over-de-vereniging-page/over-de-vereniging-page.component';
@@ -71,6 +72,7 @@ const routes: Routes = [
       { path: "gebruikers", component: MemberUsersPageComponent },
       { path: "gebruikers/toevoegen", component: MemberAddUserPageComponent },
       { path: "gebruikers/:id", component: MemberEditUserPageComponent },
+      { path: "falcoo", component: MemberFalcooPageComponent },
       { path: "**", component: NotFoundPageComponent }
     ]
   },
