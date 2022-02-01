@@ -18,6 +18,7 @@ import { HuiskeuringenPageComponent as MemberHuiskeuringenPageComponent } from '
 import { AddHuiskeuringPageComponent as MemberAddHuiskeuringPageComponent } from './member-page/huiskeuringen-page/add-huiskeuring-page/add-huiskeuring-page.component';
 import { ViewHuiskeuringPageComponent as MemberViewHuiskeuringPageComponent } from './member-page/huiskeuringen-page/view-huiskeuring-page/view-huiskeuring-page.component';
 import { FalcooPageComponent as MemberFalcooPageComponent } from './member-page/falcoo-page/falcoo-page.component';
+import { ProtocollenCLPageComponent as MemberProtocollenCLPageComponent } from './member-page/protocollen-clpage/protocollen-clpage.component';
 import { ContactPageComponent } from './contact-page/contact-page.component';
 import { VerenigingPageComponent } from './vereniging-page/vereniging-page.component';
 import { OverDeVerenigingPageComponent } from './vereniging-page/over-de-vereniging-page/over-de-vereniging-page.component';
@@ -73,6 +74,7 @@ const routes: Routes = [
       { path: "gebruikers/toevoegen", component: MemberAddUserPageComponent },
       { path: "gebruikers/:id", component: MemberEditUserPageComponent },
       { path: "falcoo", component: MemberFalcooPageComponent },
+      { path: "protocollen-cl", component: MemberProtocollenCLPageComponent },
       { path: "**", component: NotFoundPageComponent }
     ]
   },

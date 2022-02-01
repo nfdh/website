@@ -81,6 +81,7 @@ import { ViewSignupPageComponent } from './member-page/signups-page/view-signup-
 import { VerzondenPageComponent as InschrijvenVerzondenPageComponent } from './lid-worden-page/inschrijven-page/verzonden-page/verzonden-page.component';
 import { NewPasswordPageComponent } from './login-page/new-password-page/new-password-page.component';
 import { FalcooPageComponent } from './member-page/falcoo-page/falcoo-page.component';
+import { ProtocollenCLPageComponent } from './member-page/protocollen-clpage/protocollen-clpage.component';
 
 @NgModule({
   declarations: [
@@ -121,6 +122,7 @@ import { FalcooPageComponent } from './member-page/falcoo-page/falcoo-page.compo
     ViewSignupPageComponent,
     NewPasswordPageComponent,
     FalcooPageComponent,
+    ProtocollenCLPageComponent,
   ],
   imports: [
     BrowserModule,
