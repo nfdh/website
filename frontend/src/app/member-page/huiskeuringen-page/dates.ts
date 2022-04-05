@@ -1,26 +1,26 @@
 export default [
     // noord
     [
-        new Date(2020, 5, 19),
-        new Date(2020, 5, 20),
-        new Date(2020, 5, 21),
-        new Date(2020, 7, 21),
-        new Date(2020, 7, 22),
-        new Date(2020, 7, 23)
+        new Date(2022, 5, 17),
+        new Date(2022, 5, 18),
+        new Date(2022, 5, 19),
+        new Date(2022, 7, 26),
+        new Date(2022, 7, 27),
+        new Date(2022, 7, 28)
     ],
     // oost
     [
-        new Date(2020, 5, 27),
-        new Date(2020, 6, 29)
+        new Date(2022, 6, 2),
+        new Date(2022, 6, 31)
     ],
     // west
     [
-        new Date(2020, 6, 5),
-        new Date(2020, 7, 1)
+        new Date(2022, 6, 10),
+        new Date(2022, 7, 6)
     ],
     // zuid
     [
-        new Date(2020, 6, 11),
-        new Date(2020, 7, 9)
+        new Date(2022, 6, 16),
+        new Date(2022, 7, 14)
     ]
 ];

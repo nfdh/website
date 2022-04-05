@@ -3,7 +3,9 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
+import { map } from 'rxjs/operators';
 import { AppTitleService } from 'src/app/services/app-title.service';
+import { AuthenticationService } from 'src/app/services/authentication.service';
 import availableDates from "../dates";
 
 interface AddResult {
@@ -22,13 +24,31 @@ export class AddHuiskeuringPageComponent {
 
   errorMessage = '';
 
+  hasHeideschaap$ = this.authenticationService.user$.pipe(map(u => u?.studbook_heideschaap));
+  hasSchoonebeeker$ = this.authenticationService.user$.pipe(map(u => u?.studbook_schoonebeeker));
+
+  singleStudbook$ = this.authenticationService.user$.pipe(map(u => !u?.studbook_heideschaap || !u.studbook_schoonebeeker));
+
   constructor(
     private router: Router, 
     private route: ActivatedRoute, 
     private httpClient: HttpClient, 
     private snackBar: MatSnackBar,
-    titleService: AppTitleService
+    titleService: AppTitleService,
+    private authenticationService: AuthenticationService
   ) { 
+    this.authenticationService.user$.subscribe(u => {
+      if(u) {
+        this.formGroup.controls.name.setValue(u.selection_name);
+
+        if(u.studbook_heideschaap && !u.studbook_schoonebeeker) {
+          this.formGroup.controls.studbook.setValue('0');
+        }
+        else if(u.studbook_schoonebeeker && !u.studbook_heideschaap) {
+          this.formGroup.controls.studbook.setValue('1');
+        }
+      }
+    });
 
     titleService.setTitle("Inschrijven voor huiskeuring - Ledenportaal");
   }
