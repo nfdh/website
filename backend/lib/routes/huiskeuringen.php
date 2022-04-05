@@ -217,7 +217,7 @@ function register_huiskeuringen_routes(FastRoute\RouteCollector $r, \Lib\Databas
         $pdf->Write($lh, $values['num_locations']);
         $pdf->Ln($lh);
         $pdf->Cell($cl, $lh, "Stamboekbewijs:");
-        $pdf->Write($lh, $values['on_paper'] ? "Ja" : "Nee");
+        $pdf->Write($lh, boolval($values['on_paper']) ? "Ja" : "Nee");
       
         $pdf->Ln($lh * 2);
         $pdf->SetFont('Arial', 'B', 12);
@@ -261,7 +261,7 @@ function register_huiskeuringen_routes(FastRoute\RouteCollector $r, \Lib\Databas
             'rams_second' => $values['rams_second'],
             'ewes' => $values['ewes'],
             'num_locations' => $values['num_locations'],
-            'on_paper' => $values['on_paper'],
+            'on_paper' => boolval($values['on_paper']),
             'remarks' => $values['remarks']
         ]);
      

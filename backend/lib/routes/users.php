@@ -114,15 +114,15 @@ function register_users_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $
             'user' => [
                 'name' => $user['name'],
                 'email' => $user['email'],
-                'reset_password_on_login' => $user['reset_password_on_login'],
-                'studbook_heideschaap' => $user['studbook_heideschaap'], 
-                'studbook_heideschaap_ko' => $user['studbook_heideschaap_ko'], 
-                'studbook_schoonebeeker' => $user['studbook_schoonebeeker'],
-                'studbook_schoonebeeker_ko' => $user['studbook_schoonebeeker_ko'], 
-                'role_website_contributor' => $user['role_website_contributor'],
-                'role_member_administrator' => $user['role_member_administrator'],
-                'role_studbook_administrator' => $user['role_studbook_administrator'], 
-                'role_studbook_inspector' => $user['role_studbook_inspector']
+                'reset_password_on_login' => boolval($user['reset_password_on_login']),
+                'studbook_heideschaap' => boolval($user['studbook_heideschaap']), 
+                'studbook_heideschaap_ko' => boolval($user['studbook_heideschaap_ko']), 
+                'studbook_schoonebeeker' => boolval($user['studbook_schoonebeeker']),
+                'studbook_schoonebeeker_ko' => boolval($user['studbook_schoonebeeker_ko']), 
+                'role_website_contributor' => boolval($user['role_website_contributor']),
+                'role_member_administrator' => boolval($user['role_member_administrator']),
+                'role_studbook_administrator' => boolval($user['role_studbook_administrator']), 
+                'role_studbook_inspector' => boolval($user['role_studbook_inspector'])
             ]
         ]);
     });
@@ -201,14 +201,14 @@ function register_users_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $
                 ':email' => $values['email'],
                 ':name' => $values['name'],
                 ':password_hash' => $pw_hash,
-                ':studbook_heideschaap' => $values['studbook_heideschaap'],
-                ':studbook_heideschaap_ko' => $values['studbook_heideschaap_ko'],
-                ':studbook_schoonebeeker' => $values['studbook_schoonebeeker'],
-                ':studbook_schoonebeeker_ko' => $values['studbook_schoonebeeker_ko'],
-                ':role_website_contributor' => $values['role_website_contributor'],
-                ':role_member_administrator' => $values['role_member_administrator'],
-                ':role_studbook_administrator' => $values['role_studbook_administrator'],
-                ':role_studbook_inspector' => $values['role_studbook_inspector']
+                ':studbook_heideschaap' => boolval($values['studbook_heideschaap']),
+                ':studbook_heideschaap_ko' => boolval($values['studbook_heideschaap_ko']),
+                ':studbook_schoonebeeker' => boolval($values['studbook_schoonebeeker']),
+                ':studbook_schoonebeeker_ko' => boolval($values['studbook_schoonebeeker_ko']),
+                ':role_website_contributor' => boolval($values['role_website_contributor']),
+                ':role_member_administrator' => boolval($values['role_member_administrator']),
+                ':role_studbook_administrator' => boolval($values['role_studbook_administrator']),
+                ':role_studbook_inspector' => boolval($values['role_studbook_inspector'])
             ]);
 
             $user_id = $db->lastInsertId();
@@ -263,7 +263,7 @@ function register_users_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $
         }
 
         $id = $para['id'];
-
+        
         try {
             $db->execute("
                 UPDATE `users` 
@@ -285,15 +285,15 @@ function register_users_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $
                 ':id' => intval($id),
                 ':email' => $values['email'],
                 ':name' => $values['name'],
-                ':reset_password_on_login' => $values['reset_password_on_login'],
-                ':studbook_heideschaap' => $values['studbook_heideschaap'],
-                ':studbook_heideschaap_ko' => $values['studbook_heideschaap_ko'],
-                ':studbook_schoonebeeker' => $values['studbook_schoonebeeker'],
-                ':studbook_schoonebeeker_ko' => $values['studbook_schoonebeeker_ko'],
-                ':role_website_contributor' => $values['role_website_contributor'],
-                ':role_member_administrator' => $values['role_member_administrator'],
-                ':role_studbook_administrator' => $values['role_studbook_administrator'],
-                ':role_studbook_inspector' => $values['role_studbook_inspector'],
+                ':reset_password_on_login' => boolval($values['reset_password_on_login']),
+                ':studbook_heideschaap' => boolval($values['studbook_heideschaap']),
+                ':studbook_heideschaap_ko' => boolval($values['studbook_heideschaap_ko']),
+                ':studbook_schoonebeeker' => boolval($values['studbook_schoonebeeker']),
+                ':studbook_schoonebeeker_ko' => boolval($values['studbook_schoonebeeker_ko']),
+                ':role_website_contributor' => boolval($values['role_website_contributor']),
+                ':role_member_administrator' => boolval($values['role_member_administrator']),
+                ':role_studbook_administrator' => boolval($values['role_studbook_administrator']),
+                ':role_studbook_inspector' => boolval($values['role_studbook_inspector']),
             ]);
 
             return new JSON([
