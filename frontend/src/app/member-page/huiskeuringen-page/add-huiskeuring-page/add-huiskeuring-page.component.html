@@ -9,13 +9,19 @@
         </mat-form-field>
     </app-form-section>
     <app-form-section title="Stamboek">
-        <mat-radio-group aria-label="Selecteer een stamboek" formControlName="studbook">
-            <mat-radio-button class="studbook_radio" color="primary" value="0">Drents Heideschaap</mat-radio-button>
-            <mat-radio-button class="studbook_radio" color="primary" value="1">Schoonebeeker</mat-radio-button>
-        </mat-radio-group>
-        <p class="notice">
-            Heeft u meerdere rassen? Dien dan voor ieder ras een aparte aanmelding in.
-        </p>
+        <ng-container *ngIf="!(singleStudbook$ | async)">
+            <mat-radio-group aria-label="Selecteer een stamboek" formControlName="studbook">
+                <mat-radio-button class="studbook_radio" color="primary" value="0" *ngIf="hasHeideschaap$ | async">Drents Heideschaap</mat-radio-button>
+                <mat-radio-button class="studbook_radio" color="primary" value="1" *ngIf="hasSchoonebeeker$ | async">Schoonebeeker</mat-radio-button>
+            </mat-radio-group>
+            <p class="notice">
+                Heeft u meerdere rassen? Dien dan voor ieder ras een aparte aanmelding in.
+            </p>
+        </ng-container>
+        <ng-container *ngIf="singleStudbook$ | async">
+            <div class="studbook_radio" *ngIf="hasHeideschaap$ | async">Drents Heideschaap</div>
+            <div class="studbook_radio" *ngIf="hasSchoonebeeker$ | async">Schoonebeeker</div>
+        </ng-container>
     </app-form-section>
     <app-form-section title="Regio & datum voorkeur">
         <mat-form-field appearance="fill">

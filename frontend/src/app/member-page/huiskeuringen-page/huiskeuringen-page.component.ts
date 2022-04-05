@@ -5,7 +5,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { SelectionMap, SelectionType } from 'src/app/services/selection';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
-import preferredDates from './dates';
 import { AppTitleService } from 'src/app/services/app-title.service';
 import { IntlDateTimeService } from 'src/app/services/intl-date-time.service';
 import { supportsPDFs } from "pdfobject";

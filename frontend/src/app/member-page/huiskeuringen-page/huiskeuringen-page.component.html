@@ -1,9 +1,7 @@
 <h2 class="title">Inschrijvingen huiskeuring</h2>
 <app-toolbar>
     <ng-container *ngIf="selection.size === 0">
-        <span matTooltip="Inschrijven voor huiskeuring is op dit moment niet mogelijk">
-            <button mat-raised-button (click)="onAddClick()" color="primary" disabled="true"><mat-icon>add</mat-icon> Inschrijven huiskeuring</button>
-        </span>
+        <button mat-raised-button (click)="onAddClick()" color="primary"><mat-icon>add</mat-icon> Inschrijven huiskeuring</button>
     </ng-container>
     <ng-container *ngIf="selection.size > 0">
         <button mat-raised-button (click)="onUpdateClick()" color="primary" [disabled]="selection.size >= 2"><mat-icon>wysiwyg</mat-icon> <ng-container *ngIf="supportsPDFs">Tonen</ng-container><ng-container *ngIf="!supportsPDFs">Downloaden</ng-container></button>
