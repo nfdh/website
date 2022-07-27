@@ -12,7 +12,7 @@
         <mat-label>E-mailadres</mat-label>
         <mat-icon matSuffix>email</mat-icon>
         <input matInput formControlName="email">
-        <mat-error *ngIf="resetForm.get('email')!.hasError('required')">Verplicht</mat-error>
+        <mat-error *ngIf="resetForm.controls.email.hasError('required')">Verplicht</mat-error>
     </mat-form-field>
 
     <br />
