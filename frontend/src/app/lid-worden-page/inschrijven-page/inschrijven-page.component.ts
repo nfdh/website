@@ -1,11 +1,44 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormArray, FormGroup, Validators, FormControl, Form } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 
 interface SignUpResult {
   success: boolean
+}
+
+type MembershipType = 0 | 1 | 2 | 3 | 4;
+
+type SheepGender = 0 | 1;
+
+type SheepRegisteredStatus = 0 | 1 | 2;
+
+interface SheepForm {
+  gender: FormControl<SheepGender | null>,
+  number: FormControl<string | null>,
+  birthdate: FormControl<string | null>,
+  dateOfPurchase: FormControl<string | null>,
+  ubnOfSeller: FormControl<string | null>,
+  registeredInStudbook: FormControl<SheepRegisteredStatus | null>
+}
+
+interface SignUpForm {
+  fullName: FormControl<string | null>,
+  firstName: FormControl<string | null>,
+  address: FormControl<string | null>,
+  postalCode: FormControl<string | null>,
+  city: FormControl<string | null>,
+  email: FormControl<string | null>,
+  phoneNumber: FormControl<string | null>,
+  membershipType: FormControl<MembershipType | null>,
+  familyMember: FormControl<string | null>,
+  amount: FormControl<number | null>,
+  ubn: FormControl<string | null>,
+  zwoegerVrij: FormControl<boolean | null>,
+  herdDscription: FormControl<string | null>
+  sheep: FormArray<FormGroup<SheepForm>>,
+  acceptPrivacyStatement: FormControl<boolean | null>
 }
 
 @Component({
@@ -14,60 +47,60 @@ interface SignUpResult {
   styleUrls: ['./inschrijven-page.component.scss']
 })
 export class InschrijvenPageComponent implements OnInit {
-  formGroup = new UntypedFormGroup({
-    fullName: new UntypedFormControl('', [
+  formGroup = new FormGroup<SignUpForm>({
+    fullName: new FormControl<string>('', [
       Validators.required
     ]),
-    firstName: new UntypedFormControl('', [
+    firstName: new FormControl<string>('', [
       Validators.required
     ]),
-    address: new UntypedFormControl('', [
+    address: new FormControl<string>('', [
       Validators.required
     ]),
-    postalCode: new UntypedFormControl('', [
+    postalCode: new FormControl<string>('', [
       Validators.required
     ]),
-    city: new UntypedFormControl('', [
+    city: new FormControl<string>('', [
       Validators.required
     ]),
 
-    email: new UntypedFormControl('', [
+    email: new FormControl<string>('', [
       Validators.required,
       Validators.email
     ]),
-    phoneNumber: new UntypedFormControl('', [
+    phoneNumber: new FormControl<string>('', [
       Validators.required,
       Validators.pattern(/^[0-9 \-\(\)]+$/i)
     ]),
-    membershipType: new UntypedFormControl(undefined, [
+    membershipType: new FormControl<MembershipType | null>(null, [
       Validators.required
     ]),
 
-    familyMember: new UntypedFormControl('', [
+    familyMember: new FormControl<string>('', [
       Validators.required
     ]),
 
-    amount: new UntypedFormControl(25.00, [
+    amount: new FormControl<number>(25.00, [
       Validators.required,
       Validators.min(25)
     ]),
 
-    ubn: new UntypedFormControl('', [
+    ubn: new FormControl<string>('', [
       Validators.required,
       Validators.pattern(/^[0-9]{2,7}$/i)
     ]),
-    zwoegerVrij: new UntypedFormControl(undefined, [
+    zwoegerVrij: new FormControl<boolean>(false, [
       Validators.required
     ]),
-    herdDscription: new UntypedFormControl('', [
+    herdDscription: new FormControl<string>('', [
       Validators.required
     ]),
 
-    sheep: new UntypedFormArray([
+    sheep: new FormArray<FormGroup<SheepForm>>([
       this.createSheepFormGroup()
     ]),
 
-    acceptPrivacyStatement: new UntypedFormControl(false, [
+    acceptPrivacyStatement: new FormControl<boolean>(false, [
       Validators.requiredTrue
     ]),
   });
@@ -75,70 +108,70 @@ export class InschrijvenPageComponent implements OnInit {
   errorMessage = '';
 
   constructor(private route: ActivatedRoute, private httpClient: HttpClient, private router: Router) {
-    this.formGroup.get('membershipType')!.valueChanges.subscribe(typeValue => {
+    this.formGroup.controls.membershipType.valueChanges.subscribe(typeValue => {
       switch(typeValue) {
         // Donateur
         case 0:
-          this.formGroup.get('amount')!.enable();
-          this.formGroup.get('familyMember')!.disable();
-          this.formGroup.get('ubn')!.disable();
-          this.formGroup.get('zwoegerVrij')!.disable();
-          this.formGroup.get('herdDscription')!.disable();
-          this.formGroup.get('sheep')!.disable();
+          this.formGroup.controls.amount.enable();
+          this.formGroup.controls.familyMember.disable();
+          this.formGroup.controls.ubn.disable();
+          this.formGroup.controls.zwoegerVrij.disable();
+          this.formGroup.controls.herdDscription.disable();
+          this.formGroup.controls.sheep.disable();
           break;
 
         // Basislidmaatschap
         case 1:
-          this.formGroup.get('amount')!.disable();
-          this.formGroup.get('familyMember')!.disable();
-          this.formGroup.get('ubn')!.disable();
-          this.formGroup.get('zwoegerVrij')!.disable();
-          this.formGroup.get('herdDscription')!.disable();
-          this.formGroup.get('sheep')!.disable();
+          this.formGroup.controls.amount.disable();
+          this.formGroup.controls.familyMember.disable();
+          this.formGroup.controls.ubn.disable();
+          this.formGroup.controls.zwoegerVrij.disable();
+          this.formGroup.controls.herdDscription.disable();
+          this.formGroup.controls.sheep.disable();
           break;
 
         // Stamboeklidmaatschap
         case 2:
-          this.formGroup.get('amount')!.disable();
-          this.formGroup.get('familyMember')!.disable();
-          this.formGroup.get('ubn')!.enable();
-          this.formGroup.get('zwoegerVrij')!.disable();
-          this.formGroup.get('herdDscription')!.disable();
-          this.formGroup.get('sheep')!.enable();
+          this.formGroup.controls.amount.disable();
+          this.formGroup.controls.familyMember.disable();
+          this.formGroup.controls.ubn.enable();
+          this.formGroup.controls.zwoegerVrij.disable();
+          this.formGroup.controls.herdDscription.disable();
+          this.formGroup.controls.sheep.enable();
           break;
 
         // Kudde
         case 3:
-          this.formGroup.get('amount')!.disable();
-          this.formGroup.get('familyMember')!.disable();
-          this.formGroup.get('ubn')!.enable();
-          this.formGroup.get('zwoegerVrij')!.enable();
-          this.formGroup.get('herdDscription')!.enable();
-          this.formGroup.get('sheep')!.disable();
+          this.formGroup.controls.amount.disable();
+          this.formGroup.controls.familyMember.disable();
+          this.formGroup.controls.ubn.enable();
+          this.formGroup.controls.zwoegerVrij.enable();
+          this.formGroup.controls.herdDscription.enable();
+          this.formGroup.controls.sheep.disable();
           break;
 
         // Gezinslidmaatschap
         case 4:
-          this.formGroup.get('amount')!.disable();
-          this.formGroup.get('familyMember')!.enable();
-          this.formGroup.get('ubn')!.disable();
-          this.formGroup.get('zwoegerVrij')!.disable();
-          this.formGroup.get('herdDscription')!.disable();
-          this.formGroup.get('sheep')!.disable();
+          this.formGroup.controls.amount.disable();
+          this.formGroup.controls.familyMember.enable();
+          this.formGroup.controls.ubn.disable();
+          this.formGroup.controls.zwoegerVrij.disable();
+          this.formGroup.controls.herdDscription.disable();
+          this.formGroup.controls.sheep.disable();
           break;
       }
 
-      this.formGroup.get('amount')!.updateValueAndValidity();
-      this.formGroup.get('familyMember')!.updateValueAndValidity();
-      this.formGroup.get('ubn')!.updateValueAndValidity();
-      this.formGroup.get('zwoegerVrij')!.updateValueAndValidity();
-      this.formGroup.get('herdDscription')!.updateValueAndValidity();
-      this.formGroup.get('sheep')!.updateValueAndValidity();
+      this.formGroup.controls.amount.updateValueAndValidity();
+      this.formGroup.controls.familyMember.updateValueAndValidity();
+      this.formGroup.controls.ubn.updateValueAndValidity();
+      this.formGroup.controls.zwoegerVrij.updateValueAndValidity();
+      this.formGroup.controls.herdDscription.updateValueAndValidity();
+      this.formGroup.controls.sheep.updateValueAndValidity();
   });
 
     route.queryParamMap.subscribe((params) => {
       const type = params.get("soort");
-      let typeValue;
+      let typeValue: MembershipType;
       switch(type) {
         case 'donateur': typeValue = 0; break;
         case 'basislidmaatschap': typeValue = 1; break;
@@ -175,35 +208,31 @@ export class InschrijvenPageComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  sheepFormGroups(): UntypedFormGroup[] {
-    return (this.formGroup.get('sheep') as UntypedFormArray).controls as UntypedFormGroup[];
-  }
-
-  createSheepFormGroup(): UntypedFormGroup {
-    return new UntypedFormGroup({
-      gender: new UntypedFormControl(undefined, [
+  createSheepFormGroup(): FormGroup<SheepForm> {
+    return new FormGroup<SheepForm>({
+      gender: new FormControl<SheepGender | null>(null, [
         Validators.required
       ]),
-      number: new UntypedFormControl('', [
+      number: new FormControl<string>('', [
         Validators.required,
         Validators.pattern(/^[0-9]{12}$/i)
       ]),
-      birthdate: new UntypedFormControl(undefined, [
+      birthdate: new FormControl<string | null>(null, [
         Validators.required
       ]),
-      dateOfPurchase: new UntypedFormControl(),
-      ubnOfSeller: new UntypedFormControl(),
-      registeredInStudbook: new UntypedFormControl(undefined, [
+      dateOfPurchase: new FormControl<string | null>(null),
+      ubnOfSeller: new FormControl<string | null>(null),
+      registeredInStudbook: new FormControl<SheepRegisteredStatus | null>(null, [
         Validators.required
       ])
     });
   }
 
   deleteSheep(idx: number) {
-    (this.formGroup.controls.sheep as UntypedFormArray).removeAt(idx);
+    this.formGroup.controls.sheep.removeAt(idx);
   }
 
   addSheep() {
-    (this.formGroup.controls.sheep as UntypedFormArray).push(this.createSheepFormGroup());
+    this.formGroup.controls.sheep.push(this.createSheepFormGroup());
   }
 }
