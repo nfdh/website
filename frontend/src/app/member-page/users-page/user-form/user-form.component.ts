@@ -1,5 +1,21 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+
+export interface UserForm {
+  email: FormControl<string | null>,
+  name: FormControl<string | null>,
+  reset_password_on_login: FormControl<boolean | null>,
+
+  studbook_heideschaap: FormControl<boolean | null>,
+  studbook_heideschaap_ko: FormControl<boolean | null>,
+  studbook_schoonebeeker: FormControl<boolean | null>,
+  studbook_schoonebeeker_ko: FormControl<boolean | null>,
+
+  role_website_contributor: FormControl<boolean | null>,
+  role_member_administrator: FormControl<boolean | null>,
+  role_studbook_administrator: FormControl<boolean | null>,
+  role_studbook_inspector: FormControl<boolean | null>
+}
 
 @Component({
   selector: 'app-user-form',
@@ -8,7 +24,7 @@ import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms
 })
 export class UserFormComponent {
   @Input()
-  formGroup!: UntypedFormGroup
+  formGroup!: FormGroup<UserForm>
 
   @Input()
   addNew!: boolean
@@ -16,25 +32,25 @@ export class UserFormComponent {
   constructor() { }
 }
 
-export function createFormGroup(): UntypedFormGroup {
-  return new UntypedFormGroup({
-    email: new UntypedFormControl('', [
+export function createFormGroup(): FormGroup<UserForm> {
+  return new FormGroup<UserForm>({
+    email: new FormControl<string>('', [
       Validators.required,
       Validators.email
     ]),
-    name: new UntypedFormControl('', [
+    name: new FormControl<string>('', [
       Validators.required
     ]),
-    reset_password_on_login: new UntypedFormControl(false),
+    reset_password_on_login: new FormControl<boolean>(false),
 
-    studbook_heideschaap: new UntypedFormControl(false),
-    studbook_heideschaap_ko: new UntypedFormControl(false),
-    studbook_schoonebeeker: new UntypedFormControl(false),
-    studbook_schoonebeeker_ko: new UntypedFormControl(false),
+    studbook_heideschaap: new FormControl<boolean>(false),
+    studbook_heideschaap_ko: new FormControl<boolean>(false),
+    studbook_schoonebeeker: new FormControl<boolean>(false),
+    studbook_schoonebeeker_ko: new FormControl<boolean>(false),
 
-    role_website_contributor: new UntypedFormControl(false),
-    role_member_administrator: new UntypedFormControl(false),
-    role_studbook_administrator: new UntypedFormControl(false),
-    role_studbook_inspector: new UntypedFormControl(false)
+    role_website_contributor: new FormControl<boolean>(false),
+    role_member_administrator: new FormControl<boolean>(false),
+    role_studbook_administrator: new FormControl<boolean>(false),
+    role_studbook_inspector: new FormControl<boolean>(false)
   });
 }
