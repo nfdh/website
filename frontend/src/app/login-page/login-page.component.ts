@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { FormGroup, FormControl } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl } from '@angular/forms';
 import { AuthenticationService, User } from '../services/authentication.service';
 import { Router } from '@angular/router';
 import { AppTitleService } from '../services/app-title.service';
@@ -12,9 +12,9 @@ import { setLastInfo } from './new-password-page/new-password-page.component';
   styleUrls: ['./login-page.component.scss']
 })
 export class LoginPageComponent {
-  loginForm = new FormGroup({
-    email: new FormControl(''),
-    password: new FormControl('')
+  loginForm = new UntypedFormGroup({
+    email: new UntypedFormControl(''),
+    password: new UntypedFormControl('')
   });
 
   isBusy: boolean = false;

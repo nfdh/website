@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
@@ -12,8 +12,8 @@ export class WachtwoordVergetenPageComponent implements OnInit {
   isBusy: boolean = false;
   errorMessage: string | null = null;
 
-  resetForm = new FormGroup({
-    email: new FormControl('', [
+  resetForm = new UntypedFormGroup({
+    email: new UntypedFormControl('', [
       Validators.required,
       Validators.email
     ])

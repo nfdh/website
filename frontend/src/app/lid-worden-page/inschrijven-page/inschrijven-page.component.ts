@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -14,60 +14,60 @@ interface SignUpResult {
   styleUrls: ['./inschrijven-page.component.scss']
 })
 export class InschrijvenPageComponent implements OnInit {
-  formGroup = new FormGroup({
-    fullName: new FormControl('', [
+  formGroup = new UntypedFormGroup({
+    fullName: new UntypedFormControl('', [
       Validators.required
     ]),
-    firstName: new FormControl('', [
+    firstName: new UntypedFormControl('', [
       Validators.required
     ]),
-    address: new FormControl('', [
+    address: new UntypedFormControl('', [
       Validators.required
     ]),
-    postalCode: new FormControl('', [
+    postalCode: new UntypedFormControl('', [
       Validators.required
     ]),
-    city: new FormControl('', [
+    city: new UntypedFormControl('', [
       Validators.required
     ]),
 
-    email: new FormControl('', [
+    email: new UntypedFormControl('', [
       Validators.required,
       Validators.email
     ]),
-    phoneNumber: new FormControl('', [
+    phoneNumber: new UntypedFormControl('', [
       Validators.required,
       Validators.pattern(/^[0-9 \-\(\)]+$/i)
     ]),
-    membershipType: new FormControl(undefined, [
+    membershipType: new UntypedFormControl(undefined, [
       Validators.required
     ]),
 
-    familyMember: new FormControl('', [
+    familyMember: new UntypedFormControl('', [
       Validators.required
     ]),
 
-    amount: new FormControl(25.00, [
+    amount: new UntypedFormControl(25.00, [
       Validators.required,
       Validators.min(25)
     ]),
 
-    ubn: new FormControl('', [
+    ubn: new UntypedFormControl('', [
       Validators.required,
       Validators.pattern(/^[0-9]{2,7}$/i)
     ]),
-    zwoegerVrij: new FormControl(undefined, [
+    zwoegerVrij: new UntypedFormControl(undefined, [
       Validators.required
     ]),
-    herdDscription: new FormControl('', [
+    herdDscription: new UntypedFormControl('', [
       Validators.required
     ]),
 
-    sheep: new FormArray([
+    sheep: new UntypedFormArray([
       this.createSheepFormGroup()
     ]),
 
-    acceptPrivacyStatement: new FormControl(false, [
+    acceptPrivacyStatement: new UntypedFormControl(false, [
       Validators.requiredTrue
     ]),
   });
@@ -175,35 +175,35 @@ export class InschrijvenPageComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  sheepFormGroups(): FormGroup[] {
-    return (this.formGroup.get('sheep') as FormArray).controls as FormGroup[];
+  sheepFormGroups(): UntypedFormGroup[] {
+    return (this.formGroup.get('sheep') as UntypedFormArray).controls as UntypedFormGroup[];
   }
 
-  createSheepFormGroup(): FormGroup {
-    return new FormGroup({
-      gender: new FormControl(undefined, [
+  createSheepFormGroup(): UntypedFormGroup {
+    return new UntypedFormGroup({
+      gender: new UntypedFormControl(undefined, [
         Validators.required
       ]),
-      number: new FormControl('', [
+      number: new UntypedFormControl('', [
         Validators.required,
         Validators.pattern(/^[0-9]{12}$/i)
       ]),
-      birthdate: new FormControl(undefined, [
+      birthdate: new UntypedFormControl(undefined, [
         Validators.required
       ]),
-      dateOfPurchase: new FormControl(),
-      ubnOfSeller: new FormControl(),
-      registeredInStudbook: new FormControl(undefined, [
+      dateOfPurchase: new UntypedFormControl(),
+      ubnOfSeller: new UntypedFormControl(),
+      registeredInStudbook: new UntypedFormControl(undefined, [
         Validators.required
       ])
     });
   }
 
   deleteSheep(idx: number) {
-    (this.formGroup.controls.sheep as FormArray).removeAt(idx);
+    (this.formGroup.controls.sheep as UntypedFormArray).removeAt(idx);
   }
 
   addSheep() {
-    (this.formGroup.controls.sheep as FormArray).push(this.createSheepFormGroup());
+    (this.formGroup.controls.sheep as UntypedFormArray).push(this.createSheepFormGroup());
   }
 }

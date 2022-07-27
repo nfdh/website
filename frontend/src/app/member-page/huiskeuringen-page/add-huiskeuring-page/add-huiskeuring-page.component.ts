@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, UntypedFormControl, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs/operators';
@@ -88,36 +88,36 @@ export class AddHuiskeuringPageComponent {
   }
 }
 
-export function createFormGroup(): FormGroup {
-  let group: FormGroup | null = null;
-  group = new FormGroup({
-    name: new FormControl('', [
+export function createFormGroup(): UntypedFormGroup {
+  let group: UntypedFormGroup | null = null;
+  group = new UntypedFormGroup({
+    name: new UntypedFormControl('', [
       Validators.required
     ]),
-    studbook: new FormControl('', [
+    studbook: new UntypedFormControl('', [
       Validators.required
     ]),
-    region: new FormControl('', [
+    region: new UntypedFormControl('', [
       Validators.required
     ]),
-    location: new FormControl(''),
-    preferred_date: new FormControl('', [
+    location: new UntypedFormControl(''),
+    preferred_date: new UntypedFormControl('', [
       validatorIf(() => group?.get("region")?.value !== -1,  Validators.required)
     ]),
 
-    rams_first: new FormControl('', [
+    rams_first: new UntypedFormControl('', [
       Validators.required
     ]),
-    rams_second: new FormControl('', [
+    rams_second: new UntypedFormControl('', [
       Validators.required
     ]),
-    ewes: new FormControl('', [
+    ewes: new UntypedFormControl('', [
       Validators.required
     ]),
-    num_locations: new FormControl(1),
-    on_paper: new FormControl(false),
+    num_locations: new UntypedFormControl(1),
+    on_paper: new UntypedFormControl(false),
 
-    remarks: new FormControl('')
+    remarks: new UntypedFormControl('')
   });
   return group;
 }

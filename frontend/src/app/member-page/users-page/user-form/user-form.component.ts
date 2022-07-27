@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-user-form',
@@ -8,7 +8,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 })
 export class UserFormComponent {
   @Input()
-  formGroup!: FormGroup
+  formGroup!: UntypedFormGroup
 
   @Input()
   addNew!: boolean
@@ -16,25 +16,25 @@ export class UserFormComponent {
   constructor() { }
 }
 
-export function createFormGroup(): FormGroup {
-  return new FormGroup({
-    email: new FormControl('', [
+export function createFormGroup(): UntypedFormGroup {
+  return new UntypedFormGroup({
+    email: new UntypedFormControl('', [
       Validators.required,
       Validators.email
     ]),
-    name: new FormControl('', [
+    name: new UntypedFormControl('', [
       Validators.required
     ]),
-    reset_password_on_login: new FormControl(false),
+    reset_password_on_login: new UntypedFormControl(false),
 
-    studbook_heideschaap: new FormControl(false),
-    studbook_heideschaap_ko: new FormControl(false),
-    studbook_schoonebeeker: new FormControl(false),
-    studbook_schoonebeeker_ko: new FormControl(false),
+    studbook_heideschaap: new UntypedFormControl(false),
+    studbook_heideschaap_ko: new UntypedFormControl(false),
+    studbook_schoonebeeker: new UntypedFormControl(false),
+    studbook_schoonebeeker_ko: new UntypedFormControl(false),
 
-    role_website_contributor: new FormControl(false),
-    role_member_administrator: new FormControl(false),
-    role_studbook_administrator: new FormControl(false),
-    role_studbook_inspector: new FormControl(false)
+    role_website_contributor: new UntypedFormControl(false),
+    role_member_administrator: new UntypedFormControl(false),
+    role_studbook_administrator: new UntypedFormControl(false),
+    role_studbook_inspector: new UntypedFormControl(false)
   });
 }

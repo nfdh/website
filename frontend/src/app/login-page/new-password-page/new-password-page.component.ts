@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, UntypedFormControl, UntypedFormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationService, User } from 'src/app/services/authentication.service';
 
@@ -22,11 +22,11 @@ export class NewPasswordPageComponent implements OnInit {
   errorMessage: string | null = null;
   passwordsNotEqual: boolean = false;
 
-  formGroup = new FormGroup({
-    wachtwoord1: new FormControl('', [
+  formGroup = new UntypedFormGroup({
+    wachtwoord1: new UntypedFormControl('', [
       Validators.required
     ]),
-    wachtwoord2: new FormControl('', [
+    wachtwoord2: new UntypedFormControl('', [
       Validators.required,
     ])
   });
