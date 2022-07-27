@@ -4,6 +4,11 @@ import { AbstractControl, FormControl, FormGroup, ValidationErrors, Validators }
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationService, User } from 'src/app/services/authentication.service';
 
+interface OpnieuwInstellenForm {
+  wachtwoord1: FormControl<string | null>,
+  wachtwoord2: FormControl<string | null>
+}
+
 @Component({
   selector: 'app-opnieuw-instellen-page',
   templateUrl: './opnieuw-instellen-page.component.html',
@@ -13,11 +18,11 @@ export class OpnieuwInstellenPageComponent implements OnInit {
   isBusy: boolean = false;
   errorMessage: string | null = null;
   
-  formGroup = new FormGroup({
-    wachtwoord1: new FormControl('', [
+  formGroup = new FormGroup<OpnieuwInstellenForm>({
+    wachtwoord1: new FormControl<string>('', [
       Validators.required
     ]),
-    wachtwoord2: new FormControl('', [
+    wachtwoord2: new FormControl<string>('', [
       Validators.required,
     ])
   }, [
@@ -59,7 +64,7 @@ export class OpnieuwInstellenPageComponent implements OnInit {
 }
 
 function passwordsAreEqual(control: AbstractControl): ValidationErrors | null {
-  const group = control as FormGroup;
+  const group = control as FormGroup<OpnieuwInstellenForm>;
   if(group.controls.wachtwoord1.value !== group.controls.wachtwoord2.value) {
     return {
       "passwordsAreEqual": true

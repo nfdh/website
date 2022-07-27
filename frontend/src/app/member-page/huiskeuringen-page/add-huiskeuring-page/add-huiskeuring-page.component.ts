@@ -14,6 +14,25 @@ interface AddResult {
   reason?: "UNKNOWN"
 }
 
+type StudbookValue = '0' | '1';
+type RegionValue = -1 | 0 | 1 | 2 | 3;
+
+interface HuiskeuringForm {
+  name: FormControl<string | null>,
+  studbook: FormControl<StudbookValue | null>,
+  region: FormControl<RegionValue | null>,
+  location: FormControl<string | null>,
+  preferred_date: FormControl<string | null>,
+
+  rams_first: FormControl<string | null>,
+  rams_second: FormControl<string | null>,
+  ewes: FormControl<string | null>,
+  num_locations: FormControl<string | null>,
+  on_paper: FormControl<boolean | null>,
+
+  remarks: FormControl<string | null>
+}
+
 @Component({
   selector: 'app-add-huiskeuring-page',
   templateUrl: './add-huiskeuring-page.component.html',
@@ -88,36 +107,36 @@ export class AddHuiskeuringPageComponent {
   }
 }
 
-export function createFormGroup(): FormGroup {
-  let group: FormGroup | null = null;
-  group = new FormGroup({
-    name: new FormControl('', [
+export function createFormGroup(): FormGroup<HuiskeuringForm> {
+  let group: FormGroup<HuiskeuringForm> | null = null;
+  group = new FormGroup<HuiskeuringForm>({
+    name: new FormControl<string>('', [
       Validators.required
     ]),
-    studbook: new FormControl('', [
+    studbook: new FormControl<StudbookValue | null>(null, [
       Validators.required
     ]),
-    region: new FormControl('', [
+    region: new FormControl<RegionValue | null>(null, [
       Validators.required
     ]),
-    location: new FormControl(''),
-    preferred_date: new FormControl('', [
-      validatorIf(() => group?.get("region")?.value !== -1,  Validators.required)
+    location: new FormControl<string>(''),
+    preferred_date: new FormControl<string>('', [
+      validatorIf(() => group?.controls.region.value !== -1,  Validators.required)
     ]),
 
-    rams_first: new FormControl('', [
+    rams_first: new FormControl<string>('', [
       Validators.required
     ]),
-    rams_second: new FormControl('', [
+    rams_second: new FormControl<string>('', [
       Validators.required
     ]),
-    ewes: new FormControl('', [
+    ewes: new FormControl<string>('', [
       Validators.required
     ]),
-    num_locations: new FormControl(1),
-    on_paper: new FormControl(false),
+    num_locations: new FormControl<string>('1'),
+    on_paper: new FormControl<boolean>(false),
 
-    remarks: new FormControl('')
+    remarks: new FormControl<string>('')
   });
   return group;
 }

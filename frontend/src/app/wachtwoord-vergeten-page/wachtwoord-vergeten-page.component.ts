@@ -3,6 +3,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
+interface ResetForm {
+  email: FormControl<string | null>
+}
+
 @Component({
   selector: 'app-wachtwoord-vergeten-page',
   templateUrl: './wachtwoord-vergeten-page.component.html',
@@ -12,8 +16,8 @@ export class WachtwoordVergetenPageComponent implements OnInit {
   isBusy: boolean = false;
   errorMessage: string | null = null;
 
-  resetForm = new FormGroup({
-    email: new FormControl('', [
+  resetForm = new FormGroup<ResetForm>({
+    email: new FormControl<string>('', [
       Validators.required,
       Validators.email
     ])

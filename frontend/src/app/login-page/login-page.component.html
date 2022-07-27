@@ -20,11 +20,13 @@
                 <mat-label>E-mailadres</mat-label>
                 <mat-icon matSuffix>email</mat-icon>
                 <input matInput formControlName="email">
+                <mat-error *ngIf="loginForm.controls.email.hasError('required')">Verplicht</mat-error>
             </mat-form-field>
             <mat-form-field appearance="fill" class="password-input">
                 <mat-label>Wachtwoord</mat-label>
                 <mat-icon matSuffix>lock</mat-icon>
                 <input matInput type="password" formControlName="password">
+                <mat-error *ngIf="loginForm.controls.password.hasError('required')">Verplicht</mat-error>
             </mat-form-field>
             <div class="forgot-password-link-container">
                 <a routerLink="../wachtwoord-vergeten" [queryParams]="{ email: loginForm.controls.email.value }">Wachtwoord vergeten?</a>

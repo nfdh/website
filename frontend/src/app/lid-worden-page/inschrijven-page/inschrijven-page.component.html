@@ -4,50 +4,50 @@
 <form (ngSubmit)="onSubmit()" [formGroup]="formGroup">
     <app-form-section>
         <mat-form-field appearance="fill">
-            <mat-label>Volledige naam inclusief voorletters *</mat-label>
+            <mat-label>Volledige naam inclusief voorletters</mat-label>
             <input matInput formControlName="fullName" />
-            <mat-error *ngIf="formGroup.get('fullName')!.hasError('required')">Verplicht</mat-error>
+            <mat-error *ngIf="formGroup.controls.fullName.hasError('required')">Verplicht</mat-error>
         </mat-form-field>
         <mat-form-field appearance="fill">
-            <mat-label>Voornaam *</mat-label>
+            <mat-label>Voornaam</mat-label>
             <input matInput formControlName="firstName" />
-            <mat-error *ngIf="formGroup.get('firstName')!.hasError('required')">Verplicht</mat-error>
+            <mat-error *ngIf="formGroup.controls.firstName.hasError('required')">Verplicht</mat-error>
         </mat-form-field>
     </app-form-section>
     <app-form-section title="Adres">
         <mat-form-field appearance="fill">
-            <mat-label>Straat en huisnummer *</mat-label>
+            <mat-label>Straat en huisnummer</mat-label>
             <input matInput formControlName="address" />
-            <mat-error *ngIf="formGroup.get('address')!.hasError('required')">Verplicht</mat-error>
+            <mat-error *ngIf="formGroup.controls.address.hasError('required')">Verplicht</mat-error>
         </mat-form-field>
         <mat-form-field appearance="fill">
-            <mat-label>Postcode *</mat-label>
+            <mat-label>Postcode</mat-label>
             <input matInput formControlName="postalCode" />
-            <mat-error *ngIf="formGroup.get('postalCode')!.hasError('required')">Verplicht</mat-error>
+            <mat-error *ngIf="formGroup.controls.postalCode.hasError('required')">Verplicht</mat-error>
         </mat-form-field>
         <mat-form-field appearance="fill">
-            <mat-label>Woonplaats *</mat-label>
+            <mat-label>Woonplaats</mat-label>
             <input matInput formControlName="city" />
-            <mat-error *ngIf="formGroup.get('city')!.hasError('required')">Verplicht</mat-error>
+            <mat-error *ngIf="formGroup.controls.city.hasError('required')">Verplicht</mat-error>
         </mat-form-field>
     </app-form-section>
     <app-form-section title="Contactinformatie">
         <mat-form-field appearance="fill">
-            <mat-label>E-mail adres *</mat-label>
+            <mat-label>E-mail adres</mat-label>
             <input matInput formControlName="email" />
-            <mat-error *ngIf="formGroup.get('email')!.hasError('required')">Verplicht</mat-error>
-            <mat-error *ngIf="formGroup.get('email')!.hasError('email')">Ongeldig e-mail adres</mat-error>
+            <mat-error *ngIf="formGroup.controls.email.hasError('required')">Verplicht</mat-error>
+            <mat-error *ngIf="formGroup.controls.email.hasError('email')">Ongeldig e-mail adres</mat-error>
         </mat-form-field>
         <mat-form-field appearance="fill">
-            <mat-label>Telefoon- of mobielnummer *</mat-label>
+            <mat-label>Telefoon- of mobielnummer</mat-label>
             <input matInput formControlName="phoneNumber" />
-            <mat-error *ngIf="formGroup.get('phoneNumber')!.hasError('required')">Verplicht</mat-error>
-            <mat-error *ngIf="formGroup.get('phoneNumber')!.hasError('pattern')">Ongeldig telefoonnummer</mat-error>
+            <mat-error *ngIf="formGroup.controls.phoneNumber.hasError('required')">Verplicht</mat-error>
+            <mat-error *ngIf="formGroup.controls.phoneNumber.hasError('pattern')">Ongeldig telefoonnummer</mat-error>
         </mat-form-field>
     </app-form-section>
     <app-form-section title="Lidmaatschap">
         <mat-form-field appearance="fill">
-            <mat-label>Soort *</mat-label>
+            <mat-label>Soort</mat-label>
             <mat-select formControlName="membershipType">
                 <mat-option [value]="0">Donateur</mat-option>
                 <mat-option [value]="4">Gezinslidmaatschap</mat-option>
@@ -55,90 +55,90 @@
                 <mat-option [value]="2">Stamboeklidmaatschap</mat-option>
                 <mat-option [value]="3">Kudde (min. 100 ooien)</mat-option>
             </mat-select>
-            <mat-error *ngIf="formGroup.get('membershipType')!.hasError('required')">Verplicht</mat-error>
+            <mat-error *ngIf="formGroup.controls.membershipType.hasError('required')">Verplicht</mat-error>
         </mat-form-field>
 
-        <ng-container *ngIf="formGroup.get('membershipType')!.value === 0">
+        <ng-container *ngIf="formGroup.controls.membershipType.value === 0">
             <mat-form-field appearance="fill">
-                <mat-label>Bedrag (min. {{25 | intlNumber:{ style: 'currency', currency: 'EUR' } }}) *</mat-label>
+                <mat-label>Bedrag (min. {{25 | intlNumber:{ style: 'currency', currency: 'EUR' } }})</mat-label>
                 <input type="number" step=".01" matInput formControlName="amount" />
-                <mat-error *ngIf="formGroup.get('amount')!.hasError('required')">Verplicht</mat-error>
-                <mat-error *ngIf="formGroup.get('amount')!.hasError('min')">Minimaal {{25 | intlNumber:{ style: 'currency', currency: 'EUR' } }}</mat-error>
+                <mat-error *ngIf="formGroup.controls.amount.hasError('required')">Verplicht</mat-error>
+                <mat-error *ngIf="formGroup.controls.amount.hasError('min')">Minimaal {{25 | intlNumber:{ style: 'currency', currency: 'EUR' } }}</mat-error>
             </mat-form-field>
         </ng-container>
 
-        <ng-container *ngIf="formGroup.get('membershipType')!.value === 4">
+        <ng-container *ngIf="formGroup.controls.membershipType.value === 4">
             <mat-form-field appearance="fill">
-                <mat-label>Gezinslid *</mat-label>
+                <mat-label>Gezinslid</mat-label>
                 <input matInput formControlName="familyMember" />
-                <mat-error *ngIf="formGroup.get('familyMember')!.hasError('required')">Verplicht</mat-error>
+                <mat-error *ngIf="formGroup.controls.familyMember.hasError('required')">Verplicht</mat-error>
             </mat-form-field>
         </ng-container>
 
-        <ng-container *ngIf="formGroup.get('membershipType')!.value >= 2 && formGroup.get('membershipType')!.value &lt; 4">
+        <ng-container *ngIf="formGroup.controls.membershipType.value! >= 2 && formGroup.controls.membershipType.value! &lt; 4">
             <mat-form-field appearance="fill">
-                <mat-label>UBN nummer *</mat-label>
+                <mat-label>UBN nummer</mat-label>
                 <input matInput formControlName="ubn" />
-                <mat-error *ngIf="formGroup.get('ubn')!.hasError('required')">Verplicht</mat-error>
-                <mat-error *ngIf="formGroup.get('ubn')!.hasError('pattern')">Ongeldig UBN nummer</mat-error>
+                <mat-error *ngIf="formGroup.controls.ubn.hasError('required')">Verplicht</mat-error>
+                <mat-error *ngIf="formGroup.controls.ubn.hasError('pattern')">Ongeldig UBN nummer</mat-error>
             </mat-form-field>
         </ng-container>
 
-        <ng-container *ngIf="formGroup.get('membershipType')!.value === 3">
+        <ng-container *ngIf="formGroup.controls.membershipType.value === 3">
             <mat-form-field appearance="fill">
-                <mat-label>Gecertificeerd zwoegervrij *</mat-label>
+                <mat-label>Gecertificeerd zwoegervrij</mat-label>
                 <mat-select formControlName="zwoegerVrij">
                     <mat-option [value]="0">Ja</mat-option>
                     <mat-option [value]="1">Nee</mat-option>
                     <mat-option [value]="2">Niet van toepassing</mat-option>
                 </mat-select>
-                <mat-error *ngIf="formGroup.get('zwoegerVrij')!.hasError('required')">Verplicht</mat-error>
+                <mat-error *ngIf="formGroup.controls.zwoegerVrij.hasError('required')">Verplicht</mat-error>
             </mat-form-field>
             <mat-form-field appearance="fill">
                 <mat-label>Gemotiveerd verzoek met duidelijke omschrijving van de kudde</mat-label>
                 <textarea matInput formControlName="herdDscription" rows="10"></textarea>
-                <mat-error *ngIf="formGroup.get('herdDscription')!.hasError('required')">Verplicht</mat-error>
+                <mat-error *ngIf="formGroup.controls.herdDscription.hasError('required')">Verplicht</mat-error>
             </mat-form-field>
         </ng-container>
 
-        <mat-checkbox formControlName="acceptPrivacyStatement" color="primary">	Ik ga akkoord met het privacybeleid en bevestig dat mijn persoonlijke gegevens in overeenstemming met de wet mogen worden gebruikt. *</mat-checkbox>
+        <mat-checkbox formControlName="acceptPrivacyStatement" color="primary">	Ik ga akkoord met het privacybeleid en bevestig dat mijn persoonlijke gegevens in overeenstemming met de wet mogen worden gebruikt.</mat-checkbox>
 
-        <ng-container *ngIf="formGroup.get('membershipType')!.value >= 2 && formGroup.get('membershipType')!.value &lt; 4">
+        <ng-container *ngIf="formGroup.controls.membershipType.value! >= 2 && formGroup.controls.membershipType.value! &lt; 4">
             <app-message type="info" class="rvo-machtiging-message">Een RVO machtiging voor "Aanvragen informatieproducten" en "Meldingen" is verplicht voor stamboeklidmaatschap.<br/>Instructies zullen na aanmelding per e-mail naar u verstuurd worden.</app-message>
         </ng-container>
     </app-form-section>
-    <app-form-section title="Stamboek registratie" *ngIf="formGroup.get('membershipType')!.value === 2">
+    <app-form-section title="Stamboek registratie" *ngIf="formGroup.controls.membershipType.value === 2">
         <p class="sheep-table-text">Wanneer u kiest voor het stamboeklidmaatschap, bent u verplicht al uw Drenten en/of Schoonebeekers op te geven.</p>
 
         <div class="sheep-table">
-            <div class="sheep-row" *ngFor="let sheep of sheepFormGroups(); index as i" [formGroup]="sheep">
+            <div class="sheep-row" *ngFor="let sheep of formGroup.controls.sheep.controls; index as i" [formGroup]="sheep">
                 <div class="sheep-no">{{i + 1}}</div>
                 <div class="sheep-fields">
                     <div class="sheep-gender">
                         <mat-form-field appearance="fill" class="sheep-input">
-                            <mat-label>Ram/ooi *</mat-label>
+                            <mat-label>Ram/ooi</mat-label>
                             <mat-select formControlName="gender">
                                 <mat-option [value]="0">Ram</mat-option>
                                 <mat-option [value]="1">Ooi</mat-option>
                             </mat-select>
-                            <mat-error *ngIf="sheep.get('gender')!.hasError('required')">Verplicht</mat-error>
+                            <mat-error *ngIf="sheep.controls.gender.hasError('required')">Verplicht</mat-error>
                         </mat-form-field>
                     </div>
                     <div class="sheep-number">
                         <mat-form-field appearance="fill" class="sheep-input">
-                            <mat-label>Levensnummer *</mat-label>
+                            <mat-label>Levensnummer</mat-label>
                             <input matInput formControlName="number" />
-                            <mat-error *ngIf="sheep.get('number')!.hasError('required')">Verplicht</mat-error>
-                            <mat-error *ngIf="sheep.get('number')!.hasError('pattern')">Ongeldig levensnummer</mat-error>
+                            <mat-error *ngIf="sheep.controls.number.hasError('required')">Verplicht</mat-error>
+                            <mat-error *ngIf="sheep.controls.number.hasError('pattern')">Ongeldig levensnummer</mat-error>
                         </mat-form-field>
                     </div>
                     <div class="sheep-birthdate">
                         <mat-form-field appearance="fill" class="sheep-input">
-                            <mat-label>Geboortedatum *</mat-label>
+                            <mat-label>Geboortedatum</mat-label>
                             <input matInput formControlName="birthdate" [matDatepicker]="birthdatePicker">
                             <mat-datepicker-toggle matSuffix [for]="birthdatePicker"></mat-datepicker-toggle>
                             <mat-datepicker #birthdatePicker></mat-datepicker>
-                            <mat-error *ngIf="sheep.get('birthdate')!.hasError('required')">Verplicht</mat-error>
+                            <mat-error *ngIf="sheep.controls.birthdate.hasError('required')">Verplicht</mat-error>
                         </mat-form-field>
                     </div>
                     <div class="sheep-purchase">
@@ -153,22 +153,22 @@
                         <mat-form-field appearance="fill" class="sheep-input">
                             <mat-label>UBN Verkoper (indien aangekocht)</mat-label>
                             <input matInput formControlName="ubnOfSeller" />
-                            <mat-error *ngIf="sheep.get('ubnOfSeller')!.hasError('required')">Verplicht</mat-error>
+                            <mat-error *ngIf="sheep.controls.ubnOfSeller.hasError('required')">Verplicht</mat-error>
                         </mat-form-field>
                     </div>
                     <div class="sheep-registered">
                         <mat-form-field appearance="fill" class="sheep-input">
-                            <mat-label>Reeds stamboek geregistreerd *</mat-label>
+                            <mat-label>Reeds stamboek geregistreerd</mat-label>
                             <mat-select formControlName="registeredInStudbook">
                                 <mat-option [value]="0">Ja</mat-option>
                                 <mat-option [value]="1">Nee</mat-option>
                                 <mat-option [value]="2">Niet bekend</mat-option>
                             </mat-select>
-                            <mat-error *ngIf="sheep.get('registeredInStudbook')!.hasError('required')">Verplicht</mat-error>
+                            <mat-error *ngIf="sheep.controls.registeredInStudbook.hasError('required')">Verplicht</mat-error>
                         </mat-form-field>
                     </div>
                     <div class="sheep-actions">
-                        <button [disabled]="sheepFormGroups().length === 1" mat-button (click)="deleteSheep(i)"><mat-icon>delete</mat-icon><span class="sheep-action-text">&nbsp;Verwijderen</span></button>
+                        <button [disabled]="formGroup.controls.sheep.controls.length === 1" mat-button (click)="deleteSheep(i)"><mat-icon>delete</mat-icon><span class="sheep-action-text">&nbsp;Verwijderen</span></button>
                     </div>
                 </div>
             </div>

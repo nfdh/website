@@ -1,10 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AuthenticationService, User } from '../services/authentication.service';
 import { Router } from '@angular/router';
 import { AppTitleService } from '../services/app-title.service';
 import { setLastInfo } from './new-password-page/new-password-page.component';
+
+interface LoginForm {
+  email: FormControl<string | null>,
+  password: FormControl<string | null>
+}
 
 @Component({
   selector: 'app-login-page',
@@ -12,9 +17,13 @@ import { setLastInfo } from './new-password-page/new-password-page.component';
   styleUrls: ['./login-page.component.scss']
 })
 export class LoginPageComponent {
-  loginForm = new FormGroup({
-    email: new FormControl(''),
-    password: new FormControl('')
+  loginForm = new FormGroup<LoginForm>({
+    email: new FormControl<string>('', [
+      Validators.required
+    ]),
+    password: new FormControl<string>('', [
+      Validators.required
+    ])
   });
 
   isBusy: boolean = false;
@@ -25,8 +34,14 @@ export class LoginPageComponent {
   }
 
   onSubmit() {
-    this.isBusy = true;
     this.errorMessage = null;
+
+    if(!this.loginForm.valid) {
+      this.loginForm.markAllAsTouched();
+      return;
+    }
+
+    this.isBusy = true;
 
     this.httpClient.post<User | boolean | "reset_password_on_login">("/api/login", this.loginForm.value)
       .subscribe((result) => {
@@ -36,7 +51,7 @@ export class LoginPageComponent {
           this.router.navigate([this.router.routerState.snapshot.root.queryParams.returnUrl || "/ledenportaal"]);
         }
         else if(result === "reset_password_on_login") {
-          setLastInfo(this.loginForm.controls.email.value, this.loginForm.controls.password.value);
+          setLastInfo(this.loginForm.controls.email.value!, this.loginForm.controls.password.value!);
           this.router.navigate(["/login/nieuw-wachtwoord"]);
         }
         else {

@@ -5,12 +5,12 @@
         <mat-form-field appearance="fill" class="season-input">
             <mat-label>Dekseizoen</mat-label>
             <input matInput type="number" formControlName="season" />
-            <mat-error *ngIf="formGroup.get('season')!.hasError('required')">Verplicht</mat-error>
+            <mat-error *ngIf="formGroup.controls.season.hasError('required')">Verplicht</mat-error>
         </mat-form-field>
         <mat-form-field appearance="fill">
             <mat-label>Naam stamboeklid</mat-label>
             <input matInput formControlName="name" />
-            <mat-error *ngIf="formGroup.get('name')!.hasError('required')">Verplicht</mat-error>
+            <mat-error *ngIf="formGroup.controls.name.hasError('required')">Verplicht</mat-error>
         </mat-form-field>
     </app-form-section>
     <app-form-section title="Stamboek">
@@ -32,22 +32,22 @@
         <mat-form-field appearance="fill" class="ko-input">
             <mat-label>Aanwezige volwassen ooien (Geboren in {{seasonOffset(-2)}} en eerder)</mat-label>
             <input matInput type="number" formControlName="kovo" />
-            <mat-error *ngIf="formGroup.get('kovo')!.hasError('required')">Verplicht</mat-error>
+            <mat-error *ngIf="formGroup.controls.kovo.hasError('required')">Verplicht</mat-error>
         </mat-form-field>
         <mat-form-field appearance="fill" class="ko-input">
             <mat-label>Aanwezige enters (Geboren in {{seasonOffset(-1)}})</mat-label>
             <input matInput type="number" formControlName="koe" />
-            <mat-error *ngIf="formGroup.get('koe')!.hasError('required')">Verplicht</mat-error>
+            <mat-error *ngIf="formGroup.controls.koe.hasError('required')">Verplicht</mat-error>
         </mat-form-field>
         <mat-form-field appearance="fill" class="ko-input">
             <mat-label>Geboren ooilammeren (Geboren in {{seasonOffset(0)}})</mat-label>
             <input matInput type="number" formControlName="kool" />
-            <mat-error *ngIf="formGroup.get('kool')!.hasError('required')">Verplicht</mat-error>
+            <mat-error *ngIf="formGroup.controls.kool.hasError('required')">Verplicht</mat-error>
         </mat-form-field>
         <mat-form-field appearance="fill" class="ko-input">
             <mat-label>Geboren ramlammeren (Geboren in {{seasonOffset(0)}})</mat-label>
             <input matInput type="number" formControlName="korl" />
-            <mat-error *ngIf="formGroup.get('korl')!.hasError('required')">Verplicht</mat-error>
+            <mat-error *ngIf="formGroup.controls.korl.hasError('required')">Verplicht</mat-error>
         </mat-form-field>
     </app-form-section>
     <app-form-section title="Dekgroepen">
@@ -59,15 +59,15 @@
         </p>
         <button mat-stroked-button type="button" (click)="addDekgroep()" class="add-dekgroep-button"><mat-icon>playlist_add</mat-icon> Dekgroep toevoegen</button>
         <div class="dekgroepen">
-            <mat-card *ngFor="let dekgroep of dekgroepenFormGroups(); index as i" class="dekgroep mat-elevation-z2" [formGroup]="dekgroep">
+            <mat-card *ngFor="let dekgroep of formGroup.controls.dekgroepen.controls; index as i" class="dekgroep mat-elevation-z2" [formGroup]="dekgroep">
                 <h4 class="dekgroep-title">Dekgroep {{i + 1}}</h4>
                 <mat-form-field appearance="fill" class="dkao-input">
                     <mat-label>Aantal ooien</mat-label>
                     <input matInput type="number" formControlName="ewe_count" />
-                    <mat-error *ngIf="dekgroep.get('ewe_count')!.hasError('required')">Verplicht</mat-error>
+                    <mat-error *ngIf="dekgroep.controls.ewe_count.hasError('required')">Verplicht</mat-error>
                 </mat-form-field>
                 <ng-container formArrayName="rammen">
-                    <div *ngFor="let ram of rammen(i).controls; index as ri" class="ram">
+                    <div *ngFor="let ram of dekgroep.controls.rammen.controls; index as ri" class="ram">
                         <mat-form-field appearance="fill" class="ram-input">
                             <mat-label>Ram {{ri + 1}}</mat-label>
                             <input matInput [formControlName]="ri" placeholder="Levensnummer (12 cijfers)" />

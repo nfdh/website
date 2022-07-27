@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationService, User } from 'src/app/services/authentication.service';
 
@@ -10,6 +10,11 @@ let lastPassword: string | null = null;
 export function setLastInfo($email: string, $password: string) {
   lastEmail = $email;
   lastPassword = $password;
+}
+
+interface NewPasswordForm {
+  wachtwoord1: FormControl<string | null>,
+  wachtwoord2: FormControl<string | null>
 }
 
 @Component({
@@ -22,11 +27,11 @@ export class NewPasswordPageComponent implements OnInit {
   errorMessage: string | null = null;
   passwordsNotEqual: boolean = false;
 
-  formGroup = new FormGroup({
-    wachtwoord1: new FormControl('', [
+  formGroup = new FormGroup<NewPasswordForm>({
+    wachtwoord1: new FormControl<string>('', [
       Validators.required
     ]),
-    wachtwoord2: new FormControl('', [
+    wachtwoord2: new FormControl<string>('', [
       Validators.required,
     ])
   });

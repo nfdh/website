@@ -1,3 +1,4 @@
+import { FormatWidth } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -12,6 +13,24 @@ interface AddResult {
   success: boolean,
   id?: number,
   reason?: "UNKNOWN"
+}
+
+interface DekgroepForm {
+  ewe_count: FormControl<string | null>,
+  rammen: FormArray<FormControl<string | null>>
+}
+
+interface DekverklaringForm {
+  season: FormControl<string | null>,
+  name: FormControl<string | null>,
+  studbook: FormControl<string | null>,
+  kovo: FormControl<string | null>,
+  koe: FormControl<string | null>,
+  kool: FormControl<string | null>,
+  korl: FormControl<string | null>
+
+  dekgroepen: FormArray<FormGroup<DekgroepForm>>,
+  remarks: FormControl<string | null>
 }
 
 @Component({
@@ -108,7 +127,7 @@ export class AddDekverklaringPageComponent {
   }
 
   seasonOffset(offset: number) {
-    const filledIn = this.formGroup.controls.season.value;
+    const filledIn = this.formGroup.controls.season.value!;
     const seasonNumber = parseInt(filledIn, 10);
     if(isNaN(seasonNumber)) {
       return '?';
@@ -118,30 +137,32 @@ export class AddDekverklaringPageComponent {
     }
   }
 
+  /*
   dekgroepen() {
-    return this.formGroup.controls.dekgroepen as FormArray;
+    return this.formGroup.controls.dekgroepen as UntypedFormArray;
   }
 
   dekgroepenFormGroups() {
-    return this.dekgroepen().controls as FormGroup[];
-  }
+    return this.dekgroepen().controls;
+  }*/
 
   addDekgroep() {
-    this.dekgroepen().push(createDekgroepFormGroup());
+    this.formGroup.controls.dekgroepen.push(createDekgroepFormGroup());
   }
 
+  /*
   rammen(dekgroep: number) {
-    return this.dekgroepen().controls[dekgroep].get("rammen") as FormArray;
-  }
+    return this.dekgroepen().controls[dekgroep].rammen;
+  }*/
 
   addRam(dekgroep: number) {
-    this.rammen(dekgroep).push(createRamFormControl());
+    this.formGroup.controls.dekgroepen.controls[dekgroep].controls.rammen.push(createRamFormControl());
   }
 
   removeRam(dekgroep: number, ram: number) {
-    const rammen = this.rammen(dekgroep);
+    const rammen = this.formGroup.controls.dekgroepen.controls[dekgroep].controls.rammen;
     if(rammen.length === 1) {
-      this.dekgroepen().removeAt(dekgroep);
+      this.formGroup.controls.dekgroepen.removeAt(dekgroep);
     }
     else {
       rammen.removeAt(ram);
@@ -149,55 +170,55 @@ export class AddDekverklaringPageComponent {
   }
 }
 
-export function createFormGroup(): FormGroup {
+export function createFormGroup(): FormGroup<DekverklaringForm> {
   const currentYear = new Date().getFullYear();
 
-  return new FormGroup({
-    season: new FormControl(currentYear.toString(), [
+  return new FormGroup<DekverklaringForm>({
+    season: new FormControl<string>(currentYear.toString(), [
       Validators.required
     ]),
-    name: new FormControl('', [
-      Validators.required
-    ]),
-
-    studbook: new FormControl('', [
+    name: new FormControl<string>('', [
       Validators.required
     ]),
 
-    kovo: new FormControl('', [
-      Validators.required
-    ]),
-    koe: new FormControl('', [
-      Validators.required
-    ]),
-    kool: new FormControl('', [
-      Validators.required
-    ]),
-    korl: new FormControl('', [
+    studbook: new FormControl<string>('', [
       Validators.required
     ]),
 
-    dekgroepen: new FormArray([
+    kovo: new FormControl<string>('', [
+      Validators.required
+    ]),
+    koe: new FormControl<string>('', [
+      Validators.required
+    ]),
+    kool: new FormControl<string>('', [
+      Validators.required
+    ]),
+    korl: new FormControl<string>('', [
+      Validators.required
+    ]),
+
+    dekgroepen: new FormArray<FormGroup<DekgroepForm>>([
       createDekgroepFormGroup()
     ]),
 
-    remarks: new FormControl('')
+    remarks: new FormControl<string>('')
   });
 }
 
 export function createDekgroepFormGroup() {
-  return new FormGroup({
-    ewe_count: new FormControl('', [
+  return new FormGroup<DekgroepForm>({
+    ewe_count: new FormControl<string>('', [
       Validators.required
     ]),
-    rammen: new FormArray([
+    rammen: new FormArray<FormControl<string | null>>([
       createRamFormControl()
     ])
   });
 }
 
 export function createRamFormControl() {
-  return new FormControl('', [
+  return new FormControl<string>('', [
     Validators.required,
     Validators.pattern(/^0|[0-9]{12}$/g)
   ])
