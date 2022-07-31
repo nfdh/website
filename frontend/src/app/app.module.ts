@@ -82,6 +82,7 @@ import { VerzondenPageComponent as InschrijvenVerzondenPageComponent } from './l
 import { NewPasswordPageComponent } from './login-page/new-password-page/new-password-page.component';
 import { FalcooPageComponent } from './member-page/falcoo-page/falcoo-page.component';
 import { ProtocollenCLPageComponent } from './member-page/protocollen-clpage/protocollen-clpage.component';
+import { InstructieRvoMachtigingComponent } from './lid-worden-page/inschrijven-page/instructie-rvo-machtiging/instructie-rvo-machtiging.component';
 
 @NgModule({
   declarations: [
@@ -123,6 +124,7 @@ import { ProtocollenCLPageComponent } from './member-page/protocollen-clpage/pro
     NewPasswordPageComponent,
     FalcooPageComponent,
     ProtocollenCLPageComponent,
+    InstructieRvoMachtigingComponent
   ],
   imports: [
     BrowserModule,

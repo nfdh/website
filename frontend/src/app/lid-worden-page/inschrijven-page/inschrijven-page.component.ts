@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormGroup, Validators, FormControl, Form } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { InstructieRvoMachtigingComponent } from './instructie-rvo-machtiging/instructie-rvo-machtiging.component';
 
 interface SignUpResult {
   success: boolean
@@ -35,6 +37,7 @@ interface SignUpForm {
   familyMember: FormControl<string | null>,
   amount: FormControl<number | null>,
   ubn: FormControl<string | null>,
+  rvoRelationNumber: FormControl<string | null>,
   zwoegerVrij: FormControl<boolean | null>,
   herdDscription: FormControl<string | null>
   sheep: FormArray<FormGroup<SheepForm>>,
@@ -89,6 +92,9 @@ export class InschrijvenPageComponent implements OnInit {
       Validators.required,
       Validators.pattern(/^[0-9]{2,7}$/i)
     ]),
+    rvoRelationNumber: new FormControl<string>('', [
+      Validators.required
+    ]),
     zwoegerVrij: new FormControl<boolean>(false, [
       Validators.required
     ]),
@@ -107,7 +113,7 @@ export class InschrijvenPageComponent implements OnInit {
 
   errorMessage = '';
 
-  constructor(private route: ActivatedRoute, private httpClient: HttpClient, private router: Router) {
+  constructor(private route: ActivatedRoute, private httpClient: HttpClient, private router: Router, private dialog: MatDialog) {
     this.formGroup.controls.membershipType.valueChanges.subscribe(typeValue => {
       switch(typeValue) {
         // Donateur
@@ -115,6 +121,7 @@ export class InschrijvenPageComponent implements OnInit {
           this.formGroup.controls.amount.enable();
           this.formGroup.controls.familyMember.disable();
           this.formGroup.controls.ubn.disable();
+          this.formGroup.controls.rvoRelationNumber.disable();
           this.formGroup.controls.zwoegerVrij.disable();
           this.formGroup.controls.herdDscription.disable();
           this.formGroup.controls.sheep.disable();
@@ -125,6 +132,7 @@ export class InschrijvenPageComponent implements OnInit {
           this.formGroup.controls.amount.disable();
           this.formGroup.controls.familyMember.disable();
           this.formGroup.controls.ubn.disable();
+          this.formGroup.controls.rvoRelationNumber.disable();
           this.formGroup.controls.zwoegerVrij.disable();
           this.formGroup.controls.herdDscription.disable();
           this.formGroup.controls.sheep.disable();
@@ -135,6 +143,7 @@ export class InschrijvenPageComponent implements OnInit {
           this.formGroup.controls.amount.disable();
           this.formGroup.controls.familyMember.disable();
           this.formGroup.controls.ubn.enable();
+          this.formGroup.controls.rvoRelationNumber.enable();
           this.formGroup.controls.zwoegerVrij.disable();
           this.formGroup.controls.herdDscription.disable();
           this.formGroup.controls.sheep.enable();
@@ -145,6 +154,7 @@ export class InschrijvenPageComponent implements OnInit {
           this.formGroup.controls.amount.disable();
           this.formGroup.controls.familyMember.disable();
           this.formGroup.controls.ubn.enable();
+          this.formGroup.controls.rvoRelationNumber.enable();
           this.formGroup.controls.zwoegerVrij.enable();
           this.formGroup.controls.herdDscription.enable();
           this.formGroup.controls.sheep.disable();
@@ -155,6 +165,7 @@ export class InschrijvenPageComponent implements OnInit {
           this.formGroup.controls.amount.disable();
           this.formGroup.controls.familyMember.enable();
           this.formGroup.controls.ubn.disable();
+          this.formGroup.controls.rvoRelationNumber.disable();
           this.formGroup.controls.zwoegerVrij.disable();
           this.formGroup.controls.herdDscription.disable();
           this.formGroup.controls.sheep.disable();
@@ -164,6 +175,7 @@ export class InschrijvenPageComponent implements OnInit {
       this.formGroup.controls.amount.updateValueAndValidity();
       this.formGroup.controls.familyMember.updateValueAndValidity();
       this.formGroup.controls.ubn.updateValueAndValidity();
+      this.formGroup.controls.rvoRelationNumber.updateValueAndValidity();
       this.formGroup.controls.zwoegerVrij.updateValueAndValidity();
       this.formGroup.controls.herdDscription.updateValueAndValidity();
       this.formGroup.controls.sheep.updateValueAndValidity();
@@ -181,6 +193,14 @@ export class InschrijvenPageComponent implements OnInit {
         default: return;
       }
       this.formGroup.controls.membershipType.setValue(typeValue);
+    });
+  }
+
+  openRvoInstructions(e: MouseEvent) {
+    e.preventDefault();
+
+    this.dialog.open(InstructieRvoMachtigingComponent, {
+      width: '1000px'
     });
   }
 
