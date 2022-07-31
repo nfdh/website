@@ -132,7 +132,12 @@ function register_signup_routes(FastRoute\RouteCollector $r, \Lib\Database $db, 
             $pdf->Cell($cl, $lh, "UBN nummer:");
             $pdf->Write($lh, $values['ubn']);
 
+            $pdf->Ln($lh);
+            $pdf->Cell($cl, $lh, 'RVO relatienummer:');
+            $pdf->write($lh, $values['rvoRelationNumber']);
+
             $jsonObj['ubn'] = $values['ubn'];
+            $jsonObj['rvoRelationNumber'] = $values['rvoRelationNumber'];
         }
 
         if($membershipType == 3) {

@@ -82,6 +82,15 @@
                 <mat-error *ngIf="formGroup.controls.ubn.hasError('required')">Verplicht</mat-error>
                 <mat-error *ngIf="formGroup.controls.ubn.hasError('pattern')">Ongeldig UBN nummer</mat-error>
             </mat-form-field>
+
+            <app-message type="info" class="rvo-machtiging-message">
+                Een RVO machtiging voor "Aanvragen informatieproducten" en "Meldingen" is verplicht voor stamboeklidmaatschap.<br/><a href="#" (click)="openRvoInstructions($event)">Hoe maak ik een RVO machtiging aan?</a>
+            </app-message>
+            <mat-form-field appearance="fill">
+                <mat-label>RVO relatienummer</mat-label>
+                <input matInput formControlName="rvoRelationNumber" />
+                <mat-error *ngIf="formGroup.controls.rvoRelationNumber.hasError('required')">Verplicht</mat-error>
+            </mat-form-field>
         </ng-container>
 
         <ng-container *ngIf="formGroup.controls.membershipType.value === 3">
@@ -102,10 +111,7 @@
         </ng-container>
 
         <mat-checkbox formControlName="acceptPrivacyStatement" color="primary">	Ik ga akkoord met het privacybeleid en bevestig dat mijn persoonlijke gegevens in overeenstemming met de wet mogen worden gebruikt.</mat-checkbox>
-
-        <ng-container *ngIf="formGroup.controls.membershipType.value! >= 2 && formGroup.controls.membershipType.value! &lt; 4">
-            <app-message type="info" class="rvo-machtiging-message">Een RVO machtiging voor "Aanvragen informatieproducten" en "Meldingen" is verplicht voor stamboeklidmaatschap.<br/>Instructies zullen na aanmelding per e-mail naar u verstuurd worden.</app-message>
-        </ng-container>
+        
     </app-form-section>
     <app-form-section title="Stamboek registratie" *ngIf="formGroup.controls.membershipType.value === 2">
         <p class="sheep-table-text">Wanneer u kiest voor het stamboeklidmaatschap, bent u verplicht al uw Drenten en/of Schoonebeekers op te geven.</p>
