@@ -11,4 +11,5 @@ The frontend consists of an Angular application.
 
 ### Backend
 The backend is written in PHP.
-- **index.php** REST Api endpoint
+- **index.php** Main entry point, calls the appropriate route based on url.
+- **lib/routes/*.php** Implementation of the different API calls
