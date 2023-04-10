@@ -40,8 +40,15 @@ interface SignUpForm {
   rvoRelationNumber: FormControl<string | null>,
   zwoegerVrij: FormControl<boolean | null>,
   herdDscription: FormControl<string | null>
-  sheep: FormArray<FormGroup<SheepForm>>,
+  studbooks: FormArray<FormGroup<StudbookForm>>,
   acceptPrivacyStatement: FormControl<boolean | null>
+}
+
+type Studbook = 0 | 1;
+
+interface StudbookForm {
+  studbook: FormControl<Studbook | null>,
+  sheep: FormArray<FormGroup<SheepForm>>
 }
 
 @Component({
@@ -102,8 +109,8 @@ export class InschrijvenPageComponent implements OnInit {
       Validators.required
     ]),
 
-    sheep: new FormArray<FormGroup<SheepForm>>([
-      this.createSheepFormGroup()
+    studbooks: new FormArray<FormGroup<StudbookForm>>([
+      this.createStudbookFormGroup(0)
     ]),
 
     acceptPrivacyStatement: new FormControl<boolean>(false, [
@@ -124,7 +131,7 @@ export class InschrijvenPageComponent implements OnInit {
           this.formGroup.controls.rvoRelationNumber.disable();
           this.formGroup.controls.zwoegerVrij.disable();
           this.formGroup.controls.herdDscription.disable();
-          this.formGroup.controls.sheep.disable();
+          this.formGroup.controls.studbooks.disable();
           break;
 
         // Basislidmaatschap
@@ -135,7 +142,7 @@ export class InschrijvenPageComponent implements OnInit {
           this.formGroup.controls.rvoRelationNumber.disable();
           this.formGroup.controls.zwoegerVrij.disable();
           this.formGroup.controls.herdDscription.disable();
-          this.formGroup.controls.sheep.disable();
+          this.formGroup.controls.studbooks.disable();
           break;
 
         // Stamboeklidmaatschap
@@ -146,7 +153,7 @@ export class InschrijvenPageComponent implements OnInit {
           this.formGroup.controls.rvoRelationNumber.enable();
           this.formGroup.controls.zwoegerVrij.disable();
           this.formGroup.controls.herdDscription.disable();
-          this.formGroup.controls.sheep.enable();
+          this.formGroup.controls.studbooks.enable();
           break;
 
         // Kudde
@@ -157,7 +164,7 @@ export class InschrijvenPageComponent implements OnInit {
           this.formGroup.controls.rvoRelationNumber.enable();
           this.formGroup.controls.zwoegerVrij.enable();
           this.formGroup.controls.herdDscription.enable();
-          this.formGroup.controls.sheep.disable();
+          this.formGroup.controls.studbooks.disable();
           break;
 
         // Gezinslidmaatschap
@@ -168,7 +175,7 @@ export class InschrijvenPageComponent implements OnInit {
           this.formGroup.controls.rvoRelationNumber.disable();
           this.formGroup.controls.zwoegerVrij.disable();
           this.formGroup.controls.herdDscription.disable();
-          this.formGroup.controls.sheep.disable();
+          this.formGroup.controls.studbooks.disable();
           break;
       }
 
@@ -178,7 +185,7 @@ export class InschrijvenPageComponent implements OnInit {
       this.formGroup.controls.rvoRelationNumber.updateValueAndValidity();
       this.formGroup.controls.zwoegerVrij.updateValueAndValidity();
       this.formGroup.controls.herdDscription.updateValueAndValidity();
-      this.formGroup.controls.sheep.updateValueAndValidity();
+      this.formGroup.controls.studbooks.updateValueAndValidity();
   });
 
     route.queryParamMap.subscribe((params) => {
@@ -228,6 +235,34 @@ export class InschrijvenPageComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  onStudbookChange(index: number, newValue: Studbook | null) {
+    if(this.formGroup.controls.studbooks.length === 1) {
+      return;
+    }
+    
+    const otherIndex = index === 0 ? 1 : 0;
+    const other = this.formGroup.controls.studbooks.controls[otherIndex];
+    const otherValue = newValue === 0 ? 1 : 0;
+    other.controls.studbook.setValue(otherValue, {
+      emitEvent: false
+    });
+  }
+
+  createStudbookFormGroup(i: number): FormGroup<StudbookForm> {
+    const result = new FormGroup<StudbookForm>({
+      studbook: new FormControl<Studbook | null>(null, [
+        Validators.required
+      ]),
+      sheep: new FormArray<FormGroup<SheepForm>>([
+        this.createSheepFormGroup()
+      ])
+    });
+    
+    result.controls.studbook.valueChanges.subscribe((n) => this.onStudbookChange(i, n));
+
+    return result;
+  }
+  
   createSheepFormGroup(): FormGroup<SheepForm> {
     return new FormGroup<SheepForm>({
       gender: new FormControl<SheepGender | null>(null, [
@@ -248,11 +283,29 @@ export class InschrijvenPageComponent implements OnInit {
     });
   }
 
-  deleteSheep(idx: number) {
-    this.formGroup.controls.sheep.removeAt(idx);
+  deleteStudbook(studbook: number) {
+    this.formGroup.controls.studbooks.removeAt(studbook);
   }
 
-  addSheep() {
-    this.formGroup.controls.sheep.push(this.createSheepFormGroup());
+  addStudbook() {
+    const group = this.createStudbookFormGroup(1);
+
+    const firstGroup = this.formGroup.controls.studbooks.controls[0];
+    if(firstGroup.controls.studbook.value === 0) {
+      group.controls.studbook.setValue(1);
+    }
+    else if(firstGroup.controls.studbook.value === 1) {
+      group.controls.studbook.setValue(0);
+    }
+
+    this.formGroup.controls.studbooks.push(group);
+  }
+
+  deleteSheep(studbook: number, idx: number) {
+    this.formGroup.controls.studbooks.controls[studbook].controls.sheep.removeAt(idx);
+  }
+
+  addSheep(studbook: number) {
+    this.formGroup.controls.studbooks.controls[studbook].controls.sheep.push(this.createSheepFormGroup());
   }
 }

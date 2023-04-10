@@ -116,71 +116,87 @@
     <app-form-section title="Stamboek registratie" *ngIf="formGroup.controls.membershipType.value === 2">
         <p class="sheep-table-text">Wanneer u kiest voor het stamboeklidmaatschap, bent u verplicht al uw Drenten en/of Schoonebeekers op te geven.</p>
 
-        <div class="sheep-table">
-            <div class="sheep-row" *ngFor="let sheep of formGroup.controls.sheep.controls; index as i" [formGroup]="sheep">
-                <div class="sheep-no">{{i + 1}}</div>
-                <div class="sheep-fields">
-                    <div class="sheep-gender">
-                        <mat-form-field appearance="fill" class="sheep-input">
-                            <mat-label>Ram/ooi</mat-label>
-                            <mat-select formControlName="gender">
-                                <mat-option [value]="0">Ram</mat-option>
-                                <mat-option [value]="1">Ooi</mat-option>
-                            </mat-select>
-                            <mat-error *ngIf="sheep.controls.gender.hasError('required')">Verplicht</mat-error>
-                        </mat-form-field>
-                    </div>
-                    <div class="sheep-number">
-                        <mat-form-field appearance="fill" class="sheep-input">
-                            <mat-label>Levensnummer</mat-label>
-                            <input matInput formControlName="number" />
-                            <mat-error *ngIf="sheep.controls.number.hasError('required')">Verplicht</mat-error>
-                            <mat-error *ngIf="sheep.controls.number.hasError('pattern')">Ongeldig levensnummer</mat-error>
-                        </mat-form-field>
-                    </div>
-                    <div class="sheep-birthdate">
-                        <mat-form-field appearance="fill" class="sheep-input">
-                            <mat-label>Geboortedatum</mat-label>
-                            <input matInput formControlName="birthdate" [matDatepicker]="birthdatePicker">
-                            <mat-datepicker-toggle matSuffix [for]="birthdatePicker"></mat-datepicker-toggle>
-                            <mat-datepicker #birthdatePicker></mat-datepicker>
-                            <mat-error *ngIf="sheep.controls.birthdate.hasError('required')">Verplicht</mat-error>
-                        </mat-form-field>
-                    </div>
-                    <div class="sheep-purchase">
-                        <mat-form-field appearance="fill" class="sheep-input">
-                            <mat-label>Aankoopdatum (indien aangekocht)</mat-label>
-                            <input matInput formControlName="dateOfPurchase" [matDatepicker]="dateOfPurchasePicker">
-                            <mat-datepicker-toggle matSuffix [for]="dateOfPurchasePicker"></mat-datepicker-toggle>
-                            <mat-datepicker #dateOfPurchasePicker></mat-datepicker>
-                        </mat-form-field>
-                    </div>
-                    <div class="sheep-seller-ubn">
-                        <mat-form-field appearance="fill" class="sheep-input">
-                            <mat-label>UBN Verkoper (indien aangekocht)</mat-label>
-                            <input matInput formControlName="ubnOfSeller" />
-                            <mat-error *ngIf="sheep.controls.ubnOfSeller.hasError('required')">Verplicht</mat-error>
-                        </mat-form-field>
-                    </div>
-                    <div class="sheep-registered">
-                        <mat-form-field appearance="fill" class="sheep-input">
-                            <mat-label>Reeds stamboek geregistreerd</mat-label>
-                            <mat-select formControlName="registeredInStudbook">
-                                <mat-option [value]="0">Ja</mat-option>
-                                <mat-option [value]="1">Nee</mat-option>
-                                <mat-option [value]="2">Niet bekend</mat-option>
-                            </mat-select>
-                            <mat-error *ngIf="sheep.controls.registeredInStudbook.hasError('required')">Verplicht</mat-error>
-                        </mat-form-field>
-                    </div>
-                    <div class="sheep-actions">
-                        <button [disabled]="formGroup.controls.sheep.controls.length === 1" mat-button (click)="deleteSheep(i)"><mat-icon>delete</mat-icon><span class="sheep-action-text">&nbsp;Verwijderen</span></button>
+        <div class="studbooks">
+            <div class="studbook" *ngFor="let studbook of formGroup.controls.studbooks.controls; index as si" [formGroup]="studbook">
+                <div class="studbook-header">
+                    <mat-form-field appearance="fill" class="studbook-input">
+                        <mat-label>Ras</mat-label>
+                        <mat-select formControlName="studbook">
+                            <mat-option [value]="0">Drents Heideschaap</mat-option>
+                            <mat-option [value]="1">Schoonebeeker</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="studbook.controls.studbook.hasError('required')">Verplicht</mat-error>
+                    </mat-form-field>
+                    <button [disabled]="formGroup.controls.studbooks.controls.length === 1" title="" mat-button (click)="deleteStudbook(si)" title="Tabel verwijderen"><mat-icon>delete</mat-icon><span class="sheep-action-text">&nbsp;Verwijderen</span></button>
+                </div>
+                <div class="sheep-table">
+                    <div class="sheep-row" *ngFor="let sheep of studbook.controls.sheep.controls; index as i" [formGroup]="sheep">
+                        <div class="sheep-no">{{i + 1}}</div>
+                        <div class="sheep-fields">
+                            <div class="sheep-gender">
+                                <mat-form-field appearance="fill" class="sheep-input">
+                                    <mat-label>Ram/ooi</mat-label>
+                                    <mat-select formControlName="gender">
+                                        <mat-option [value]="0">Ram</mat-option>
+                                        <mat-option [value]="1">Ooi</mat-option>
+                                    </mat-select>
+                                    <mat-error *ngIf="sheep.controls.gender.hasError('required')">Verplicht</mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="sheep-number">
+                                <mat-form-field appearance="fill" class="sheep-input">
+                                    <mat-label>Levensnummer</mat-label>
+                                    <input matInput formControlName="number" />
+                                    <mat-error *ngIf="sheep.controls.number.hasError('required')">Verplicht</mat-error>
+                                    <mat-error *ngIf="sheep.controls.number.hasError('pattern')">Ongeldig levensnummer</mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="sheep-birthdate">
+                                <mat-form-field appearance="fill" class="sheep-input">
+                                    <mat-label>Geboortedatum</mat-label>
+                                    <input matInput formControlName="birthdate" [matDatepicker]="birthdatePicker">
+                                    <mat-datepicker-toggle matSuffix [for]="birthdatePicker"></mat-datepicker-toggle>
+                                    <mat-datepicker #birthdatePicker></mat-datepicker>
+                                    <mat-error *ngIf="sheep.controls.birthdate.hasError('required')">Verplicht</mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="sheep-purchase">
+                                <mat-form-field appearance="fill" class="sheep-input">
+                                    <mat-label>Aankoopdatum (indien aangekocht)</mat-label>
+                                    <input matInput formControlName="dateOfPurchase" [matDatepicker]="dateOfPurchasePicker">
+                                    <mat-datepicker-toggle matSuffix [for]="dateOfPurchasePicker"></mat-datepicker-toggle>
+                                    <mat-datepicker #dateOfPurchasePicker></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+                            <div class="sheep-seller-ubn">
+                                <mat-form-field appearance="fill" class="sheep-input">
+                                    <mat-label>UBN Verkoper (indien aangekocht)</mat-label>
+                                    <input matInput formControlName="ubnOfSeller" />
+                                    <mat-error *ngIf="sheep.controls.ubnOfSeller.hasError('required')">Verplicht</mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="sheep-registered">
+                                <mat-form-field appearance="fill" class="sheep-input">
+                                    <mat-label>Reeds stamboek geregistreerd</mat-label>
+                                    <mat-select formControlName="registeredInStudbook">
+                                        <mat-option [value]="0">Ja</mat-option>
+                                        <mat-option [value]="1">Nee</mat-option>
+                                        <mat-option [value]="2">Niet bekend</mat-option>
+                                    </mat-select>
+                                    <mat-error *ngIf="sheep.controls.registeredInStudbook.hasError('required')">Verplicht</mat-error>
+                                </mat-form-field>
+                            </div>
+                            <div class="sheep-actions">
+                                <button [disabled]="studbook.controls.sheep.controls.length === 1" mat-button (click)="deleteSheep(si, i)" title="Regel verwijderen"><mat-icon>delete</mat-icon><span class="sheep-action-text">&nbsp;Verwijderen</span></button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <button mat-button class="add-button" (click)="addSheep()" type="button"><mat-icon>add</mat-icon> Schaap toevoegen</button>
+                <button mat-button class="add-button" (click)="addSheep(si)" type="button"><mat-icon>add</mat-icon> Schaap toevoegen</button>
+            </div>
+            <button *ngIf="formGroup.controls.studbooks.controls.length &lt; 2" mat-button class="add-button" (click)="addStudbook()" type="button"><mat-icon>add</mat-icon> Stamboek toevoegen</button>
+        </div>
     </app-form-section>
     <app-form-actions>
         <button mat-raised-button color="primary" type="submit">Verzenden</button>
