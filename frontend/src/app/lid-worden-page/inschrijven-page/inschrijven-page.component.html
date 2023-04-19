@@ -127,7 +127,7 @@
                         </mat-select>
                         <mat-error *ngIf="studbook.controls.studbook.hasError('required')">Verplicht</mat-error>
                     </mat-form-field>
-                    <button [disabled]="formGroup.controls.studbooks.controls.length === 1" title="" mat-button (click)="deleteStudbook(si)" title="Tabel verwijderen"><mat-icon>delete</mat-icon><span class="sheep-action-text">&nbsp;Verwijderen</span></button>
+                    <button [disabled]="formGroup.controls.studbooks.controls.length === 1" title="" mat-button (click)="deleteStudbook(si)" title="Ras verwijderen"><mat-icon>delete</mat-icon><span class="sheep-action-text">&nbsp;Verwijderen</span></button>
                 </div>
                 <div class="sheep-table">
                     <div class="sheep-row" *ngFor="let sheep of studbook.controls.sheep.controls; index as i" [formGroup]="sheep">
@@ -195,7 +195,7 @@
 
                 <button mat-button class="add-button" (click)="addSheep(si)" type="button"><mat-icon>add</mat-icon> Schaap toevoegen</button>
             </div>
-            <button *ngIf="formGroup.controls.studbooks.controls.length &lt; 2" mat-button class="add-button" (click)="addStudbook()" type="button"><mat-icon>add</mat-icon> Stamboek toevoegen</button>
+            <button *ngIf="formGroup.controls.studbooks.controls.length &lt; 2" mat-button class="add-button" (click)="addStudbook()" type="button"><mat-icon>add</mat-icon> Ras toevoegen</button>
         </div>
     </app-form-section>
     <app-form-actions>
