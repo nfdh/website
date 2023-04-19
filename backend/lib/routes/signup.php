@@ -26,6 +26,13 @@ function register_signup_routes(FastRoute\RouteCollector $r, \Lib\Database $db, 
             }
         }
 
+        function parse_studbook($studbook) {
+            switch($studbook) {
+                case 0: return 'Drents Heideschaap';
+                case 1: return 'Schoonebeeker';
+            }
+        }
+
         function parse_sheep_gender($gender) {
             switch($gender) {
                 case 0: return 'Ram';
@@ -166,34 +173,45 @@ function register_signup_routes(FastRoute\RouteCollector $r, \Lib\Database $db, 
         if($membershipType == 2) {
             $csv_path = $file_storage . DIRECTORY_SEPARATOR . $uuid . ".csv";
             $csv = fopen($csv_path, "w");
-            fputcsv($csv, ['Ram/ooi', 'Levensnummer', 'Geboortedatum', 'Aankoopdatum', 'UBN verkoper', 'Reeds stamboek geregistreerd'], ";");
+            fputcsv($csv, ['Ras', 'Ram/ooi', 'Levensnummer', 'Geboortedatum', 'Aankoopdatum', 'UBN verkoper', 'Reeds stamboek geregistreerd'], ";");
 
-            $sheepJsonObj = [];
+            $studbookJsonObj = [];
 
-            foreach($values['sheep'] as $sheep) {
-                $birthDate = Utils::parse_datetime_from_json($sheep['birthdate']);
-                $dateOfPurchase = $sheep['dateOfPurchase'] == null ? null : Utils::parse_datetime_from_json($sheep['dateOfPurchase']);
+            foreach($values['studbooks'] as $studbook) {
+                $sheepJsonObj = [];
+                $studbookName = parse_studbook($studbook['studbook']);
 
-                fputcsv($csv, [
-                    parse_sheep_gender($sheep['gender']),
-                    $sheep['number'],
-                    Utils::format_date($birthDate, "%d-%m-%Y"),
-                    $dateOfPurchase == null ? '' : Utils::format_date($dateOfPurchase, "%d-%m-%Y"),
-                    $sheep['ubnOfSeller'] == null ? '' : $sheep['ubnOfSeller'],
-                    parse_registered($sheep['registeredInStudbook'])
-                ], ";");
+                foreach($studbook['sheep'] as $sheep) {
+                    $birthDate = Utils::parse_datetime_from_json($sheep['birthdate']);
+                    $dateOfPurchase = $sheep['dateOfPurchase'] == null ? null : Utils::parse_datetime_from_json($sheep['dateOfPurchase']);
 
-                $sheepJsonObj[] = [
-                    "gender" => $sheep['gender'],
-                    "number" => $sheep['number'],
-                    "birthDate" => Utils::format_datetime_for_json($birthDate),
-                    "registeredInStudbook" => $sheep['registeredInStudbook'],
-                    "dateOfPurchase" => $dateOfPurchase == null ? null : Utils::format_datetime_for_json($dateOfPurchase),
-                    "ubnOfSeller" => $sheep['ubnOfSeller']
+                    fputcsv($csv, [
+                        $studbookName,
+                        parse_sheep_gender($sheep['gender']),
+                        $sheep['number'],
+                        Utils::format_date($birthDate, "%d-%m-%Y"),
+                        $dateOfPurchase == null ? '' : Utils::format_date($dateOfPurchase, "%d-%m-%Y"),
+                        $sheep['ubnOfSeller'] == null ? '' : $sheep['ubnOfSeller'],
+                        parse_registered($sheep['registeredInStudbook'])
+                    ], ";");
+
+                    $sheepJsonObj[] = [
+                        "gender" => $sheep['gender'],
+                        "number" => $sheep['number'],
+                        "birthDate" => Utils::format_datetime_for_json($birthDate),
+                        "registeredInStudbook" => $sheep['registeredInStudbook'],
+                        "dateOfPurchase" => $dateOfPurchase == null ? null : Utils::format_datetime_for_json($dateOfPurchase),
+                        "ubnOfSeller" => $sheep['ubnOfSeller']
+                    ];
+                }
+
+                $studbookJsonObj[] = [
+                    "studbook" => $studbook['studbook'],
+                    "sheep" => $sheepJsonObj
                 ];
             }
 
-            $jsonObj['sheep'] = $sheepJsonObj;
+            $jsonObj['studbooks'] = $studbookJsonObj;
 
             fclose($csv);
         }

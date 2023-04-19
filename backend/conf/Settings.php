@@ -25,7 +25,6 @@ else {
             'url' => 'https://drentsheideschaap.nl',
             'file_storage' => '/data/sites/web/drentsheideschaapnl/files',
             'mail_targets' => [
-                // Use temporary e-mails
                 'member_administration' => 'penningmeester@nfdh.nl',
                 'studbook_administration' => 'stamboek@nfdh.nl',
                 'website_management' => 'website@nfdh.nl'
