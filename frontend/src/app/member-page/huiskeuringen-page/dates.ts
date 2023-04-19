@@ -1,12 +1,12 @@
 export default [
     // noord
     [
+        new Date(2023, 5, 16),
         new Date(2023, 5, 17),
         new Date(2023, 5, 18),
-        new Date(2023, 5, 19),
+        new Date(2023, 7, 25),
         new Date(2023, 7, 26),
-        new Date(2023, 7, 27),
-        new Date(2023, 7, 28)
+        new Date(2023, 7, 27)
     ],
     // oost
     [

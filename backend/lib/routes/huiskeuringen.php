@@ -130,12 +130,12 @@ function register_huiskeuringen_routes(FastRoute\RouteCollector $r, \Lib\Databas
 
             $dates = array(
                 array(
+                    date_date_set(new \DateTime(), 2023, 6, 16),
                     date_date_set(new \DateTime(), 2023, 6, 17),
                     date_date_set(new \DateTime(), 2023, 6, 18),
-                    date_date_set(new \DateTime(), 2023, 6, 19),
+                    date_date_set(new \DateTime(), 2023, 8, 25),
                     date_date_set(new \DateTime(), 2023, 8, 26),
-                    date_date_set(new \DateTime(), 2023, 8, 27),
-                    date_date_set(new \DateTime(), 2023, 8, 28)
+                    date_date_set(new \DateTime(), 2023, 8, 27)
                 ),
                 array(
                     date_date_set(new \DateTime(), 2023, 7, 1),
