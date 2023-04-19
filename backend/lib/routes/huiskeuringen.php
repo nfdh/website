@@ -119,7 +119,7 @@ function register_huiskeuringen_routes(FastRoute\RouteCollector $r, \Lib\Databas
                 case 0: return "Noord (Drenthe / Friesland / Groningen)";
                 case 1: return "Oost (Gelderland / Overijssel / Flevoland)";
                 case 2: return "West (Utrecht / Zuid-Holland / Noord-Holland)";
-                case 3: return "Zuid (Limburg / Noord-Braband / Zeeland / België)";
+                case 3: return "Zuid (Limburg / Noord-Brabant / Zeeland / België)";
                 case -1: return "Overig - Zie opmerking";
             }
         }
