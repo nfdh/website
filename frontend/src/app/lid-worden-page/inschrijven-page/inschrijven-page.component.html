@@ -1,4 +1,9 @@
 <h1>Inschrijven</h1>
+<p>
+    Het inschrijfformulier is wegens onderhoud tijdelijk niet beschikbaar.<br />
+    Probeer het over een aantal dagen nog eens, of neem contact op met de <a routerLink="/vereniging/bestuur-en-commissies">ledenadministratie</a>.
+</p>
+<!--
 <p class="intro-text">Vul het onderstaande formulier in en druk op "Verzenden". Wij zullen daarna contact met u opnemen om de inschrijving af te ronden.</p>
 <app-message type="error" *ngIf="!!errorMessage">{{errorMessage}}</app-message>
 <form (ngSubmit)="onSubmit()" [formGroup]="formGroup">
@@ -12,6 +17,15 @@
             <mat-label>Voornaam</mat-label>
             <input matInput formControlName="firstName" />
             <mat-error *ngIf="formGroup.controls.firstName.hasError('required')">Verplicht</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+            <mat-label>Geslacht</mat-label>
+            <mat-select formControlName="gender">
+                <mat-option value="male">Man</mat-option>
+                <mat-option value="female">Vrouw</mat-option>
+                <mat-option value="other">Overig</mat-option>
+            </mat-select>
+            <mat-error *ngIf="formGroup.controls.gender.hasError('required')">Verplicht</mat-error>
         </mat-form-field>
     </app-form-section>
     <app-form-section title="Adres">
@@ -49,16 +63,16 @@
         <mat-form-field appearance="fill">
             <mat-label>Soort</mat-label>
             <mat-select formControlName="membershipType">
-                <mat-option [value]="0">Donateur</mat-option>
-                <mat-option [value]="4">Gezinslidmaatschap</mat-option>
-                <mat-option [value]="1">Basislidmaatschap</mat-option>
-                <mat-option [value]="2">Stamboeklidmaatschap</mat-option>
-                <mat-option [value]="3">Kudde (min. 100 ooien)</mat-option>
+                <mat-option value="donateur">Donateur</mat-option>
+                <mat-option value="stamboeklid">Stamboeklid</mat-option>
+                <mat-option value="kuddelid">Kuddelid</mat-option>
+                <mat-option value="deelnemer-fokbeleid">Deelnemer fokbeleid</mat-option>
+                <mat-option value="gezinslid">Gezinslid</mat-option>
             </mat-select>
             <mat-error *ngIf="formGroup.controls.membershipType.hasError('required')">Verplicht</mat-error>
         </mat-form-field>
 
-        <ng-container *ngIf="formGroup.controls.membershipType.value === 0">
+        <ng-container *ngIf="formGroup.controls.membershipType.value === 'donateur'">
             <mat-form-field appearance="fill">
                 <mat-label>Bedrag (min. {{25 | intlNumber:{ style: 'currency', currency: 'EUR' } }})</mat-label>
                 <input type="number" step=".01" matInput formControlName="amount" />
@@ -67,22 +81,24 @@
             </mat-form-field>
         </ng-container>
 
-        <ng-container *ngIf="formGroup.controls.membershipType.value === 4">
+        <ng-container *ngIf="formGroup.controls.membershipType.value === 'gezinslid'">
             <mat-form-field appearance="fill">
-                <mat-label>Gezinslid</mat-label>
+                <mat-label>Naam stamboekfokker (Behoort bij en woont op hetzelfde adres)</mat-label>
                 <input matInput formControlName="familyMember" />
                 <mat-error *ngIf="formGroup.controls.familyMember.hasError('required')">Verplicht</mat-error>
             </mat-form-field>
         </ng-container>
 
-        <ng-container *ngIf="formGroup.controls.membershipType.value! >= 2 && formGroup.controls.membershipType.value! &lt; 4">
+        <ng-container *ngIf="['stamboeklid','kuddelid','deelnemer-fokbeleid'].includes(formGroup.controls.membershipType.value!) || (formGroup.controls.membershipType.value === 'donateur' && formGroup.controls.donateurOwnsSheep.value)">
             <mat-form-field appearance="fill">
                 <mat-label>UBN nummer</mat-label>
                 <input matInput formControlName="ubn" />
                 <mat-error *ngIf="formGroup.controls.ubn.hasError('required')">Verplicht</mat-error>
                 <mat-error *ngIf="formGroup.controls.ubn.hasError('pattern')">Ongeldig UBN nummer</mat-error>
             </mat-form-field>
+        </ng-container>
 
+        <ng-container *ngIf="['stamboeklid','kuddelid','deelnemer-fokbeleid'].includes(formGroup.controls.membershipType.value!)">
             <app-message type="info" class="rvo-machtiging-message">
                 Een RVO machtiging voor "Aanvragen informatieproducten" en "Meldingen" is verplicht voor stamboeklidmaatschap.<br/><a href="#" (click)="openRvoInstructions($event)">Hoe maak ik een RVO machtiging aan?</a>
             </app-message>
@@ -93,7 +109,7 @@
             </mat-form-field>
         </ng-container>
 
-        <ng-container *ngIf="formGroup.controls.membershipType.value === 3">
+        <ng-container *ngIf="formGroup.controls.membershipType.value === 'kuddelid'">
             <mat-form-field appearance="fill">
                 <mat-label>Gecertificeerd zwoegervrij</mat-label>
                 <mat-select formControlName="zwoegerVrij">
@@ -113,7 +129,7 @@
         <mat-checkbox formControlName="acceptPrivacyStatement" color="primary">	Ik ga akkoord met het privacybeleid en bevestig dat mijn persoonlijke gegevens in overeenstemming met de wet mogen worden gebruikt.</mat-checkbox>
         
     </app-form-section>
-    <app-form-section title="Stamboek registratie" *ngIf="formGroup.controls.membershipType.value === 2">
+    <app-form-section title="Stamboek registratie" *ngIf="['stamboeklid','deelnemer-fokbeleid'].includes(formGroup.controls.membershipType.value!)">
         <p class="sheep-table-text">Wanneer u kiest voor het stamboeklidmaatschap, bent u verplicht al uw Drenten en/of Schoonebeekers op te geven.</p>
 
         <div class="studbooks">
@@ -137,8 +153,8 @@
                                 <mat-form-field appearance="fill" class="sheep-input">
                                     <mat-label>Ram/ooi</mat-label>
                                     <mat-select formControlName="gender">
-                                        <mat-option [value]="0">Ram</mat-option>
-                                        <mat-option [value]="1">Ooi</mat-option>
+                                        <mat-option value="ram">Ram</mat-option>
+                                        <mat-option value="ooi">Ooi</mat-option>
                                     </mat-select>
                                     <mat-error *ngIf="sheep.controls.gender.hasError('required')">Verplicht</mat-error>
                                 </mat-form-field>
@@ -179,9 +195,9 @@
                                 <mat-form-field appearance="fill" class="sheep-input">
                                     <mat-label>Reeds stamboek geregistreerd</mat-label>
                                     <mat-select formControlName="registeredInStudbook">
-                                        <mat-option [value]="0">Ja</mat-option>
-                                        <mat-option [value]="1">Nee</mat-option>
-                                        <mat-option [value]="2">Niet bekend</mat-option>
+                                        <mat-option value="yes">Ja</mat-option>
+                                        <mat-option value="no">Nee</mat-option>
+                                        <mat-option value="unknown">Niet bekend</mat-option>
                                     </mat-select>
                                     <mat-error *ngIf="sheep.controls.registeredInStudbook.hasError('required')">Verplicht</mat-error>
                                 </mat-form-field>
@@ -203,3 +219,4 @@
         <button mat-button routerLink="..">Annuleren</button>
     </app-form-actions>
 </form>
+-->

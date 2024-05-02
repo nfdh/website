@@ -10,11 +10,13 @@ interface SignUpResult {
   success: boolean
 }
 
-type MembershipType = 0 | 1 | 2 | 3 | 4;
+type MembershipType = 'donateur' | 'stamboeklid' | 'kuddelid' | 'deelnemer-fokbeleid' | 'gezinslid';
 
-type SheepGender = 0 | 1;
+type SheepGender = 'ram' | 'ooi';
 
-type SheepRegisteredStatus = 0 | 1 | 2;
+type SheepRegisteredStatus = 'yes' | 'no' | 'unknown';
+
+type Gender = 'male' | 'female' | 'other';
 
 interface SheepForm {
   gender: FormControl<SheepGender | null>,
@@ -28,6 +30,7 @@ interface SheepForm {
 interface SignUpForm {
   fullName: FormControl<string | null>,
   firstName: FormControl<string | null>,
+  gender: FormControl<Gender | null>,
   address: FormControl<string | null>,
   postalCode: FormControl<string | null>,
   city: FormControl<string | null>,
@@ -62,6 +65,9 @@ export class InschrijvenPageComponent implements OnInit {
       Validators.required
     ]),
     firstName: new FormControl<string>('', [
+      Validators.required
+    ]),
+    gender: new FormControl<Gender | null>(null, [
       Validators.required
     ]),
     address: new FormControl<string>('', [
@@ -123,8 +129,7 @@ export class InschrijvenPageComponent implements OnInit {
   constructor(private route: ActivatedRoute, private httpClient: HttpClient, private router: Router, private dialog: MatDialog) {
     this.formGroup.controls.membershipType.valueChanges.subscribe(typeValue => {
       switch(typeValue) {
-        // Donateur
-        case 0:
+        case 'donateur':
           this.formGroup.controls.amount.enable();
           this.formGroup.controls.familyMember.disable();
           this.formGroup.controls.ubn.disable();
@@ -134,49 +139,6 @@ export class InschrijvenPageComponent implements OnInit {
           this.formGroup.controls.studbooks.disable();
           break;
 
-        // Basislidmaatschap
-        case 1:
-          this.formGroup.controls.amount.disable();
-          this.formGroup.controls.familyMember.disable();
-          this.formGroup.controls.ubn.disable();
-          this.formGroup.controls.rvoRelationNumber.disable();
-          this.formGroup.controls.zwoegerVrij.disable();
-          this.formGroup.controls.herdDscription.disable();
-          this.formGroup.controls.studbooks.disable();
-          break;
-
-        // Stamboeklidmaatschap
-        case 2:
-          this.formGroup.controls.amount.disable();
-          this.formGroup.controls.familyMember.disable();
-          this.formGroup.controls.ubn.enable();
-          this.formGroup.controls.rvoRelationNumber.enable();
-          this.formGroup.controls.zwoegerVrij.disable();
-          this.formGroup.controls.herdDscription.disable();
-          this.formGroup.controls.studbooks.enable();
-          break;
-
-        // Kudde
-        case 3:
-          this.formGroup.controls.amount.disable();
-          this.formGroup.controls.familyMember.disable();
-          this.formGroup.controls.ubn.enable();
-          this.formGroup.controls.rvoRelationNumber.enable();
-          this.formGroup.controls.zwoegerVrij.enable();
-          this.formGroup.controls.herdDscription.enable();
-          this.formGroup.controls.studbooks.disable();
-          break;
-
-        // Gezinslidmaatschap
-        case 4:
-          this.formGroup.controls.amount.disable();
-          this.formGroup.controls.familyMember.enable();
-          this.formGroup.controls.ubn.disable();
-          this.formGroup.controls.rvoRelationNumber.disable();
-          this.formGroup.controls.zwoegerVrij.disable();
-          this.formGroup.controls.herdDscription.disable();
-          this.formGroup.controls.studbooks.disable();
-          break;
       }
 
       this.formGroup.controls.amount.updateValueAndValidity();
@@ -190,16 +152,9 @@ export class InschrijvenPageComponent implements OnInit {
 
     route.queryParamMap.subscribe((params) => {
       const type = params.get("soort");
-      let typeValue: MembershipType;
-      switch(type) {
-        case 'donateur': typeValue = 0; break;
-        case 'basislidmaatschap': typeValue = 1; break;
-        case 'stamboeklidmaatschap': typeValue = 2; break;
-        case 'kudde': typeValue = 3; break;
-        case 'gezinslidmaatschap': typeValue = 4; break;
-        default: return;
+      if(type !== null && isMembershipType(type)) {
+        this.formGroup.controls.membershipType.setValue(type);
       }
-      this.formGroup.controls.membershipType.setValue(typeValue);
     });
   }
 
@@ -308,4 +263,12 @@ export class InschrijvenPageComponent implements OnInit {
   addSheep(studbook: number) {
     this.formGroup.controls.studbooks.controls[studbook].controls.sheep.push(this.createSheepFormGroup());
   }
+}
+
+function isMembershipType(value: string): value is MembershipType {
+  return value === 'donateur' 
+    || value == 'stamboeklid' 
+    || value === 'kuddelid'
+    || value === 'deelnemer-fokbeleid'
+    || value === 'gezinslid';
 }

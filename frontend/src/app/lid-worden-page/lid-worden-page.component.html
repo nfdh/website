@@ -4,102 +4,117 @@
     <table class="pros-table">
         <thead>
             <tr class="roles">
-                <th class="label-header">&nbsp;</th> 
-                <th class="check-header">Donateur</th> 
-                <th class="check-header">Basislid</th> 
-                <th class="check-header">Stamboeklid</th> 
-                <th class="check-header">Kudde</th> 
+                <th class="label-header">&nbsp;</th>
+                <th class="check-header">Donateur</th>
+                <th class="check-header">Stamboeklid</th>
+                <th class="check-header">Kuddelid</th>
+                <th class="check-header">Deelnemer Fokbeleid</th>
+                <th class="check-header">Gezinslid</th>
             </tr>
             <tr class="role-infos">
-                <th class="label-header">&nbsp;</th> 
-                <th class="check-header">U steunt de vereniging zonder lid te worden.</th> 
-                <th class="check-header">U wordt lid van de vereniging, maar uw dieren worden niet ingeschreven in het stamboek.</th> 
-                <th class="check-header">U wordt lid van de vereniging en uw dieren worden ingeschreven in het stamboek.</th> 
-                <th class="check-header">Voor kuddes met minimaal 100 ooien gelden aparte regels.</th> 
+                <th class="label-header">&nbsp;</th>
+                <th class="check-header">U steunt de vereniging zonder lid te worden.</th>
+                <th class="check-header">U wordt lid van de vereniging en uw dieren worden ingeschreven in het stamboek.</th>
+                <th class="check-header">Voor kuddes met minimaal 100 ooien gelden aparte regels.</th>
+                <th class="check-header">U neemt enkel deel aan het fokprogramma van de vereniging.</th>
+                <th class="check-header">Tot het gezin behoren van een stamboeklid en in hetzelfde huis wonen.</th>
             </tr>
             <tr class="prices">
                 <th class="label-header">&nbsp;</th>
                 <th class="check-header">
-                    <span class="sub">min.</span> € 25<br />
+                    <span class="sub">min.</span> € 30<br />
                     <span class="sub">per jaar</span>
                 </th>
                 <th class="check-header">
-                    € 30<br/>
+                    € 52 <a class="price-hint" routerLink="prijslijst" matTooltip="Plus extra kosten voor bijvoorbeeld huiskeuringen">*</a><br/>
                     <span class="sub">per jaar</span>
                 </th>
                 <th class="check-header">
-                    € 50 <a class="price-hint" routerLink="prijslijst" matTooltip="Plus extra kosten voor bijvoorbeeld huiskeuringen">*</a><br/>
+                    € 67 <a class="price-hint" routerLink="prijslijst" matTooltip="Plus extra kosten voor bijvoorbeeld huiskeuringen">*</a><br />
                     <span class="sub">per jaar</span>
                 </th>
                 <th class="check-header">
-                    € 60 <a class="price-hint" routerLink="prijslijst" matTooltip="Plus extra kosten voor bijvoorbeeld huiskeuringen">*</a><br />
+                    € 100,50 <a class="price-hint" routerLink="prijslijst" matTooltip="Plus extra kosten voor bijvoorbeeld huiskeuringen">*</a><br />
+                    <span class="sub">per jaar</span>
+                </th>
+                <th class="check-header">
+                    € 10<br/>
                     <span class="sub">per jaar</span>
                 </th>
             </tr>
             <tr class="join-buttons">
                 <th class="label-header">Voordelen</th>
                 <th class="check-header"><button mat-stroked-button routerLink="inschrijven" [queryParams]="{ 'soort': 'donateur' }">Inschrijven</button></th>
-                <th class="check-header"><button mat-stroked-button routerLink="inschrijven" [queryParams]="{ 'soort': 'basislidmaatschap' }">Inschrijven</button></th>
                 <th class="check-header"><button mat-raised-button color="primary" routerLink="inschrijven" [queryParams]="{ 'soort': 'stamboeklidmaatschap' }">Inschrijven</button></th>
                 <th class="check-header"><button mat-stroked-button routerLink="inschrijven" [queryParams]="{ 'soort': 'kudde' }">Inschrijven</button></th>
+                <th class="check-header"><button mat-stroked-button routerLink="inschrijven" [queryParams]="{ 'soort': 'deelnemer-fokbeleid' }">Inschrijven</button></th>
+                <th class="check-header"><button mat-stroked-button routerLink="inschrijven" [queryParams]="{ 'soort': 'gezinslid' }">Inschrijven</button></th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td class="label-column">U ondersteunt de instandhouding van een uniek en oeroud levend erfgoed.</td>
-                <td class="check-column"><mat-icon>check</mat-icon></td>
-                <td class="check-column"><mat-icon>check</mat-icon></td>
-                <td class="check-column"><mat-icon>check</mat-icon></td>
-                <td class="check-column"><mat-icon>check</mat-icon></td>
-            </tr>
-            <tr>
-                <td class="label-column">Middels het clubblad en elektronische nieuwsbrieven wordt u op de hoogte gehouden van de laatste ontwikkelingen.</td>
-                <td class="check-column"><mat-icon>check</mat-icon></td>
-                <td class="check-column"><mat-icon>check</mat-icon></td>
-                <td class="check-column"><mat-icon>check</mat-icon></td>
-                <td class="check-column"><mat-icon>check</mat-icon></td>
-            </tr>
-            <tr>
-                <td class="label-column">U heeft toegang tot een enorme hoeveelheid kennis en ervaring die binnen onze vereniging is verzameld.</td>
-                <td class="check-column"><mat-icon>check</mat-icon></td>
-                <td class="check-column"><mat-icon>check</mat-icon></td>
-                <td class="check-column"><mat-icon>check</mat-icon></td>
-                <td class="check-column"><mat-icon>check</mat-icon></td>
-            </tr>
-            <tr>
-                <td class="label-column">Stimulerende en gezellige contacten met andere houders van Drents Heideschapen en Schoonebeekers</td>
-                <td class="check-column"><mat-icon>check</mat-icon></td>
-                <td class="check-column"><mat-icon>check</mat-icon></td>
-                <td class="check-column"><mat-icon>check</mat-icon></td>
-                <td class="check-column"><mat-icon>check</mat-icon></td>
-            </tr>
-            <tr>
-                <td class="label-column">Nieuwe leden ontvangen het 'Handboek Fokkerij'.</td>
+                <td class="label-column">Lid van de vereniging</td>
                 <td class="check-column">&nbsp;</td>
                 <td class="check-column"><mat-icon>check</mat-icon></td>
                 <td class="check-column"><mat-icon>check</mat-icon></td>
+                <td class="check-column">&nbsp;</td>
+                <td class="check-column">&nbsp;</td>
+            </tr>
+            <tr>
+                <td class="label-column">Toegang tot de ALV</td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
                 <td class="check-column"><mat-icon>check</mat-icon></td>
             </tr>
             <tr>
-                <td class="label-column">Diverse kortingen: 20% op abonnement van Het Schaap en korting op oormerken bij Beljaars Schapenpraktijk.</td>
+                <td class="label-column">Stemrecht op de ALV</td>
                 <td class="check-column">&nbsp;</td>
                 <td class="check-column"><mat-icon>check</mat-icon></td>
                 <td class="check-column"><mat-icon>check</mat-icon></td>
+                <td class="check-column">&nbsp;</td>
                 <td class="check-column"><mat-icon>check</mat-icon></td>
+            </tr>
+            <tr>
+                <td class="label-column">Deelname aan alles wat de NFDH organiseert</td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
+            </tr>
+            <tr>
+                <td class="label-column">Mogelijkheid deelname aan Paraplubestand</td>
+                <td class="check-column">&nbsp;</td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
+                <td class="check-column">&nbsp;</td>
+                <td class="check-column">&nbsp;</td>
+            </tr>
+            <tr>
+                <td class="label-column">Ontvangt het verenigingsblad 'De Schone Drent'</td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
+                <td class="check-column">&nbsp;</td>
             </tr>        
             <tr>
-                <td class="label-column">Stemrecht bij algemene ledenvergaderingen.</td>
+                <td class="label-column">Ontvangt éénmalig het Handboek Fokkerij</td>
                 <td class="check-column">&nbsp;</td>
                 <td class="check-column"><mat-icon>check</mat-icon></td>
                 <td class="check-column"><mat-icon>check</mat-icon></td>
-                <td class="check-column"><mat-icon>check</mat-icon></td>
+                <td class="check-column">&nbsp;</td>
+                <td class="check-column">&nbsp;</td>
             </tr>
             <tr>
-                <td class="label-column">Kunnen een mentor krijgen, die hen begeleidt bij het houden van schapen.</td>
+                <td class="label-column">Kan tegen vastgestelde prijs éénmalig het Handboek Fokkerij ontvangen</td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
                 <td class="check-column">&nbsp;</td>
                 <td class="check-column">&nbsp;</td>
                 <td class="check-column"><mat-icon>check</mat-icon></td>
-                <td class="check-column"><mat-icon>check</mat-icon></td>
+                <td class="check-column">&nbsp;</td>
             </tr>
         </tbody>
     </table>
@@ -109,36 +124,96 @@
             <tr class="roles">
                 <th class="label-header">&nbsp;</th> 
                 <th class="check-header">Donateur</th> 
-                <th class="check-header">Lidmaatschap</th> 
-                <th class="check-header">Stamboekfokker</th> 
-                <th class="check-header">Kudde</th> 
+                <th class="check-header">Stamboeklid</th> 
+                <th class="check-header">Kuddelid</th> 
+                <th class="check-header">Deelnemer Fokbeleid</th>
+                <th class="check-header">Gezinslid</th>
             </tr>
             <tr class="join-buttons">
-                <th class="label-header">Verantwoordelijkheden</th>
-                <th class="check-header"><button mat-stroked-button routerLink="inschrijven">Inschrijven</button></th>
+                <th class="label-header">Voorwaarden</th>
                 <th class="check-header"><button mat-stroked-button routerLink="inschrijven">Inschrijven</button></th>
                 <th class="check-header"><button mat-raised-button color="primary" routerLink="inschrijven">Inschrijven</button></th>
+                <th class="check-header"><button mat-stroked-button routerLink="inschrijven">Inschrijven</button></th>
+                <th class="check-header"><button mat-stroked-button routerLink="inschrijven">Inschrijven</button></th>
                 <th class="check-header"><button mat-stroked-button routerLink="inschrijven">Inschrijven</button></th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td class="label-column">U laat uw dieren <a routerLink="../fokken/keuringen">keuren</a>.</td>
+                <td class="label-column">Affiniteit hebben met het ras</td>
                 <td class="check-column">&nbsp;</td>
-                <td class="check-column">&nbsp;</td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
                 <td class="check-column"><mat-icon>check</mat-icon></td>
                 <td class="check-column"><mat-icon>check</mat-icon></td>
             </tr>
             <tr>
-                <td class="label-column">U fokt uw schapen op basis van de rasstandaard.</td>
-                <td class="check-column">&nbsp;</td>
+                <td class="label-column">De doelstelling van de NFDH onderschrijven</td>
                 <td class="check-column">&nbsp;</td>
                 <td class="check-column"><mat-icon>check</mat-icon></td>
                 <td class="check-column"><mat-icon>check</mat-icon></td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
+            </tr>
+            <tr>
+                <td class="label-column">Bereid zijn met regelmaat te fokken</td>
+                <td class="check-column">&nbsp;</td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
+                <td class="check-column">&nbsp;</td>
+            </tr>
+            <tr>
+                <td class="label-column">Bereid zijn te fokken volgens het fokbeleid NFDH</td>
+                <td class="check-column">&nbsp;</td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
+                <td class="check-column">&nbsp;</td>
+            </tr>
+            <tr>
+                <td class="label-column">Alle aanwezige dieren van het ras worden geregistreerd</td>
+                <td class="check-column">&nbsp;</td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
+                <td class="check-column">&nbsp;</td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
+                <td class="check-column">&nbsp;</td>
+            </tr>
+            <tr>
+                <td class="label-column">Bereid zijn de dieren te laten keuren</td>
+                <td class="check-column">&nbsp;</td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
+                <td class="check-column">&nbsp;</td>
+            </tr>
+            <tr>
+                <td class="label-column">Bereid zijn integer te handelen</td>
+                <td class="check-column">&nbsp;</td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
+                <td class="check-column">&nbsp;</td>
+            </tr>
+            <tr>
+                <td class="label-column">Verplicht NFDH machtigen voor RVO (informatieproduct en en meldingen)</td>
+                <td class="check-column">&nbsp;</td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
+                <td class="check-column">&nbsp;</td>
+            </tr>
+            <tr>
+                <td class="label-column">Bereid zijn zich te onderwerpen aan de regels van het Protocol Kuddes</td>
+                <td class="check-column">&nbsp;</td>
+                <td class="check-column">&nbsp;</td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
+                <td class="check-column">&nbsp;</td>
+                <td class="check-column">&nbsp;</td>
             </tr>
         </tbody>
     </table>
 </div>
 <p>
-    Indien iemand uit uw gezin al lid is, kunt u <a routerLink="inschrijven" [queryParams]="{ 'soort': 'gezinslidmaatschap' }">lid worden tegen een gereduceerd tarief</a>. Een compleet <a routerLink="prijslijst">overzicht van de tarieven</a> is beschikbaar.
+    Een compleet <a routerLink="prijslijst">overzicht van de tarieven</a> is beschikbaar.
 </p>
