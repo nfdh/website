@@ -45,8 +45,8 @@
             <tr class="join-buttons">
                 <th class="label-header">Voordelen</th>
                 <th class="check-header"><button mat-stroked-button routerLink="inschrijven" [queryParams]="{ 'soort': 'donateur' }">Inschrijven</button></th>
-                <th class="check-header"><button mat-raised-button color="primary" routerLink="inschrijven" [queryParams]="{ 'soort': 'stamboeklidmaatschap' }">Inschrijven</button></th>
-                <th class="check-header"><button mat-stroked-button routerLink="inschrijven" [queryParams]="{ 'soort': 'kudde' }">Inschrijven</button></th>
+                <th class="check-header"><button mat-raised-button color="primary" routerLink="inschrijven" [queryParams]="{ 'soort': 'stamboeklid' }">Inschrijven</button></th>
+                <th class="check-header"><button mat-stroked-button routerLink="inschrijven" [queryParams]="{ 'soort': 'kuddelid' }">Inschrijven</button></th>
                 <th class="check-header"><button mat-stroked-button routerLink="inschrijven" [queryParams]="{ 'soort': 'deelnemer-fokbeleid' }">Inschrijven</button></th>
                 <th class="check-header"><button mat-stroked-button routerLink="inschrijven" [queryParams]="{ 'soort': 'gezinslid' }">Inschrijven</button></th>
             </tr>
@@ -89,11 +89,11 @@
                 <td class="check-column">&nbsp;</td>
                 <td class="check-column"><mat-icon>check</mat-icon></td>
                 <td class="check-column"><mat-icon>check</mat-icon></td>
-                <td class="check-column">&nbsp;</td>
+                <td class="check-column"><mat-icon>check</mat-icon></td>
                 <td class="check-column">&nbsp;</td>
             </tr>
             <tr>
-                <td class="label-column">Ontvangt het verenigingsblad 'De Schone Drent'</td>
+                <td class="label-column">Ontvangt het verenigingsblad 'De Schoone Drent'</td>
                 <td class="check-column"><mat-icon>check</mat-icon></td>
                 <td class="check-column"><mat-icon>check</mat-icon></td>
                 <td class="check-column"><mat-icon>check</mat-icon></td>
@@ -131,11 +131,11 @@
             </tr>
             <tr class="join-buttons">
                 <th class="label-header">Voorwaarden</th>
-                <th class="check-header"><button mat-stroked-button routerLink="inschrijven">Inschrijven</button></th>
-                <th class="check-header"><button mat-raised-button color="primary" routerLink="inschrijven">Inschrijven</button></th>
-                <th class="check-header"><button mat-stroked-button routerLink="inschrijven">Inschrijven</button></th>
-                <th class="check-header"><button mat-stroked-button routerLink="inschrijven">Inschrijven</button></th>
-                <th class="check-header"><button mat-stroked-button routerLink="inschrijven">Inschrijven</button></th>
+                <th class="check-header"><button mat-stroked-button routerLink="inschrijven" [queryParams]="{ 'soort': 'donateur' }">Inschrijven</button></th>
+                <th class="check-header"><button mat-raised-button color="primary" routerLink="inschrijven" [queryParams]="{ 'soort': 'stamboeklid' }">Inschrijven</button></th>
+                <th class="check-header"><button mat-stroked-button routerLink="inschrijven" [queryParams]="{ 'soort': 'kuddelid' }">Inschrijven</button></th>
+                <th class="check-header"><button mat-stroked-button routerLink="inschrijven" [queryParams]="{ 'soort': 'deelnemer-fokbeleid' }">Inschrijven</button></th>
+                <th class="check-header"><button mat-stroked-button routerLink="inschrijven" [queryParams]="{ 'soort': 'gezinslid' }">Inschrijven</button></th>
             </tr>
         </thead>
         <tbody>
@@ -215,6 +215,6 @@
     </table>
 </div>
 <p>
-    Een compleet <a routerLink="prijslijst">overzicht van de tarieven</a> is beschikbaar.<br />
+    * Een compleet <a routerLink="prijslijst">overzicht van de tarieven</a> is beschikbaar.<br />
     Het lidmaatschap, de voorwaarden en de toelating staan beschreven in het <a href="/assets/HHR-NFDH-april-2024.pdf" target="_blank">Huishoudelijk Reglement (HHR)</a>.
 </p>
