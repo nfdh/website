@@ -1,9 +1,4 @@
 <h1>Inschrijven</h1>
-<p>
-    Het inschrijfformulier is wegens onderhoud tijdelijk niet beschikbaar.<br />
-    Probeer het over een aantal dagen nog eens, of neem contact op met de <a routerLink="/vereniging/bestuur-en-commissies">ledenadministratie</a>.
-</p>
-<!--
 <p class="intro-text">Vul het onderstaande formulier in en druk op "Verzenden". Wij zullen daarna contact met u opnemen om de inschrijving af te ronden.</p>
 <app-message type="error" *ngIf="!!errorMessage">{{errorMessage}}</app-message>
 <form (ngSubmit)="onSubmit()" [formGroup]="formGroup">
@@ -60,6 +55,14 @@
         </mat-form-field>
     </app-form-section>
     <app-form-section title="Lidmaatschap">
+        <ng-container *ngIf="formGroup.controls.membershipType.value === 'kuddelid'">
+            <app-message type="info">
+                Kuddes hebben een aparte status binnen de NFDH.
+                De ledenadministratie zendt deze aanmelding door naar het secretariaat van de Kuddecommissie (KOC) ter beoordeling. <br />
+                De KOC zal contact opnemen met de aanvrager en dan pas gaat het balletje wel of niet rollen.
+            </app-message>
+        </ng-container>
+
         <mat-form-field appearance="fill">
             <mat-label>Soort</mat-label>
             <mat-select formControlName="membershipType">
@@ -72,14 +75,15 @@
             <mat-error *ngIf="formGroup.controls.membershipType.hasError('required')">Verplicht</mat-error>
         </mat-form-field>
 
-        <ng-container *ngIf="formGroup.controls.membershipType.value === 'donateur'">
-            <mat-form-field appearance="fill">
-                <mat-label>Bedrag (min. {{25 | intlNumber:{ style: 'currency', currency: 'EUR' } }})</mat-label>
-                <input type="number" step=".01" matInput formControlName="amount" />
-                <mat-error *ngIf="formGroup.controls.amount.hasError('required')">Verplicht</mat-error>
-                <mat-error *ngIf="formGroup.controls.amount.hasError('min')">Minimaal {{25 | intlNumber:{ style: 'currency', currency: 'EUR' } }}</mat-error>
-            </mat-form-field>
-        </ng-container>
+        <mat-form-field appearance="fill">
+            <mat-label>Ras</mat-label>
+            <mat-select formControlName="breed">
+                <mat-option value="drents-heideschaap">Drents Heideschaap</mat-option>
+                <mat-option value="schoonebeeker">Schoonebeeker</mat-option>
+                <mat-option value="both">Beide</mat-option>
+            </mat-select>
+            <mat-error *ngIf="formGroup.controls.breed.hasError('required')">Verplicht</mat-error>
+        </mat-form-field>
 
         <ng-container *ngIf="formGroup.controls.membershipType.value === 'gezinslid'">
             <mat-form-field appearance="fill">
@@ -87,6 +91,10 @@
                 <input matInput formControlName="familyMember" />
                 <mat-error *ngIf="formGroup.controls.familyMember.hasError('required')">Verplicht</mat-error>
             </mat-form-field>
+        </ng-container>
+
+        <ng-container *ngIf="formGroup.controls.membershipType.value === 'donateur'">
+            <mat-checkbox formControlName="donateurOwnsSheep" color="primary">U heeft zelf schapen van het gekozen ras</mat-checkbox>
         </ng-container>
 
         <ng-container *ngIf="['stamboeklid','kuddelid','deelnemer-fokbeleid'].includes(formGroup.controls.membershipType.value!) || (formGroup.controls.membershipType.value === 'donateur' && formGroup.controls.donateurOwnsSheep.value)">
@@ -109,42 +117,70 @@
             </mat-form-field>
         </ng-container>
 
-        <ng-container *ngIf="formGroup.controls.membershipType.value === 'kuddelid'">
+        <ng-container *ngIf="['donateur','stamboeklid','kuddelid','deelnemer-fokbeleid'].includes(formGroup.controls.membershipType.value!)">
+            <mat-checkbox formControlName="isOrganisation" color="primary">Wij zijn een instantie (Vereniging / Stichting / Natuurbeheer)</mat-checkbox>
+            <ng-container *ngIf="formGroup.controls.isOrganisation.value">
+                <mat-form-field appearance="fill">
+                    <mat-label>Naam instantie</mat-label>
+                    <input matInput formControlName="organisationName" />
+                    <mat-error *ngIf="formGroup.controls.organisationName.hasError('required')">Verplicht</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="fill">
+                    <mat-label>Postadres instantie</mat-label>
+                    <input matInput formControlName="organisationAddress" />
+                    <mat-error *ngIf="formGroup.controls.organisationAddress.hasError('required')">Verplicht</mat-error>
+                </mat-form-field>
+            </ng-container>
+        </ng-container>
+    </app-form-section>
+
+    <app-form-section title="Betaling">
+        <ng-container *ngIf="formGroup.controls.membershipType.value === 'donateur'">
             <mat-form-field appearance="fill">
-                <mat-label>Gecertificeerd zwoegervrij</mat-label>
-                <mat-select formControlName="zwoegerVrij">
-                    <mat-option [value]="0">Ja</mat-option>
-                    <mat-option [value]="1">Nee</mat-option>
-                    <mat-option [value]="2">Niet van toepassing</mat-option>
-                </mat-select>
-                <mat-error *ngIf="formGroup.controls.zwoegerVrij.hasError('required')">Verplicht</mat-error>
-            </mat-form-field>
-            <mat-form-field appearance="fill">
-                <mat-label>Gemotiveerd verzoek met duidelijke omschrijving van de kudde</mat-label>
-                <textarea matInput formControlName="herdDscription" rows="10"></textarea>
-                <mat-error *ngIf="formGroup.controls.herdDscription.hasError('required')">Verplicht</mat-error>
+                <mat-label>Bedrag (min. {{30 | intlNumber:{ style: 'currency', currency: 'EUR' } }})</mat-label>
+                <input type="number" step=".01" matInput formControlName="amount" />
+                <mat-error *ngIf="formGroup.controls.amount.hasError('required')">Verplicht</mat-error>
+                <mat-error *ngIf="formGroup.controls.amount.hasError('min')">Minimaal {{30 | intlNumber:{ style: 'currency', currency: 'EUR' } }}</mat-error>
             </mat-form-field>
         </ng-container>
-
-        <mat-checkbox formControlName="acceptPrivacyStatement" color="primary">	Ik ga akkoord met het privacybeleid en bevestig dat mijn persoonlijke gegevens in overeenstemming met de wet mogen worden gebruikt.</mat-checkbox>
-        
+        <mat-form-field appearance="fill">
+            <mat-label>Factuurcode voor eigen administratie (Optioneel)</mat-label>
+            <input matInput formControlName="invoiceCode" />
+        </mat-form-field>
+        <mat-checkbox formControlName="sameInvoiceInformation" color="primary">Het factuur (e-mail) adres is gelijk aan hetgeen ingevuld onder de koppen Adres en Contactinformatie</mat-checkbox>
+        <ng-container *ngIf="!formGroup.controls.sameInvoiceInformation.value">
+            <mat-form-field appearance="fill">
+                <mat-label>Factuuradres straat en huisnummer</mat-label>
+                <input matInput formControlName="invoiceAddress" />
+                <mat-error *ngIf="formGroup.controls.address.hasError('required')">Verplicht</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>Factuuradres postcode</mat-label>
+                <input matInput formControlName="invoicePostalCode" />
+                <mat-error *ngIf="formGroup.controls.postalCode.hasError('required')">Verplicht</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>Factuuradres woonplaats</mat-label>
+                <input matInput formControlName="invoiceCity" />
+                <mat-error *ngIf="formGroup.controls.city.hasError('required')">Verplicht</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>Factuur e-mail adres</mat-label>
+                <input matInput formControlName="invoiceEmail" />
+                <mat-error *ngIf="formGroup.controls.email.hasError('required')">Verplicht</mat-error>
+                <mat-error *ngIf="formGroup.controls.email.hasError('email')">Ongeldig e-mail adres</mat-error>
+            </mat-form-field>
+        </ng-container>
     </app-form-section>
+
     <app-form-section title="Stamboek registratie" *ngIf="['stamboeklid','deelnemer-fokbeleid'].includes(formGroup.controls.membershipType.value!)">
         <p class="sheep-table-text">Wanneer u kiest voor het stamboeklidmaatschap, bent u verplicht al uw Drenten en/of Schoonebeekers op te geven.</p>
 
         <div class="studbooks">
             <div class="studbook" *ngFor="let studbook of formGroup.controls.studbooks.controls; index as si" [formGroup]="studbook">
-                <div class="studbook-header">
-                    <mat-form-field appearance="fill" class="studbook-input">
-                        <mat-label>Ras</mat-label>
-                        <mat-select formControlName="studbook">
-                            <mat-option [value]="0">Drents Heideschaap</mat-option>
-                            <mat-option [value]="1">Schoonebeeker</mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="studbook.controls.studbook.hasError('required')">Verplicht</mat-error>
-                    </mat-form-field>
-                    <button [disabled]="formGroup.controls.studbooks.controls.length === 1" title="" mat-button (click)="deleteStudbook(si)" title="Ras verwijderen"><mat-icon>delete</mat-icon><span class="sheep-action-text">&nbsp;Verwijderen</span></button>
-                </div>
+                <h4 class="studbook-header">
+                    {{studbook.controls.studbook.value}}
+                </h4>
                 <div class="sheep-table">
                     <div class="sheep-row" *ngFor="let sheep of studbook.controls.sheep.controls; index as i" [formGroup]="sheep">
                         <div class="sheep-no">{{i + 1}}</div>
@@ -211,12 +247,15 @@
 
                 <button mat-button class="add-button" (click)="addSheep(si)" type="button"><mat-icon>add</mat-icon> Schaap toevoegen</button>
             </div>
-            <button *ngIf="formGroup.controls.studbooks.controls.length &lt; 2" mat-button class="add-button" (click)="addStudbook()" type="button"><mat-icon>add</mat-icon> Ras toevoegen</button>
         </div>
     </app-form-section>
+
+    <app-form-section title="Privacybeleid">
+        <mat-checkbox class="privacyCheckBox" formControlName="acceptPrivacyStatement" color="primary">Ik ga akkoord met het privacybeleid en bevestig dat mijn persoonlijke gegevens in overeenstemming met de wet mogen worden gebruikt.</mat-checkbox>
+    </app-form-section>
+
     <app-form-actions>
         <button mat-raised-button color="primary" type="submit">Verzenden</button>
         <button mat-button routerLink="..">Annuleren</button>
     </app-form-actions>
 </form>
--->

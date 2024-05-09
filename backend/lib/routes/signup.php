@@ -8,43 +8,44 @@ function register_signup_routes(FastRoute\RouteCollector $r, \Lib\Database $db, 
     $r->addRoute('POST', 'api/signup', function($_, $values) use ($db, $user, $mailer_factory, $file_storage, $mail_targets) {
         // TODO: Properly validate input json
 
+        function parse_gender($gender) {
+            switch($gender) {
+                case 'male': return 'Man';
+                case 'female': return 'Vrouw';
+                case 'other': return 'Overig';
+            }
+        }
+
         function parse_membershipType($type) {
             switch($type) {
-                case 0: return 'Donateur';
-                case 1: return 'Basislidmaatschap';
-                case 2: return 'Stamboeklidmaatschap';
-                case 3: return 'Kudde';
-                case 4: return 'Gezinslidmaatschap';
+                case 'donateur': return 'Donateur';
+                case 'stamboeklid': return 'Stamboeklid';
+                case 'kuddelid': return 'Kuddelid';
+                case 'deelnemer-fokbeleid': return 'Deelnemer fokbeleid';
+                case 'gezinslid': return 'Gezinslid';
             }
         }
 
-        function parse_zwoegervrij($zwoegerVrij) {
-            switch($zwoegerVrij) {
-                case 0: return 'Ja';
-                case 1: return 'Nee';
-                case 2: return 'Niet van toepassing';
-            }
-        }
-
-        function parse_studbook($studbook) {
-            switch($studbook) {
-                case 0: return 'Drents Heideschaap';
-                case 1: return 'Schoonebeeker';
+        function parse_breed($breed) {
+            switch($breed) {
+                case 'drents-heideschaap': return 'Drents Heideschaap';
+                case 'schoonebeeker': return 'Schoonebeeker';
+                case 'both': return 'Beide';
             }
         }
 
         function parse_sheep_gender($gender) {
             switch($gender) {
-                case 0: return 'Ram';
-                case 1: return 'Ooi';
+                case 'ram': return 'Ram';
+                case 'ooi': return 'Ooi';
             }
         }
 
         function parse_registered($registered) {
             switch($registered) {
-                case 0: return 'Ja';
-                case 1: return 'Nee';
-                case 2: return 'Niet bekend';
+                case 'yes': return 'Ja';
+                case 'no': return 'Nee';
+                case 'unknown': return 'Niet bekend';
             }
         }
 
@@ -75,6 +76,9 @@ function register_signup_routes(FastRoute\RouteCollector $r, \Lib\Database $db, 
         $pdf->Ln($lh);
         $pdf->Cell($cl, $lh, "Voornaam:");
         $pdf->Write($lh, $values['firstName']);
+        $pdf->Ln($lh);
+        $pdf->Cell($cl, $lh, "Geslacht:");
+        $pdf->Write($lh, parse_gender($values['gender']));
         $pdf->Ln($lh * 2);
         $pdf->SetFont('Arial', 'B', 12);
         $pdf->Write($lh, "Adres");
@@ -108,25 +112,48 @@ function register_signup_routes(FastRoute\RouteCollector $r, \Lib\Database $db, 
         $membershipType = $values['membershipType'];
         $pdf->Write($lh, parse_membershipType($membershipType));
 
+        $pdf->Ln($lh);
+        $pdf->Cell($cl, $lh, "Ras:");
+        $pdf->Write($lh, parse_breed($values['breed']));
+
         $jsonObj = [
             'fullName' => $values['fullName'],
             'firstName' => $values['firstName'],
+            'gender' => $values['gender'],
             'address' => $values['address'],
             'postalCode' => $values['postalCode'],
             'city' => $values['city'],
             'email' => $values['email'],
             'phoneNumber' => $values['phoneNumber'],
-            'membershipType' => $values['membershipType']
+            'membershipType' => $values['membershipType'],
+            'breed' => $values['breed']
         ];
 
-        if($membershipType == 0) {
+        if($membershipType == 'donateur') {
             $pdf->Ln($lh);
-            $pdf->Cell($cl, $lh, "Bedrag:");
-            $pdf->Write($lh, chr(128) . number_format($values['amount'], 2));
+            $pdf->Cell($cl, $lh, "Heeft zelf schapen van dit ras:");
+            $pdf->Write($lh, $values['donateurOwnsSheep'] ? "Ja" : "Nee");
 
-            $jsonObj['amount'] = $values['amount'];
+            $jsonObj['donateurOwnsSheep'] = $values['donateurOwnsSheep'];
         }
-        else if($membershipType == 4) {
+
+        if($membershipType == 'stamboeklid' || $membershipType == 'kuddelid' || $membershipType === 'deelnemer-fokbeleid' || ($membershipType == 'donateur' && $values['donateurOwnsSheep'])) {
+            $pdf->Ln($lh);
+            $pdf->Cell($cl, $lh, "UBN nummer:");
+            $pdf->Write($lh, $values['ubn']);
+
+            $jsonObj['ubn'] = $values['ubn'];
+        }
+
+        if($membershipType == 'stamboeklid' || $membershipType == 'kuddelid' || $membershipType === 'deelnemer-fokbeleid') {
+            $pdf->Ln($lh);
+            $pdf->Cell($cl, $lh, 'RVO relatienummer:');
+            $pdf->write($lh, $values['rvoRelationNumber']);
+
+            $jsonObj['rvoRelationNumber'] = $values['rvoRelationNumber'];
+        }
+
+        if($membershipType == 'gezinslid') {
             $pdf->Ln($lh);
             $pdf->Cell($cl, $lh, "In hetzelfde gezin als:");
             $pdf->Write($lh, $values['familyMember']);
@@ -134,30 +161,73 @@ function register_signup_routes(FastRoute\RouteCollector $r, \Lib\Database $db, 
             $jsonObj['familyMember'] = $values['familyMember'];
         }
 
-        if($membershipType >= 2 && $membershipType < 4) {
+        if($membershipType != 'gezinslid') {
             $pdf->Ln($lh);
-            $pdf->Cell($cl, $lh, "UBN nummer:");
-            $pdf->Write($lh, $values['ubn']);
+            $pdf->Cell($cl, $lh, "Zijn een instantie:");
+            $pdf->Write($lh, $values['isOrganisation'] ? 'Ja' : 'Nee');
 
-            $pdf->Ln($lh);
-            $pdf->Cell($cl, $lh, 'RVO relatienummer:');
-            $pdf->write($lh, $values['rvoRelationNumber']);
+            $jsonObj['isOrganisation'] = $values['isOrganisation'];
 
-            $jsonObj['ubn'] = $values['ubn'];
-            $jsonObj['rvoRelationNumber'] = $values['rvoRelationNumber'];
+            if($values['isOrganisation']) {
+                $pdf->Ln($lh);
+                $pdf->Cell($cl, $lh, "Naam instantie:");
+                $pdf->Write($lh, $values['organisationName']);
+                $pdf->Ln($lh);
+                $pdf->Cell($cl, $lh, "Postadres instantie:");
+                $pdf->Write($lh, $values['organisationAddress']);
+
+                $jsonObj['organisationName'] = $values['organisationName'];
+                $jsonObj['organisationAddress'] = $values['organisationAddress'];
+            }
         }
 
-        if($membershipType == 3) {
-            $pdf->Ln($lh);
-            $pdf->Cell($cl, $lh, "Gecertificeerd zwoegervrij:");
-            $pdf->Write($lh, parse_zwoegervrij($values['zwoegerVrij']));
-            $pdf->Ln($lh);
-            $pdf->Cell($cl, $lh, "Gemotiveerd verzoek:");
-            $pdf->Write($lh, $values['herdDscription']);
+        $pdf->Ln($lh * 2);
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->Write($lh, "Betaling");
+        $pdf->SetFont('Arial','',12);
 
-            $jsonObj['zwoegerVrij'] = $values['zwoegerVrij'];
-            $jsonObj['herdDscription'] = $values['herdDscription'];
+        if($membershipType == 'donateur') {
+            $pdf->Ln($lh);
+            $pdf->Cell($cl, $lh, "Bedrag:");
+            $pdf->Write($lh, chr(128) . number_format($values['amount'], 2));
+
+            $jsonObj['amount'] = $values['amount'];
         }
+
+        $pdf->Ln($lh);
+        $pdf->Cell($cl, $lh, "Factuurcode:");
+        $pdf->Write($lh, $values['invoiceCode']);
+        $jsonObj['invoiceCode'] = $values['invoiceCode'];
+
+        $pdf->Ln($lh);
+        $pdf->Cell($cl, $lh, "Factuuradres gelijk aan bovenstaand:");
+        $pdf->Write($lh, $values['sameInvoiceInformation'] ? 'Ja' : 'Nee');
+        $jsonObj['sameInvoiceInformation'] = $values['sameInvoiceInformation'];
+
+        if(!$values['sameInvoiceInformation']) {
+            $pdf->Ln($lh);
+            $pdf->Cell($cl, $lh, "Factuuradres straat en huisnummer:");
+            $pdf->Write($lh, $values['invoiceAddress']);
+            $pdf->Ln($lh);
+            $pdf->Cell($cl, $lh, "Factuuradres postcode:");
+            $pdf->Write($lh, $values['invoicePostalCode']);
+            $pdf->Ln($lh);
+            $pdf->Cell($cl, $lh, "Factuuradres woonplaats:");
+            $pdf->Write($lh, $values['invoiceCity']);
+            $pdf->Ln($lh);
+            $pdf->Cell($cl, $lh, "Factuur e-mail adres:");
+            $pdf->Write($lh, $values['invoiceEmail']);
+
+            $jsonObj['invoiceAddress'] = $values['invoiceAddress'];
+            $jsonObj['invoicePostalCode'] = $values['invoicePostalCode'];
+            $jsonObj['invoiceCity'] = $values['invoiceCity'];
+            $jsonObj['invoiceEmail'] = $values['invoiceEmail'];
+        }
+
+        $pdf->Ln($lh * 2);
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->Write($lh, "Privacy");
+        $pdf->SetFont('Arial','',12);
 
         $pdf->Ln($lh);
         $pdf->Cell($cl, $lh, "Akkoord met het privacybeleid:");
@@ -170,7 +240,7 @@ function register_signup_routes(FastRoute\RouteCollector $r, \Lib\Database $db, 
 
         // Generate CSV with sheep information
         $csv_path = false;
-        if($membershipType == 2) {
+        if($membershipType == 'stamboeklid' || $membershipType === 'deelnemer-fokbeleid') {
             $csv_path = $file_storage . DIRECTORY_SEPARATOR . $uuid . ".csv";
             $csv = fopen($csv_path, "w");
             fputcsv($csv, ['Ras', 'Ram/ooi', 'Levensnummer', 'Geboortedatum', 'Aankoopdatum', 'UBN verkoper', 'Reeds stamboek geregistreerd'], ";");
@@ -179,7 +249,7 @@ function register_signup_routes(FastRoute\RouteCollector $r, \Lib\Database $db, 
 
             foreach($values['studbooks'] as $studbook) {
                 $sheepJsonObj = [];
-                $studbookName = parse_studbook($studbook['studbook']);
+                $studbookName = $studbook['studbook'];
 
                 foreach($studbook['sheep'] as $sheep) {
                     $birthDate = Utils::parse_datetime_from_json($sheep['birthdate']);
