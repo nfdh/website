@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormGroup, Validators, FormControl, Form } from '@angular/forms';
+import { FormArray, FormGroup, Validators, FormControl, Form, AbstractControl } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -11,6 +11,8 @@ interface SignUpResult {
 }
 
 type MembershipType = 'donateur' | 'stamboeklid' | 'kuddelid' | 'deelnemer-fokbeleid' | 'gezinslid';
+
+type Breed = 'drents-heideschaap' | 'schoonebeeker' | 'both';
 
 type SheepGender = 'ram' | 'ooi';
 
@@ -37,17 +39,26 @@ interface SignUpForm {
   email: FormControl<string | null>,
   phoneNumber: FormControl<string | null>,
   membershipType: FormControl<MembershipType | null>,
+  breed: FormControl<Breed | null>,
   familyMember: FormControl<string | null>,
+  donateurOwnsSheep: FormControl<boolean | null>,
   amount: FormControl<number | null>,
   ubn: FormControl<string | null>,
   rvoRelationNumber: FormControl<string | null>,
-  zwoegerVrij: FormControl<boolean | null>,
-  herdDscription: FormControl<string | null>
+  isOrganisation: FormControl<boolean | null>,
+  organisationName: FormControl<string | null>,
+  organisationAddress: FormControl<string | null>,
   studbooks: FormArray<FormGroup<StudbookForm>>,
-  acceptPrivacyStatement: FormControl<boolean | null>
+  acceptPrivacyStatement: FormControl<boolean | null>,
+  sameInvoiceInformation: FormControl<boolean | null>,
+  invoiceAddress: FormControl<string | null>,
+  invoicePostalCode: FormControl<string | null>,
+  invoiceCity: FormControl<string | null>,
+  invoiceCode: FormControl<string | null>,
+  invoiceEmail: FormControl<string | null>,
 }
 
-type Studbook = 0 | 1;
+type Studbook = 'Drents Heideschaap' | 'Schoonebeeker';
 
 interface StudbookForm {
   studbook: FormControl<Studbook | null>,
@@ -92,13 +103,19 @@ export class InschrijvenPageComponent implements OnInit {
       Validators.required
     ]),
 
+    breed: new FormControl<Breed | null>(null, [
+      Validators.required
+    ]),
+
     familyMember: new FormControl<string>('', [
       Validators.required
     ]),
 
-    amount: new FormControl<number>(25.00, [
+    donateurOwnsSheep: new FormControl<boolean>(false),
+
+    amount: new FormControl<number>(30.00, [
       Validators.required,
-      Validators.min(25)
+      Validators.min(30)
     ]),
 
     ubn: new FormControl<string>('', [
@@ -108,47 +125,79 @@ export class InschrijvenPageComponent implements OnInit {
     rvoRelationNumber: new FormControl<string>('', [
       Validators.required
     ]),
-    zwoegerVrij: new FormControl<boolean>(false, [
+
+    isOrganisation: new FormControl<boolean>(false),
+    organisationName: new FormControl<string | null>(null, [
       Validators.required
     ]),
-    herdDscription: new FormControl<string>('', [
+    organisationAddress: new FormControl<string | null>(null, [
       Validators.required
     ]),
 
-    studbooks: new FormArray<FormGroup<StudbookForm>>([
-      this.createStudbookFormGroup(0)
-    ]),
+    studbooks: new FormArray<FormGroup<StudbookForm>>([]),
 
     acceptPrivacyStatement: new FormControl<boolean>(false, [
       Validators.requiredTrue
+    ]),
+
+    invoiceCode: new FormControl<string>(''),
+    sameInvoiceInformation: new FormControl<boolean>(true),
+    invoiceAddress: new FormControl<string>('', [
+      Validators.required
+    ]),
+    invoicePostalCode: new FormControl<string>('', [
+      Validators.required
+    ]),
+    invoiceCity: new FormControl<string>('', [
+      Validators.required
+    ]),
+    invoiceEmail: new FormControl<string>('', [
+      Validators.required,
+      Validators.email
     ]),
   });
 
   errorMessage = '';
 
   constructor(private route: ActivatedRoute, private httpClient: HttpClient, private router: Router, private dialog: MatDialog) {
-    this.formGroup.controls.membershipType.valueChanges.subscribe(typeValue => {
-      switch(typeValue) {
-        case 'donateur':
-          this.formGroup.controls.amount.enable();
-          this.formGroup.controls.familyMember.disable();
-          this.formGroup.controls.ubn.disable();
-          this.formGroup.controls.rvoRelationNumber.disable();
-          this.formGroup.controls.zwoegerVrij.disable();
-          this.formGroup.controls.herdDscription.disable();
-          this.formGroup.controls.studbooks.disable();
-          break;
+    this.formGroup.controls.membershipType.valueChanges.subscribe(typeValue => this.updateFormEnabledState());
+    this.formGroup.controls.isOrganisation.valueChanges.subscribe(typeValue => this.updateFormEnabledState());
+    this.formGroup.controls.donateurOwnsSheep.valueChanges.subscribe(ownsValue => this.updateFormEnabledState());
+    this.formGroup.controls.sameInvoiceInformation.valueChanges.subscribe(sameValue => this.updateFormEnabledState());
 
+    this.formGroup.controls.breed.valueChanges.subscribe(breedValue => {
+      if(breedValue == 'both') {
+        if(this.formGroup.controls.studbooks.controls.length === 0) {
+          this.formGroup.controls.studbooks.push(this.createStudbookFormGroup("Drents Heideschaap"));
+          this.formGroup.controls.studbooks.push(this.createStudbookFormGroup("Schoonebeeker"));
+        }
+        else if(this.formGroup.controls.studbooks.controls.length === 1) {
+          if(this.formGroup.controls.studbooks.controls[0].controls.studbook.value === "Drents Heideschaap") {
+            this.formGroup.controls.studbooks.push(this.createStudbookFormGroup("Schoonebeeker"));
+          }
+          else {
+            this.formGroup.controls.studbooks.insert(0, this.createStudbookFormGroup("Drents Heideschaap"));
+          }
+        }
       }
-
-      this.formGroup.controls.amount.updateValueAndValidity();
-      this.formGroup.controls.familyMember.updateValueAndValidity();
-      this.formGroup.controls.ubn.updateValueAndValidity();
-      this.formGroup.controls.rvoRelationNumber.updateValueAndValidity();
-      this.formGroup.controls.zwoegerVrij.updateValueAndValidity();
-      this.formGroup.controls.herdDscription.updateValueAndValidity();
-      this.formGroup.controls.studbooks.updateValueAndValidity();
-  });
+      else {
+        const target: Studbook = breedValue === "drents-heideschaap" ? "Drents Heideschaap" : "Schoonebeeker";
+        if(this.formGroup.controls.studbooks.controls.length === 0) {
+          this.formGroup.controls.studbooks.push(this.createStudbookFormGroup(target));
+        }
+        else if(this.formGroup.controls.studbooks.controls.length === 2) {
+          if(this.formGroup.controls.studbooks.controls[0].controls.studbook.value === target) {
+            this.formGroup.controls.studbooks.removeAt(1);
+          }
+          else {
+            this.formGroup.controls.studbooks.removeAt(0);
+          }
+        }
+        else if(this.formGroup.controls.studbooks.controls[0].controls.studbook.value !== target) {
+          this.formGroup.controls.studbooks.controls[0].controls.studbook.setValue(target);
+        }
+      }
+    });
 
     route.queryParamMap.subscribe((params) => {
       const type = params.get("soort");
@@ -156,6 +205,24 @@ export class InschrijvenPageComponent implements OnInit {
         this.formGroup.controls.membershipType.setValue(type);
       }
     });
+  }
+
+  updateFormEnabledState() {
+    const membershipType = this.formGroup.controls.membershipType.value;
+    
+    setEnabledState(this.formGroup.controls.amount, membershipType === "donateur");
+    setEnabledState(this.formGroup.controls.ubn, membershipType === "stamboeklid" || membershipType === "kuddelid" || membershipType === "deelnemer-fokbeleid" || (membershipType === "donateur" && this.formGroup.controls.donateurOwnsSheep.value!));
+    setEnabledState(this.formGroup.controls.rvoRelationNumber, membershipType === "stamboeklid" || membershipType === "kuddelid" || membershipType === "deelnemer-fokbeleid");
+    setEnabledState(this.formGroup.controls.familyMember, membershipType === "gezinslid");
+    setEnabledState(this.formGroup.controls.studbooks, membershipType === "stamboeklid" || membershipType === "deelnemer-fokbeleid");
+  
+    setEnabledState(this.formGroup.controls.organisationName, membershipType !== "gezinslid" && this.formGroup.controls.isOrganisation.value!);
+    setEnabledState(this.formGroup.controls.organisationAddress, membershipType !== "gezinslid" && this.formGroup.controls.isOrganisation.value!);
+
+    setEnabledState(this.formGroup.controls.invoiceAddress, !this.formGroup.controls.sameInvoiceInformation.value);
+    setEnabledState(this.formGroup.controls.invoicePostalCode, !this.formGroup.controls.sameInvoiceInformation.value);
+    setEnabledState(this.formGroup.controls.invoiceCity, !this.formGroup.controls.sameInvoiceInformation.value);
+    setEnabledState(this.formGroup.controls.invoiceEmail, !this.formGroup.controls.sameInvoiceInformation.value);
   }
 
   openRvoInstructions(e: MouseEvent) {
@@ -190,31 +257,15 @@ export class InschrijvenPageComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  onStudbookChange(index: number, newValue: Studbook | null) {
-    if(this.formGroup.controls.studbooks.length === 1) {
-      return;
-    }
-    
-    const otherIndex = index === 0 ? 1 : 0;
-    const other = this.formGroup.controls.studbooks.controls[otherIndex];
-    const otherValue = newValue === 0 ? 1 : 0;
-    other.controls.studbook.setValue(otherValue, {
-      emitEvent: false
-    });
-  }
-
-  createStudbookFormGroup(i: number): FormGroup<StudbookForm> {
+  createStudbookFormGroup(studbook: Studbook): FormGroup<StudbookForm> {
     const result = new FormGroup<StudbookForm>({
-      studbook: new FormControl<Studbook | null>(null, [
+      studbook: new FormControl<Studbook>(studbook, [
         Validators.required
       ]),
       sheep: new FormArray<FormGroup<SheepForm>>([
         this.createSheepFormGroup()
       ])
     });
-    
-    result.controls.studbook.valueChanges.subscribe((n) => this.onStudbookChange(i, n));
-
     return result;
   }
   
@@ -238,24 +289,6 @@ export class InschrijvenPageComponent implements OnInit {
     });
   }
 
-  deleteStudbook(studbook: number) {
-    this.formGroup.controls.studbooks.removeAt(studbook);
-  }
-
-  addStudbook() {
-    const group = this.createStudbookFormGroup(1);
-
-    const firstGroup = this.formGroup.controls.studbooks.controls[0];
-    if(firstGroup.controls.studbook.value === 0) {
-      group.controls.studbook.setValue(1);
-    }
-    else if(firstGroup.controls.studbook.value === 1) {
-      group.controls.studbook.setValue(0);
-    }
-
-    this.formGroup.controls.studbooks.push(group);
-  }
-
   deleteSheep(studbook: number, idx: number) {
     this.formGroup.controls.studbooks.controls[studbook].controls.sheep.removeAt(idx);
   }
@@ -271,4 +304,10 @@ function isMembershipType(value: string): value is MembershipType {
     || value === 'kuddelid'
     || value === 'deelnemer-fokbeleid'
     || value === 'gezinslid';
+}
+
+function setEnabledState(control: AbstractControl, enabled: boolean) {
+  if(enabled) control.enable();
+  else control.disable();
+  control.updateValueAndValidity();
 }
