@@ -108,7 +108,7 @@
 
         <ng-container *ngIf="['stamboeklid','kuddelid','deelnemer-fokbeleid'].includes(formGroup.controls.membershipType.value!)">
             <app-message type="info" class="rvo-machtiging-message">
-                Een RVO machtiging voor "Aanvragen informatieproducten" en "Meldingen" is verplicht voor stamboeklidmaatschap.<br/><a href="#" (click)="openRvoInstructions($event)">Hoe maak ik een RVO machtiging aan?</a>
+                Een RVO machtiging voor "Aanvragen informatieproducten" en "Meldingen" is verplicht voor {{membershipTypeName}}.<br/><a href="#" (click)="openRvoInstructions($event)">Hoe maak ik een RVO machtiging aan?</a>
             </app-message>
             <mat-form-field appearance="fill">
                 <mat-label>RVO relatienummer</mat-label>
@@ -174,7 +174,7 @@
     </app-form-section>
 
     <app-form-section title="Stamboek registratie" *ngIf="['stamboeklid','deelnemer-fokbeleid'].includes(formGroup.controls.membershipType.value!)">
-        <p class="sheep-table-text">Wanneer u kiest voor het stamboeklidmaatschap, bent u verplicht al uw Drenten en/of Schoonebeekers op te geven.</p>
+        <p class="sheep-table-text">Wanneer u kiest voor het {{membershipTypeName}}, bent u verplicht al uw Drenten en/of Schoonebeekers op te geven.</p>
 
         <div class="studbooks">
             <div class="studbook" *ngFor="let studbook of formGroup.controls.studbooks.controls; index as si" [formGroup]="studbook">
