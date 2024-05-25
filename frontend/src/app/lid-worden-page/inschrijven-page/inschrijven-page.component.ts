@@ -207,6 +207,17 @@ export class InschrijvenPageComponent implements OnInit {
     });
   }
 
+  get membershipTypeName() {
+    switch(this.formGroup.controls.membershipType.value) {
+      case "donateur": return "donateur";
+      case "gezinslid": return "gezinslid";
+      case "stamboeklid": return "stamboeklidmaatschap";
+      case "kuddelid": return "kuddelidmaatschap";
+      case "deelnemer-fokbeleid": return "deelnemer fokbeleid";
+      default: return "";
+    }
+  }
+
   updateFormEnabledState() {
     const membershipType = this.formGroup.controls.membershipType.value;
     
