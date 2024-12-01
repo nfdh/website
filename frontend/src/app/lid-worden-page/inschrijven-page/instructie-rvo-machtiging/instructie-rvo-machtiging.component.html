@@ -1,62 +1,11 @@
 <h1 mat-dialog-title>Instructie RVO machtiging</h1>
 <div mat-dialog-content>
     <p>
-        Ga naar de site mijn.rvo.nl. Klik rechtsboven op 'inloggen op mijn.rvo.nl'.
+        Het is verplicht een machtiging RVO aan te maken. Als je inlogt in 'mijn RVO' dan kies je in de blauwe balk 'machtiging verstrekken'.
+        Het betreft twee machtigingen aanmaken. Mocht het niet lukken, neem dan gerust contact op met de stamboekadministratie, e-mail: <a href="mailto:stamboek@nfdh.nl">stamboek@nfdh.nl</a>.
     </p>
-    <img src="assets/instructie-rvo/000.png" />
-    <p>
-        Er volgt een scherm waarin u kunt kiezen hoe u wilt inloggen. Staat u bij de Kamer van
-Koophandel geregistreerd, dan logt u in met E-herkenning, staan de dieren op uw persoonlijke
-naam, kies dan voor Digi-D. Doorloop in de inlogprocedure.
-    </p>
-    <img src="assets/instructie-rvo/001.png" />
-    <p>
-        Na het inloggen ziet u het volgende scherm. Klik rechtsboven op 'mijn dossier'
-    </p>
-    <img src="assets/instructie-rvo/002.png" />
-    <p>
-        Klik in het scherm 'mijn dossier' op 'identificatie & registratie van dieren'.
-    </p>
-    <img src="assets/instructie-rvo/003.png" />
-    <p>
-        De I&R-applicatie start op. Klik vervolgens op de foto van de boerderij:
-    </p>
-    <img src="assets/instructie-rvo/004.png" />
-    <p>
-        Daarna start het dashboard op. Ga in het menu naar de optie Machtigingen/Beheren
-machtiging/Verstrekken machtiging.
-    </p>
-    <img src="assets/instructie-rvo/005.png" />
-    <p>
-        Vul in het scherm 'verstrekken machtigingen' exact de volgende gegevens in:
-    </p>
-    <table mat-table [dataSource]="relationInfo" class="relation-info-table mat-elevation-z2">
-        <ng-container matColumnDef="field">
-            <th mat-header-cell *matHeaderCellDef>Veld</th>
-            <td mat-cell *matCellDef="let row">{{row.field}}</td>
-        </ng-container>
-        <ng-container matColumnDef="value">
-            <th mat-header-cell *matHeaderCellDef>Waarde</th>
-            <td mat-cell *matCellDef="let row">{{row.value}}</td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="relationInfoColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: relationInfoColumns;"></tr>
-    </table>
-    <p>
-        Bij type machtiging kiest u altijd: “aanvragen informatieproducten” en “meldingen”. Zet de
-ingangsdatum op de datum waarop u de machtiging aanmaakt. Klik daarna op 'volgende'
-    </p>
-    <img src="assets/instructie-rvo/006.png" />
-    <p>
-        Op het moment dat u op 'volgende' klikt is de machtiging aangemaakt. U zal van RVO een
-bevestiging krijgen.
-    </p>
-    <p>
-        U kunt nu verder met het invullen van het inschrijven formulier door op Sluiten te klikken en vervolgens uw RVO relatienummer in te vullen.
-    </p>
+    <img src="/assets/screenshot-machtiging-rvo.png" />
 </div>
 <div mat-dialog-actions>
     <button mat-button color="primary" (click)="onCloseClick()" cdkFocusInitial>Sluiten</button>
 </div>
-
