@@ -60,7 +60,9 @@ export class HomePageComponent implements AfterViewInit {
       this.embedded.remove();
     }
 
-    this.embedded = embed(this.newsletters[this.currentIndex].url, this.embedContainer.nativeElement);
+    this.embedded = embed(this.newsletters[this.currentIndex].url, this.embedContainer.nativeElement, {
+      fallbackLink: "<a href='[url]' target='_blank'>Klik hier om de nieuwsbrief te openen</a>"
+    });
   }
 
   get current(): string {
