@@ -1,0 +1,49 @@
+.mobile-sidenav-header {
+    width: 250px;
+    line-height: 40px;
+}
+
+.mobile-sidenav-header > h2 {
+    margin: 0;
+    padding: 0;
+}
+
+.mobile-sidenav-header > button {
+    float: right;
+}
+
+.mobile-menu-segment {
+    margin-bottom: 20px;
+}
+
+.mobile-menu-link {
+    display: block;
+    border-bottom: 1px solid lightgray;
+    color: black;
+    padding: 15px 0;
+    text-decoration: none;
+}
+
+.mobile-menu-link:last-child {
+    border-bottom: none;
+}
+
+.mobile-menu-sub {
+    padding-left: 20px;
+}
+
+.mobile-menu-group {
+    padding-top: 10px;
+}
+
+.mobile-menu-group > span {
+    display: block;
+    font-size: 80%;
+    font-weight: bold;
+}
+
+.mobile-menu-group > .mobile-menu-link {
+    padding: 10px 0;
+    color: #333;
+    font-size: 90%;
+}
