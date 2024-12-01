@@ -513,4 +513,120 @@ function register_signup_routes(FastRoute\RouteCollector $r, \Lib\Database $db, 
 
         return new File($path, "text/csv", $downloadName);
     });
+
+    $r->addRoute('DELETE', 'api/signups', function($_, $values) use ($db, $user, $file_storage) {
+        if(!$user || !$user['role_member_administrator']) {
+            http_response_code(401);
+            return new JSON([
+                "success" => false,
+                "reason" => "UNAUTHORIZED"
+            ]);
+        }
+
+        $type = $values['type'];
+        $items = array_values($values['items']);
+
+        // Delete the pdf's
+        $sql = "
+            SELECT `pdf_uuid`
+            FROM `signups`
+        ";
+
+        $sqlParameters = [];
+        if($type === 'including') {
+            $sql .= "WHERE `id` IN (";
+            $first = true;
+            foreach($items as $k => $v) {
+                if($first) {
+                    $first = false;
+                }
+                else {
+                    $sql .= ",";
+                }
+
+                $sql .= ":i$k";
+                $sqlParameters[":i$k"] = $v;
+            }
+            $sql .= ")";
+        }
+        else if($type === 'excluding') {
+            if(count($items) > 0) {
+                $sql .= "WHERE `id` NOT IN (";
+                $first = true;
+                foreach($items as $k => $v) {
+                    if($first) {
+                        $first = false;
+                    }
+                    else {
+                        $sql .= ",";
+                    }
+                    $sql .= ":i$k";
+                    $sqlParameters[":i$k"] = $v;
+                }
+                $sql .= ")";
+            }
+        }
+
+        $rows = $db->queryAll($sql, $sqlParameters);
+        foreach($rows as $row) {
+            $uuid = $row['pdf_uuid'];
+
+            $pdf_path = $file_storage . DIRECTORY_SEPARATOR . $uuid . ".pdf";
+            if(file_exists($pdf_path)) {
+                unlink($pdf_path);          
+            }  
+
+            $csv_path = $file_storage . DIRECTORY_SEPARATOR . $uuid . ".csv";
+            if(file_exists($csv_path)) {
+                unlink($csv_path);
+            }
+        }
+
+        // Delete the signup records
+        $sql = "
+            DELETE
+            FROM `signups`
+        ";
+
+        $sqlParameters = [];
+        if($type === 'including') {
+            $sql .= "WHERE `id` IN (";
+            $first = true;
+            foreach($items as $k => $v) {
+                if($first) {
+                    $first = false;
+                }
+                else {
+                    $sql .= ",";
+                }
+
+                $sql .= ":i$k";
+                $sqlParameters[":i$k"] = $v;
+            }
+            $sql .= ")";
+        }
+        else if($type === 'excluding') {
+            if(count($items) > 0) {
+                $sql .= "WHERE `id` NOT IN (";
+                $first = true;
+                foreach($items as $k => $v) {
+                    if($first) {
+                        $first = false;
+                    }
+                    else {
+                        $sql .= ",";
+                    }
+                    $sql .= ":i$k";
+                    $sqlParameters[":i$k"] = $v;
+                }
+                $sql .= ")";
+            }
+        }
+
+        $db->execute($sql, $sqlParameters);
+
+        return new JSON([
+            'success' => true
+        ]);
+    });
 }

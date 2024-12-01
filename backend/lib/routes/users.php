@@ -144,10 +144,17 @@ function register_users_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $
         $type = $values['type'];
         $items = array_values($values['items']);
         $sqlParameters = [];
-
         if($type === 'including') {
             $sql .= "WHERE `id` IN (";
+            $first = true;
             foreach($items as $k => $v) {
+                if($first) {
+                    $first = false;
+                }
+                else {
+                    $sql .= ",";
+                }
+
                 $sql .= ":i$k";
                 $sqlParameters[":i$k"] = $v;
             }
@@ -156,7 +163,14 @@ function register_users_routes(FastRoute\RouteCollector $r, \Lib\Database $db, $
         else if($type === 'excluding') {
             if(count($items) > 0) {
                 $sql .= "WHERE `id` NOT IN (";
+                $first = true;
                 foreach($items as $k => $v) {
+                    if($first) {
+                        $first = false;
+                    }
+                    else {
+                        $sql .= ",";
+                    }
                     $sql .= ":i$k";
                     $sqlParameters[":i$k"] = $v;
                 }
