@@ -28,6 +28,7 @@ jobs:
       with:
         name: backend
         path: backend
+        include-hidden-files: true
 
   build-frontend:
     runs-on: ubuntu-latest
@@ -52,6 +53,7 @@ jobs:
       with:
         name: frontend
         path: frontend/dist/frontend
+        include-hidden-files: true
 
   deploy:
     needs: [build-backend, build-frontend]
