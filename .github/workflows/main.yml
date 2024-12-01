@@ -9,13 +9,13 @@ jobs:
   build-backend:
     runs-on: ubuntu-latest
     steps: 
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
         php-version: 8.1
     - name: Cache Composer dependencies
-      uses: actions/cache@v2
+      uses: actions/cache@v4
       with:
         path: /tmp/composer-cache
         key: ${{ runner.os }}-composer-prod-${{ hashFiles('**/composer.lock') }}
@@ -24,7 +24,7 @@ jobs:
           ${{ runner.os }}-composer-
     - run: composer install --no-dev
       working-directory: backend/lib
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: backend
         path: backend
@@ -32,13 +32,13 @@ jobs:
   build-frontend:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Setup node.js
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v4
       with:
         node-version: 14
     - name: Cache npm dependencies
-      uses: actions/cache@v2
+      uses: actions/cache@v4
       with:
         path: ~/.npm
         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -48,7 +48,7 @@ jobs:
       working-directory: frontend
     - run: npm run build:prod
       working-directory: frontend
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: frontend
         path: frontend/dist/frontend
@@ -57,11 +57,11 @@ jobs:
     needs: [build-backend, build-frontend]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v4
       with:
         name: frontend
         path: artifact/wwwroot
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v4
       with:
         name: backend
         path: artifact/wwwroot
