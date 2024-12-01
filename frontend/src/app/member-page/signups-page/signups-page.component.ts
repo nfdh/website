@@ -1,9 +1,12 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
 import { supportsPDFs } from 'pdfobject';
+import { DeleteConfirmationDialogComponent } from 'src/app/delete-confirmation-dialog/delete-confirmation-dialog.component';
 import { AppTitleService } from 'src/app/services/app-title.service';
-import { SelectionMap } from 'src/app/services/selection';
+import { SelectionMap, SelectionType } from 'src/app/services/selection';
 import { TableDataSource, TableDataSourceFactory } from 'src/app/services/table-data-source.service';
 
 interface Signup {
@@ -29,6 +32,8 @@ export class SignupsPageComponent implements OnInit {
   constructor(    
     private dataSourceFactory: TableDataSourceFactory,
     titleService: AppTitleService,
+    private httpClient: HttpClient, 
+    private dialog: MatDialog,
     private router: Router,
     private route: ActivatedRoute
   ) { 
@@ -51,6 +56,31 @@ export class SignupsPageComponent implements OnInit {
 
   onDoubleClick(id: number) {
     this.openDetail(id);
+  }
+
+  onDeleteClick() {
+    const dialog = this.dialog.open(DeleteConfirmationDialogComponent, { 
+      data: {
+        entityName: 'Inschrijvingen',
+        selection: this.selection
+      }
+    });
+
+    dialog.afterClosed().subscribe((v: boolean) => {
+      if(!v) return;
+
+      this.httpClient.request("delete", "/api/signups", {
+        body: {
+          type: this.selection.type === SelectionType.Including ? "including" : "excluding",
+          items: Array.from(this.selection.items)
+        }
+      })
+        .subscribe(() => {
+          this.signups.reload();
+        });
+
+      this.selection.clear();
+    });
   }
 
   openDetail(id: number) {
