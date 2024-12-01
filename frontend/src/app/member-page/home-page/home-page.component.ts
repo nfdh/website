@@ -10,7 +10,13 @@ import { embed } from "pdfobject";
 })
 export class HomePageComponent implements AfterViewInit {
   newsletters = [
-    { name: "#1 - 26 november 2021", url: "/assets/nieuwsbrief-26-november.pdf" }
+    { name: "november 2021", url: "/assets/newsletters/2021-11.pdf" },
+    { name: "november 2022", url: "/assets/newsletters/2022-11.pdf" },
+    { name: "september 2023", url: "/assets/newsletters/2023-09.pdf" },
+    { name: "oktober 2023", url: "/assets/newsletters/2023-10.pdf" },
+    { name: "februari 2024", url: "/assets/newsletters/2024-02.pdf" },
+    { name: "september 2024", url: "/assets/newsletters/2024-09.pdf" },
+    { name: "oktober 2024", url: "/assets/newsletters/2024-10.pdf" }
   ];
   currentIndex = this.newsletters.length - 1;
 
@@ -62,10 +68,17 @@ export class HomePageComponent implements AfterViewInit {
   }
 
   get previous(): string {
-    return "Oktober 2021";
+    if(this.currentIndex === 0) {
+      return "";
+    }
+    return this.newsletters[this.currentIndex - 1].name;
   }
 
   get next(): string {
-    return "December 2021";
+    if(this.currentIndex === this.newsletters.length - 1) {
+      return "";
+    }
+
+    return this.newsletters[this.currentIndex + 1].name;
   }
 }
