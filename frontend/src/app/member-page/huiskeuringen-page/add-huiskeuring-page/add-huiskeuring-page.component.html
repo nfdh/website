@@ -42,7 +42,7 @@
         </mat-form-field>
         <ng-container *ngIf="formGroup.controls.region.value !== null && formGroup.controls.region.value >= 0">
             <mat-radio-group class="date-selection" formControlName="preferred_date">
-                <mat-radio-button color="primary" *ngFor="let date of availableDatesForRegion(formGroup.controls.region.value); index as i" [value]="i">{{date | intlDateTime:{ day: "numeric", month: "long" } }}</mat-radio-button>
+                <mat-radio-button color="primary" *ngFor="let date of availableDatesForRegion(formGroup.controls.region.value); index as i" [value]="i">{{date | intlDateTime:{ weekday: "long", day: "numeric", month: "long" } }}</mat-radio-button>
                 <mat-radio-button color="primary" [value]="-1">Geen voorkeur</mat-radio-button>
             </mat-radio-group>
             <p class="notice">
