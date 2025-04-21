@@ -8,12 +8,12 @@ export default [
         new Date(2025, 7, 23),
         new Date(2025, 7, 24)
     ],
-    // west
+    // oost
     [
         new Date(2025, 5, 21),
         new Date(2025, 6, 27)
     ],
-    // oost
+    // west
     [
         new Date(2025, 6, 6),
         new Date(2025, 7, 2)
