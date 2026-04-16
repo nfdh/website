@@ -130,24 +130,24 @@ function register_huiskeuringen_routes(FastRoute\RouteCollector $r, \Lib\Databas
 
             $dates = array(
                 array(
-                    date_date_set(new \DateTime(), 2025, 6, 13),
-                    date_date_set(new \DateTime(), 2025, 6, 14),
-                    date_date_set(new \DateTime(), 2025, 6, 15),
-                    date_date_set(new \DateTime(), 2025, 8, 22),
-                    date_date_set(new \DateTime(), 2025, 8, 23),
-                    date_date_set(new \DateTime(), 2025, 8, 24)
+                    date_date_set(new \DateTime(), 2026, 6, 12),
+                    date_date_set(new \DateTime(), 2026, 6, 13),
+                    date_date_set(new \DateTime(), 2026, 6, 14),
+                    date_date_set(new \DateTime(), 2026, 8, 21),
+                    date_date_set(new \DateTime(), 2026, 8, 22),
+                    date_date_set(new \DateTime(), 2026, 8, 23)
                 ),
                 array(
-                    date_date_set(new \DateTime(), 2025, 6, 21),
-                    date_date_set(new \DateTime(), 2025, 7, 27)
+                    date_date_set(new \DateTime(), 2026, 6, 20),
+                    date_date_set(new \DateTime(), 2026, 7, 26)
                 ),
                 array(
-                    date_date_set(new \DateTime(), 2025, 7, 6),
-                    date_date_set(new \DateTime(), 2025, 8, 2)
+                    date_date_set(new \DateTime(), 2026, 7, 5),
+                    date_date_set(new \DateTime(), 2026, 8, 1)
                 ),
                 array(
-                    date_date_set(new \DateTime(), 2025, 7, 12),
-                    date_date_set(new \DateTime(), 2025, 8, 10)
+                    date_date_set(new \DateTime(), 2026, 7, 11),
+                    date_date_set(new \DateTime(), 2026, 8, 16)
                 )
             );
 
