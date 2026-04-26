@@ -147,7 +147,7 @@ function register_huiskeuringen_routes(FastRoute\RouteCollector $r, \Lib\Databas
                 ),
                 array(
                     date_date_set(new \DateTime(), 2026, 7, 18),
-                    date_date_set(new \DateTime(), 2026, 8, 6)
+                    date_date_set(new \DateTime(), 2026, 8, 16)
                 )
             );
 
